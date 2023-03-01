@@ -10,6 +10,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Contact;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\DealController;
+use App\Http\Controllers\TaskController;
 
 
 // Public Routes
@@ -41,6 +42,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/storeDeal', [DealController::class, 'storeDeal']);
     Route::get('/showDealList', [DealController::class, 'showDealList']);
     Route::get('/showClientList', [ClientController::class, 'showClientList']);
+    Route::post('/createTask', [TaskController::class, 'createTask']);
+    Route::get('/showTaskList', [TaskController::class, 'showTaskList']);
+    Route::put('/updateTask/{id}', [TaskController::class, 'updateTask']);
+    Route::delete('/deleteTask/{id}', [TaskController::class, 'deleteTask']);
     Route::post('/roles/{role}/permissions', [RolePermissionController::class, 'givePermissionToRole'])
     ->name('roles.givePermissionToRole');
     

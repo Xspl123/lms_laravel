@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
@@ -33,9 +36,41 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function createTask(Request $request)
     {
-        //
+        $TaskOwner = Auth::user()->uname;
+        //print_r($TaskOwner); die;
+        $userId = Auth::id();
+       // print_r($userId); die;
+        $rules = [
+            'Subject' => 'required',
+            'DueDate' => 'required',
+            'Status' => 'required',
+            'Priority' => 'required',
+            'Reminder' => 'required',
+            'Repeat' => 'required',
+            'Description' => 'required',
+        ];
+          
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+            $task = new Task;
+
+            $task->TaskOwne = $TaskOwner;
+            $task->Subject = $request->Subject;
+            $task->DueDate = $request->DueDate;
+            $task->Status = $request->Status;
+            $task->Priority = $request->Priority;
+            $task->Reminder = $request->Reminder;
+            $task->Repeat = $request->Repeat;
+            $task->Description = $request->Description;
+            $task->user_id = $userId;
+            $task->save();
+            return response()->json(['message' => 'Task Added successfully'], 201);
     }
 
     /**
@@ -44,9 +79,19 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function show(Task $task)
+    public function showTaskList(Task $task)
     {
-        //
+        $userId = Auth::user()->id;
+        $task = Task::join('users', 'tasks.user_id', '=', 'users.id')
+                   ->select('tasks.*')
+                   ->where('users.id', $userId)
+                   ->orderBy('id', 'desc')
+                   ->get();
+                   
+        return response([
+            'task'=>$task,
+            'status'=>'success'
+        ], 200);
     }
 
     /**
@@ -67,9 +112,17 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task)
+    public function updateTask(Request $request ,$id)
     {
-        //
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
+
+        $task->update($request->all());
+
+        return response()->json(['message' => 'Task updated', 'task' => $task], 200);
     }
 
     /**
@@ -78,8 +131,16 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
+    public function deleteTask(Task $task, $id)
     {
-        //
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
+
+        $task->delete();
+
+        return response()->json(['message' => 'Task deleted'], 200);
     }
 }
