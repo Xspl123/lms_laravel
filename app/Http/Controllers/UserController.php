@@ -56,11 +56,13 @@ class UserController extends Controller
         $user = User::where('email', $request->email)->first();
         if($user && Hash::check($request->password, $user->password)){
             $token = $user->createToken($request->email)->plainTextToken;
-            //User::select('email',$request->email)->update(['apitken' => $token]);
+            //$user_details = User::all();
+            //print_r($user_details); exit;
             return response([
                 'token'=>$token,
                 'message' => 'Login Success',
-                'status'=>'success'
+                'status'=>'success',
+                'user' => $user
             ], 200);
         }
         return response([

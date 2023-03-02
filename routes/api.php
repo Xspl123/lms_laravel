@@ -10,6 +10,7 @@ use App\Http\Controllers\Contact;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ProductController;
 
 // Public Routes
     Route::post('/register', [UserController::class, 'register']);
@@ -55,5 +56,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //role and permission route
     Route::post('/roles/{role}/permissions', [RolePermissionController::class, 'givePermissionToRole'])
     ->name('roles.givePermissionToRole');
-    
+
+    //product route
+    Route::post('/createProduct', [ProductController::class, 'createProduct']);
+    Route::get('/showProductList', [ProductController::class, 'showProductList']);
+    Route::delete('/deleteProduct/{id}', [ProductController::class, 'deleteProduct']);
+    Route::put('/updateProduct/{id}', [ProductController::class, 'updateProduct']);
 });
