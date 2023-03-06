@@ -7,15 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
-    }
-
-    public function employees()
-    {
-        return $this->belongsTo(Employee::class);
-    }
+    protected $fillable = [
+        'cname', 'cemail', 'ctax_number', 'cphone', 'ccity','cbilling_address','ccountry','cpostal_code','cemployees_size','cfax','cdescription','domain_name','fax','dateofBirth','mailingStreet','mailingCity','mailingState','mailingZip','mailingCountry','otherStreet','otherCity','otherState','otherZip','otherCountry','description'
+        ];
 
     use HasFactory;
 }

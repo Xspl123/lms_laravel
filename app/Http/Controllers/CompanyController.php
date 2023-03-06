@@ -40,9 +40,8 @@ class CompanyController extends Controller
     public function addCompany(Request $request)
     {
         // $userId = Auth::uname();
-        $userId = Auth::User()->uname;
-
-        print_r($userId);exit;
+        $userId = Auth::User()->uname;   
+        //print_r($userId);exit;
         //echo "addcomany"; die;
         $rules = [
             'cname' => 'required',
@@ -58,7 +57,6 @@ class CompanyController extends Controller
             'cdescription' => 'nullable|string',
             'domain_name' => 'required|unique:companies,domain_name',
             'cis_active' => 'required|boolean',
-            'client_id' => 'required|integer',
         ];
           
         $validator = Validator::make($request->all(), $rules);
@@ -140,9 +138,15 @@ class CompanyController extends Controller
      * @param  \App\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Company $company)
+    public function updateCompany(Request $request, Company $company ,$id)
     {
-        //
+        $company = Company::find($id);
+        if (!$company) {
+            return response()->json(['message' => 'Company not found']);
+        }
+
+        $company->update($request->all());
+        return response()->json(['message' => 'Company updated successfully','company' => $company]);
     }
 
     /**
@@ -151,8 +155,15 @@ class CompanyController extends Controller
      * @param  \App\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Company $company)
+    public function deleteCompany(Company $company , $id)
     {
-        //
+       //echo "delete product";
+       $company = Company::find($id);
+       //print_r($id);
+       if (!$company) {
+        return response()->json(['message' => 'Company not found'], 404);
+       }
+       $company->delete();
+       return response()->json (['message' => 'Company deleted successfully']);
     }
 }

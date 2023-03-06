@@ -126,9 +126,15 @@ class DealController extends Controller
      * @param  \App\Models\Deal  $deal
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Deal $deal)
+    public function updateDeal(Request $request, Deal $deal ,$id)
     {
-        //
+        $deal = Deal::find($id);
+        if (!$deal) {
+            return response()->json(['message' => 'Deal not found']);
+        }
+
+        $deal->update($request->all());
+          return response()->json(['message' => 'Deal update successfully']);
     }
 
     /**
@@ -137,16 +143,16 @@ class DealController extends Controller
      * @param  \App\Models\Deal  $deal
      * @return \Illuminate\Http\Response
      */
-    public function deleteDealbyId($id)
+    public function deleteDeal($id)
     {
         $deals = Deal::find($id);
 
         if (!$deals) {
-            return response()->json(['message' => 'Contact not found'], 404);
+            return response()->json(['message' => 'Deal not found'], 404);
         }
 
         $deals->delete();
 
-        return response()->json(['message' => 'Contact deleted'], 200);
+        return response()->json(['message' => 'Deal deleted'], 200);
     }
 }

@@ -27,7 +27,6 @@ class Client extends Model
         'clzip',
         'clcity',
         'clcountry',
-        'user_id'
     ];
     use HasFactory;
 }

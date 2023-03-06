@@ -17,10 +17,8 @@ use App\Http\Controllers\ProductController;
     Route::post('/login', [UserController::class, 'login']);
     Route::post('/send-reset-password-email', [PasswordResetController::class, 'send_reset_password_email']);
     Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset']);
-    // Route::post('/logout', [UserController::class, 'logout']);
-    // Route::get('/showCompanyList', [CompanyController::class, 'showCompany']);
     Route::get('/getcity/{id}', [Contact::class, 'getcity']);
-    //Route::get('/showDealList', [DealController::class, 'showDealList']);
+    
 
 // Protected Routes
 
@@ -38,6 +36,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //company route
     Route::post('/addCompany', [CompanyController::class, 'addCompany']);
     Route::get('/showCompanyList', [CompanyController::class, 'showCompany']);
+    Route::delete('/deleteCompany/{id}', [CompanyController::class, 'deleteCompany']);
+    Route::put('/updateCompany/{id}',[CompanyController::class,'updateCompany']);
     //contact route
     Route::post('/addContact', [Contact::class, 'addContact']);
     Route::get('/showContactList', [Contact::class, 'showContactList']);
@@ -46,8 +46,13 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //deal route
     Route::post('/storeDeal', [DealController::class, 'storeDeal']);
     Route::get('/showDealList', [DealController::class, 'showDealList']);
+    Route::delete('/deleteDeal/{id}', [DealController::class, 'deleteDeal']);
+    Route::put('/updateDeal/{id}', [DealController::class, 'updateDeal']);
     // client route
     Route::get('/showClientList', [ClientController::class, 'showClientList']);
+    Route::post('/addClient', [ClientController::class, 'addClient']);
+    Route::delete('/destroyClient/{id}',[ClientController::class,'destroyClient']);
+    Route::put('/updateClient/{id}',[ClientController::class,'updateClient']);
     //task route
     Route::post('/createTask', [TaskController::class, 'createTask']);
     Route::get('/showTaskList', [TaskController::class, 'showTaskList']);

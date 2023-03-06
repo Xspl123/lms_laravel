@@ -17,7 +17,7 @@ class CreateClientsTable extends Migration
             $table->id();
             $table->string('clfull_name');
             $table->string('clphone');
-            $table->string('clemail', 255);
+            $table->string('clemail')->unique();
             $table->text('clsection');
             $table->text('clbudget');
             $table->text('cllocation');
