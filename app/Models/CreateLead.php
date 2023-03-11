@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CreateLead extends Model
 {
     protected $fillable = [
-        'lead_Name', 'company', 'email', 'lead_Source', 'lead_Owner','first_Name','last_Name','titel','fax','mobile','website','lead_status','industry','tr','user_id'
+        'lead_Name', 'email', 'fName','lead_Owner','phone','mobile','lead_status','user_id'
         ];
     use HasFactory;
 }

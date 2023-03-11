@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\CreateLeads;
@@ -12,7 +13,8 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     public function register(Request $request){
-
+        //$uuid = Str::uuid();
+        //print_r($uuid); exit;
         $request->validate([
             'uname' => 'required|string',
             'email' => 'required|email|unique:users|max:255',
@@ -38,6 +40,7 @@ class UserController extends Controller
             'urole' => $request->urole,
             'domain_name' => $request->domain_name,
             'uexperience' => $request->uexperience,
+            //'uuid' => $uuid,
             'tc'=>json_decode($request->tc),
         ]);
         $token = $user->createToken($request->email)->plainTextToken;

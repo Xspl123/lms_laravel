@@ -9,6 +9,25 @@ use Illuminate\Support\Facades\Validator;
 
 class CreateLeadController extends Controller
 { 
+    public function showSingleLead($uuid)
+    {
+        $leads = CreateLead::where('uuid',$uuid)->first();
+        if (!$leads) {
+            return response()->json([
+                'success' => false,
+                'message' => 'leads not found'
+            ], 404);
+        }
+            else {
+                
+                return response()->json([
+                    'success' => true,
+                    'leads' => $leads
+                ]);
+            }
+        
+    }
+
     //shwo  leads
     public function userLead(){
         
@@ -28,21 +47,13 @@ class CreateLeadController extends Controller
     public function CreateUserLead(Request $request){
         $lead_Owner = Auth::user()->uname;
         $userId = Auth::id();
-
+        $uuid = mt_rand(10000000, 99999999);
         $request->validate([
             'lead_Name' => 'required',
-            'company' => 'required|string',
             'email' => 'required|email',
-            'lead_Source' => 'required',
-            'first_Name' => 'required',
-            'last_Name' => 'required',
-            'titel' => 'required',
-            'fax' => 'required',
-            'mobile'=>'required',
-            'website' =>'required',
+            'fullName' => 'required',
+            'phone'=>'required',
             'lead_status' => 'required',
-            'industry' => 'required',
-            'tr' => 'required',
         ]);
         if(CreateLead::where('email', $request->email)->first()){
             return response([
@@ -51,29 +62,39 @@ class CreateLeadController extends Controller
             ], 200);
         }
 
-
-        $leads = CreateLead::create([
-            'lead_Name' => $request->lead_Name,
-            'company' => $request->company,
-            'email' => $request->email,
-            'lead_Source' => $request->lead_Source,
-            'lead_Owner' => $lead_Owner,
-            'first_Name' => $request->first_Name,
-            'last_Name' => $request->last_Name,
-            'titel' => $request->titel,
-            'fax' => $request->fax,
-            'mobile'=> $request->mobile,
-            'website'=> $request->website,
-            'lead_status'=> $request->lead_status,
-            'industry'=> $request->industry,
-            'tr'=> $request->tr,
-            'user_id' => $userId
-
-        ]);
+            $leads = new CreateLead;
+            $leads->uuid = $uuid;
+            $leads->lead_Name = $request->lead_Name;
+            $leads->company = $request->company;
+            $leads->email = $request->email;
+            $leads->fullName = $request->fullName;
+            $leads->lead_Source = $request->lead_Source;
+            $leads->lead_Owner = $lead_Owner;
+            $leads->titel = $request->titel;
+            $leads->fax = $request->fax;
+            $leads->phone = $request->phone;
+            $leads->mobile = $request->mobile;
+            $leads->website = $request->website;
+            $leads->lead_status = $request->lead_status;
+            $leads->industry = $request->industry;
+            $leads->rating = $request->rating;
+            $leads->noOfEmployees = $request->noOfEmployees;
+            $leads->annualRevenue = $request->annualRevenue;
+            $leads->skypeID = $request->skypeID;
+            $leads->secondaryEmail = $request->secondaryEmail;
+            $leads->twitter = $request->twitter;
+            $leads->street = $request->street;
+            $leads->pinCode = $request->pinCode;
+            $leads->state = $request->state;
+            $leads->country = $request->country;
+            $leads->discription = $request->discription;
+            $leads->user_id = $userId;
+            $leads->save();
 
         return response([
             'message' => 'Lead created Successfully',
-            'status'=>'success'
+            'status'=>'success',
+            'leads' => $uuid
         ], 200);
     }
 
@@ -96,13 +117,18 @@ class CreateLeadController extends Controller
         $updateLead = CreateLead::find($id);
 
         if (!$updateLead) {
-            return response()->json(['message' => 'Contact not found'], 404);
+            return response()->json(['message' => 'Lead not found'], 404);
         }
 
         $updateLead->update($request->all());
 
         return response()->json(['message' => 'Lead updated', 'updateLead' => $updateLead], 200);
+    
+       
+    
+    
     }
+
     
 
 }

@@ -27,8 +27,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/logout', [UserController::class, 'logout']);
     Route::get('/loggeduser', [UserController::class, 'logged_user']);
     //lead route
-    Route::get('/ShowUserLead', [CreateLeadController::class, 'userLead']);
-    Route::post('/CreateUserLead', [CreateLeadController::class, 'CreateUserLead']);
+    Route::get('/leadList', [CreateLeadController::class, 'userLead']);
+    Route::get('/showSingleLead/{uuid}', [CreateLeadController::class, 'showSingleLead']);
+    Route::post('/CreateLead', [CreateLeadController::class, 'CreateUserLead']);
     Route::delete('/destroyLead/{id}', [CreateLeadController::class, 'destroyLead']);
     Route::put('/updateLead/{id}', [CreateLeadController::class, 'updateLead']);
     //change password route

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Employee;        
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -40,23 +42,28 @@ class CompanyController extends Controller
     public function addCompany(Request $request)
     {
         // $userId = Auth::uname();
-        $userId = Auth::User()->uname;   
-        //print_r($userId);exit;
+        $username = Auth::User()->uname;   
+        $userId = Auth::User()->id; 
         //echo "addcomany"; die;
+        //$uuid = Str::uuid();
+        $uuid = mt_rand(10000000, 99999999);
+        // $hexString = dechex($randomNumber);
+        // $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $hexString)->toString();
+         //print_r($uuid);exit;
         $rules = [
             'cname' => 'required',
             'cemail' => 'required|email|unique:companies,cemail',
-            'ctax_number' => 'required',
+            //'ctax_number' => 'required',
             'cphone' => 'required|integer',
             'ccity' => 'required|string',
-            'cbilling_address' => 'required',
+            //'cbilling_address' => 'required',
             'ccountry' => 'required',
-            'cpostal_code' => 'required',
-            'cemployees_size' => 'nullable|integer',
-            'cfax' => 'nullable|string',
-            'cdescription' => 'nullable|string',
-            'domain_name' => 'required|unique:companies,domain_name',
-            'cis_active' => 'required|boolean',
+            //'cpostal_code' => 'required',
+            //'cemployees_size' => 'nullable|integer',
+            //'cfax' => 'nullable|string',
+            //'cdescription' => 'nullable|string',
+            //'domain_name' => 'required|unique:companies,domain_name',
+            'cis_active' => 'required',
         ];
           
         $validator = Validator::make($request->all(), $rules);
@@ -65,7 +72,7 @@ class CompanyController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
             $company = new Company;
-            
+            $company->uuid = $uuid;
             $company->cname = $request->cname;
             $company->cemail = $request->cemail;
             $company->ctax_number = $request->ctax_number;
@@ -78,12 +85,13 @@ class CompanyController extends Controller
             $company->cfax = $request->cfax;
             $company->cdescription = $request->cdescription;
             $company->domain_name = $request->domain_name;
+            //$comany->comanyOwner = $username;
             $company->cis_active = $request->cis_active;
             $company->client_id = $request->client_id;
             $company->user_id = $userId;
             $company->save();
 
-            return response()->json(['message' => 'Company Added successfully'], 201);
+            return response()->json(['message' => 'Company Added successfully','company' => $company], 201);
 
     }
 
