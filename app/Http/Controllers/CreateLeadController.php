@@ -11,9 +11,9 @@ class CreateLeadController extends Controller
 { 
     public function showSingleLead($uuid)
      {   
-        $userId = Auth::id();
+        //$userId = Auth::id();
             //print_r($userId);exit;
-        $leads = CreateLead::where('id',$userId)->orWhere('uuid',$uuid)->first();
+        $leads = CreateLead::where('uuid',$uuid)->first();
         if (!$leads) {
             return response()->json([
                 'success' => false,
@@ -57,12 +57,12 @@ class CreateLeadController extends Controller
             'phone'=>'required',
             'lead_status' => 'required',
         ]);
-        if(CreateLead::where('email', $request->email)->first()){
-            return response([
-                'message' => 'Email already exists',
-                'status'=>'failed'
-            ], 200);
-        }
+        // if(CreateLead::where('email', $request->email)->first()){
+        //     return response([
+        //         'message' => 'Email already exists',
+        //         'status'=>'failed'
+        //     ], 200);
+        // }
 
             $leads = new CreateLead;
             $leads->uuid = $uuid;

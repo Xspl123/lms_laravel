@@ -15,15 +15,19 @@ class CreateCreateLeadsTable extends Migration
     {
         Schema::create('create_leads', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->default(0);
             $table->string('lead_Name');
             $table->string('company')->nullable();
             $table->string('email');
             $table->string('lead_Source')->nullable();
             $table->string('lead_Owner');
-            $table->string('fName');
-            //$table->string('last_Name');
+            $table->string('created_by')->nullable();
+            $table->string('modified_by')->nullable();
+            $table->string('fullName');;
+            $table->string('last_Name');
             $table->string('titel')->nullable();
             $table->string('fax')->nullable();
+            $table->string('phone');
             $table->string('mobile');
             $table->string('website')->nullable();
             $table->string('lead_status');
@@ -39,9 +43,9 @@ class CreateCreateLeadsTable extends Migration
             $table->string('state')->nullable();
             $table->string('country')->nullable();
             $table->string('discription')->nullable();
-            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('companies_id');
             $table->foreign('companies_id')->references('id')->on('companies');
+            $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });

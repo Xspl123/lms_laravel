@@ -30,8 +30,8 @@ class CreateCompaniesTable extends Migration
             $table->string('cdescription', 255)->nullable();
             $table->string('domain_name')->unique()->nullable();
             $table->boolean('cis_active')->nullable()->default(0);
-            $table->unsignedInteger('client_id');
-            $table->foreign('client_id')->references('id')->on('clients');
+            //$table->unsignedInteger('client_id');
+            //$table->foreign('client_id')->references('id')->on('clients');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

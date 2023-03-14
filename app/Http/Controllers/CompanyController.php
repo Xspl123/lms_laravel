@@ -87,7 +87,7 @@ class CompanyController extends Controller
             $company->domain_name = $request->domain_name;
             //$comany->comanyOwner = $username;
             $company->cis_active = $request->cis_active;
-            $company->client_id = $request->client_id;
+            //$company->client_id = $request->client_id;
             $company->user_id = $userId;
             $company->save();
 

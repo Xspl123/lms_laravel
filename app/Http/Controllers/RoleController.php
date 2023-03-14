@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employee;
+use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;    
+use Illuminate\Support\Facades\Validator;
 
-class EmployeeController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,9 +25,34 @@ class EmployeeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function createRole(Request $request)
     {
-        //
+        
+
+
+        $rules = [
+            'role_name' => 'required',
+            
+           
+        ];
+          
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+            
+            $role = new Role;
+
+            $role->p_id = $request->p_id;
+            $role->company_id = $request->company_id;
+            $role->role_name = $request->role_name;
+
+            $role->save();
+
+            return response()->json(['message' => 'Role Added successfully','role' => $role], 201);
+
     }
 
     /**
@@ -41,10 +69,10 @@ class EmployeeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Employee  $employee
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function show(Employee $employee)
+    public function show(Role $role)
     {
         //
     }
@@ -52,10 +80,10 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Employee  $employee
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function edit(Employee $employee)
+    public function edit(Role $role)
     {
         //
     }
@@ -64,10 +92,10 @@ class EmployeeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Employee  $employee
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, Role $role)
     {
         //
     }
@@ -75,10 +103,10 @@ class EmployeeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Employee  $employee
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Employee $employee)
+    public function destroy(Role $role)
     {
         //
     }

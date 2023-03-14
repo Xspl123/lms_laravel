@@ -12,6 +12,8 @@ use App\Http\Controllers\DealController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AllFieldsColumnController;
+use App\Http\Controllers\RoleController;
+
 
 
 // Public Routes
@@ -75,5 +77,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     Route::get('/showallfieldcolumns',[AllFieldsColumnController::class,'showallfieldcolumns']);
     Route::post('/Createallfieldcolumns',[AllFieldsColumnController::class,'Createallfieldcolumns']);
+
+    //Role Route
+
+    Route::post('/createRole',[RoleController::class,'createRole']);
 
 });
