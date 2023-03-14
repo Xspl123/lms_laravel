@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Validator;
 class CreateLeadController extends Controller
 { 
     public function showSingleLead($uuid)
-    {
-        $leads = CreateLead::where('uuid',$uuid)->first();
+     {   
+        $userId = Auth::id();
+            //print_r($userId);exit;
+        $leads = CreateLead::where('id',$userId)->orWhere('uuid',$uuid)->first();
         if (!$leads) {
             return response()->json([
                 'success' => false,

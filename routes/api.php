@@ -11,6 +11,8 @@ use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AllFieldsColumnController;
+
 
 // Public Routes
     Route::post('/register', [UserController::class, 'register']);
@@ -68,4 +70,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/showProductList', [ProductController::class, 'showProductList']);
     Route::delete('/deleteProduct/{id}', [ProductController::class, 'deleteProduct']);
     Route::put('/updateProduct/{id}', [ProductController::class, 'updateProduct']);
+
+    //AllFieldColumns
+
+    Route::get('/showallfieldcolumns',[AllFieldsColumnController::class,'showallfieldcolumns']);
+    Route::post('/Createallfieldcolumns',[AllFieldsColumnController::class,'Createallfieldcolumns']);
+
 });
