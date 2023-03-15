@@ -105,4 +105,14 @@ class UserController extends Controller
             'status'=>'success'
         ], 200);
     }
+
+    public function userList()
+    {
+        $user_list = User::all();
+        return response([
+            'user_list'=>$user_list,
+            'message' => 'All user list',
+            'status'=>'success'
+        ], 200);
+    }
 }
