@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\Employee;        
+use App\Models\Employee;
+use App\Models\Role;
+        
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
@@ -41,6 +43,8 @@ class CompanyController extends Controller
      */
     public function addCompany(Request $request)
     {
+        $cid = '';
+
         // $userId = Auth::uname();
         $username = Auth::User()->uname;   
         $userId = Auth::User()->id; 
@@ -51,7 +55,7 @@ class CompanyController extends Controller
         // $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $hexString)->toString();
          //print_r($uuid);exit;
         $rules = [
-            'cname' => 'required',
+            'cname' => 'required|unique:companies,cname',
             'cemail' => 'required|email|unique:companies,cemail',
             //'ctax_number' => 'required',
             'cphone' => 'required|integer',
@@ -62,7 +66,7 @@ class CompanyController extends Controller
             //'cemployees_size' => 'nullable|integer',
             //'cfax' => 'nullable|string',
             //'cdescription' => 'nullable|string',
-            //'domain_name' => 'required|unique:companies,domain_name',
+            'domain_name' => 'required|unique:companies,domain_name',
             'cis_active' => 'required',
         ];
           
@@ -89,8 +93,16 @@ class CompanyController extends Controller
             $company->cis_active = $request->cis_active;
             //$company->client_id = $request->client_id;
             $company->user_id = $userId;
-            $company->save();
 
+            $company->save();
+            $cid=$company->id;
+
+            $role = new Role;
+
+            $role->p_id = "0";
+            $role->company_id = $cid;
+            $role->role_name = "CEO";
+            $role->save();
             return response()->json(['message' => 'Company Added successfully','company' => $company], 201);
 
     }

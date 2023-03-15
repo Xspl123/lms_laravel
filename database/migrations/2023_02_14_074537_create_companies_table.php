@@ -16,9 +16,9 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->default(0);
-            $table->string('cname');
+            $table->string('cname')->unique();
             $table->string('cemail')->unique();
-            $table->string('ctax_number');
+            $table->string('ctax_number')->nullable();
             $table->string('cphone');
             $table->string('ccity', 255);
             $table->string('cbilling_address', 255)->nullable();

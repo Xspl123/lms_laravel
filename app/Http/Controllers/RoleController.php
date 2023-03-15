@@ -25,13 +25,27 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function createRole(Request $request)
+    public function createRole(Request $request )
     {
         
+          //  $roles_id = $request->role_id;
+          //echo $roles_id; exit;
+    //    $role_company = DB::table('roles')
+    //     ->join('companies', 'roles.company_id', '=', 'companies.id')
+    //     ->select('roles.id', 'roles.p_id', 'companies.cname')
+    //     ->get();
 
+
+            // $role_company = DB::table('roles')
+            // ->select('*')
+            // ->join('companies','roles.id','=','companies.id')
+            // ->where('companies.id','=', $roles_id)
+            // ->get();
+
+            // return $role_company;exit; 
 
         $rules = [
-            'role_name' => 'required',
+            'role_name' => 'required|unique:roles,role_name',
             
            
         ];
