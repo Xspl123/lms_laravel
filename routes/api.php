@@ -81,5 +81,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //Role Route
 
     Route::post('/createRole',[RoleController::class,'createRole']);
+    Route::get('/showRole',[RoleController::class,'showRole']);
 
 });

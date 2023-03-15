@@ -28,14 +28,7 @@ class RoleController extends Controller
     public function createRole(Request $request )
     {
         
-          //  $roles_id = $request->role_id;
-          //echo $roles_id; exit;
-    //    $role_company = DB::table('roles')
-    //     ->join('companies', 'roles.company_id', '=', 'companies.id')
-    //     ->select('roles.id', 'roles.p_id', 'companies.cname')
-    //     ->get();
-
-
+       
             // $role_company = DB::table('roles')
             // ->select('*')
             // ->join('companies','roles.id','=','companies.id')
@@ -86,9 +79,16 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function show(Role $role)
+    public function showRole(Role $role)
     {
-        //
+    
+       $role_company = DB::table('roles')
+        ->join('companies', 'roles.company_id', '=', 'companies.id')
+         ->select('roles.id', 'roles.p_id', 'companies.cname')
+        ->get();
+        //print_r($role_company);
+        return response()->json(['role_company' => $role_company], 201);
+
     }
 
     /**
