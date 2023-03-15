@@ -75,7 +75,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     //AllFieldColumns
 
-    Route::get('/showallfieldcolumns',[AllFieldsColumnController::class,'showallfieldcolumns']);
+    Route::post('/showallfieldcolumns',[AllFieldsColumnController::class,'showallfieldcolumns']);
     Route::post('/Createallfieldcolumns',[AllFieldsColumnController::class,'Createallfieldcolumns']);
 
     //Role Route

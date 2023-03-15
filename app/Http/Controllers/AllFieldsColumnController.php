@@ -77,9 +77,15 @@ class AllFieldsColumnController extends Controller
      * @param  \App\Models\AllFieldsColumn  $allFieldsColumn
      * @return \Illuminate\Http\Response
      */
-    public function showallfieldcolumns(AllFieldsColumn $allFieldsColumn)
+    public function showallfieldcolumns(Request $request,AllFieldsColumn $allFieldsColumn)
     {
-        //
+        
+        $show_fields = DB::table('all_fields_columns')
+        ->select('*')
+        ->where('processName',$request->processName)
+        ->get();
+        return response()->json(['message' => 'List of AllFieldsColumn','show_fields' => $show_fields], 201);
+
     }
 
     /**
