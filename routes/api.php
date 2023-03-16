@@ -36,6 +36,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/CreateLead', [CreateLeadController::class, 'CreateUserLead']);
     Route::delete('/destroyLead/{id}', [CreateLeadController::class, 'destroyLead']);
     Route::put('/updateLead/{id}', [CreateLeadController::class, 'updateLead']);
+    Route::put('/updateCreatedBy/{id}', [CreateLeadController::class, 'updateCreatedBy']);
+    
     //change password route
     Route::post('/changepassword', [UserController::class, 'change_password']);
     //company route
