@@ -61,7 +61,7 @@ class CreateLeadController extends Controller
                    select('create_leads.*')
                    ->where('lead_Owner', $username)
                    ->limit(7)
-                   ->orderBy('id', 'desc')
+                   ->latest()
                    ->get();
                    
         return response([
@@ -85,18 +85,18 @@ class CreateLeadController extends Controller
             'phone'=>'required',
             'lead_status' => 'required',
         ]);
-
+        //$username = Auth::user()->uname;
         $get_user_details =  DB::table('create_leads')
         ->join('users', 'create_leads.id', '=', 'users.id')
-        ->select('users.id', 'users.uname', 'users.email')
+        ->select('users.uname')
         ->where('users.id', $userId)
         ->get();
 
-        $user_array = (array) $get_user_details;
+        //$user_array = (array) $get_user_details;
 
         //$userArray = $get_user_details->toArray();
         //$jsn = json_decode($get_user_details, JSON_PRETTY_PRINT);
-        print_r($get_user_details);exit;
+       // print_r($get_user_details);exit;
 
         // if(CreateLead::where('email', $request->email)->first()){
         //     return response([
@@ -113,7 +113,7 @@ class CreateLeadController extends Controller
             $leads->fullName = $request->fullName;
             $leads->lead_Source = $request->lead_Source;
             $leads->lead_Owner = $lead_Owner;
-            $leads->created_by = $user_array;
+            $leads->created_by = $get_user_details;
             $leads->titel = $request->titel;
             $leads->fax = $request->fax;
             $leads->phone = $request->phone;
