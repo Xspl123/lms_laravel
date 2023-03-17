@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\CreateLeads;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -110,13 +111,9 @@ class UserController extends Controller
     public function userList()
     {
         
-        $data_list = AllInOneController::tabledetails_col("tasks","*");
-         
-
-        
-        
+        $userlist = AllInOneController::singlelead("users","*");
         return response([
-            'data_list'=>$data_list,
+            'userlist'=>$userlist,
             'status'=>'success'
         ], 200);
     }

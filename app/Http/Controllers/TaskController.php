@@ -82,19 +82,8 @@ class TaskController extends Controller
      */
     public function showTaskList()
     {
-        // $userId = Auth::user()->id;
-        // $task = Task::join('users', 'tasks.user_id', '=', 'users.id')
-        //            ->select('tasks.*')
-        //            ->where('users.id', $userId)
-        //            ->orderBy('id', 'desc')
-        //            ->get();
-                   
-        // return response([
-        //     'task'=>$task,
-        //     'status'=>'success'
-        // ], 200);
-
-        $data_list = AllInOneController::tabledetails_col("tasks","Subject,Status");
+  
+       $data_list = AllInOneController::tabledetails_col("tasks","Subject,Status");
             return response([
             'task'=>$data_list,
             'status'=>'success'

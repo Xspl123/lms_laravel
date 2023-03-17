@@ -11,59 +11,27 @@ use Illuminate\Support\Facades\Validator;
 class CreateLeadController extends Controller
 { 
     public function showSingleLead($uuid)
-     {   
-        $leads = CreateLead::where('uuid',$uuid)->first();
-        if (!$leads) {
-            return response()->json([
-                'success' => false,
-                'message' => 'leads not found'
-            ], 404);
-        }
-            else {
-
-                // $result = DB::table('create_leads')
-                // ->join('users', 'create_leads.id', '=', 'users.id')
-                // ->select('users.id', 'users.uname', 'users.email')
-                // ->get();
-
-                //  $userArray = $result->toArray();
-
-                //print_r($userArray); exit;
-                
-                // $result =  DB::table('create_leads')
-                // ->join('users', 'create_leads.id', '=', 'users.id')
-                // ->select('users.id', 'users.uname', 'users.email')
-                // ->get();
-                 //print_r($result); exit;
-                return response()->json([
-                    'success' => true,
-                    'leads' => $leads,
-                ]);
-            }
+    {   
         
+        $data_list = AllInOneController::singlelead('create_leads','*','uuid',$uuid);
+        return response([
+            
+            'data_list'=>$data_list,
+            
+            'status'=>'success'
+        ], 200);
+
     }
 
-    //shwo  leads
+    //show  leads
     public function userLead(){
-        $all_fields = DB::table('all_fields_columns')
-         ->select('all_fields_columns.fieldsName','all_fields_columns.Column_Name')
-        ->get();
-
-        $leads_count = DB::table('create_leads')->count();
-        $userId = Auth::id();
-        $username = auth()->user()->uname;
-       
-        $leads = CreateLead::
-                   select('create_leads.*')
-                   ->where('lead_Owner', $username)
-                   ->limit(7)
-                   ->latest()
-                   ->get();
-                   
+        $data_list = AllInOneController::tabledetails_col("create_leads","*");
+        $column = AllInOneController::tabledetails_col("all_fields_columns","fieldsName,Column_Name,Column_order");
+        $count = DB::table('create_leads')->count();
         return response([
-            'TotalRecord'=>$leads_count,
-            'Column'=>$all_fields,
-            'leads'=>$leads,
+            'count' => $count,
+            'data_list'=>$data_list,
+            'column' => $column,
             'status'=>'success'
         ], 200);
     }
