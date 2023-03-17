@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Http\Controllers\AllInOneController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -79,17 +80,23 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function showTaskList(Task $task)
+    public function showTaskList()
     {
-        $userId = Auth::user()->id;
-        $task = Task::join('users', 'tasks.user_id', '=', 'users.id')
-                   ->select('tasks.*')
-                   ->where('users.id', $userId)
-                   ->orderBy('id', 'desc')
-                   ->get();
+        // $userId = Auth::user()->id;
+        // $task = Task::join('users', 'tasks.user_id', '=', 'users.id')
+        //            ->select('tasks.*')
+        //            ->where('users.id', $userId)
+        //            ->orderBy('id', 'desc')
+        //            ->get();
                    
-        return response([
-            'task'=>$task,
+        // return response([
+        //     'task'=>$task,
+        //     'status'=>'success'
+        // ], 200);
+
+        $data_list = AllInOneController::tabledetails_col("tasks","Subject,Status");
+            return response([
+            'task'=>$data_list,
             'status'=>'success'
         ], 200);
     }

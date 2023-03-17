@@ -13,7 +13,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AllFieldsColumnController;
 use App\Http\Controllers\RoleController;
-
+use App\Http\Controllers\EmployeeController;
 
 
 // Public Routes
@@ -23,7 +23,7 @@ use App\Http\Controllers\RoleController;
     Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset']);
     Route::get('/getcity/{id}', [Contact::class, 'getcity']);
     Route::get('/userList', [UserController::class, 'userList']);
-
+    Route::get('/index', [EmployeeController::class, 'index']);
 // Protected Routes
 
 Route::middleware(['auth:sanctum'])->group(function(){

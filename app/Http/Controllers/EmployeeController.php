@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\AllInOneController;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 
@@ -14,7 +14,14 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        //
+        // $result = app('App\Http\Controllers\AllInOneController')->userdetails();
+        //$result = AllInOneController::userdetails();
+        //print_r($result);
+        // return response([
+        //     'result'=>$result,
+        //     'status'=>'success'
+        // ], 200);
+    
     }
 
     /**

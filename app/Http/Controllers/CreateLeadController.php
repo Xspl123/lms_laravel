@@ -12,9 +12,6 @@ class CreateLeadController extends Controller
 { 
     public function showSingleLead($uuid)
      {   
-       // $userId = Auth::id();
-       
-            //print_r($userId);exit;
         $leads = CreateLead::where('uuid',$uuid)->first();
         if (!$leads) {
             return response()->json([
@@ -51,9 +48,8 @@ class CreateLeadController extends Controller
         $all_fields = DB::table('all_fields_columns')
          ->select('all_fields_columns.fieldsName','all_fields_columns.Column_Name')
         ->get();
-        //print_r($all_fields);exit;
+
         $leads_count = DB::table('create_leads')->count();
-        //print_r($leads_count);exit;
         $userId = Auth::id();
         $username = auth()->user()->uname;
        
@@ -85,25 +81,12 @@ class CreateLeadController extends Controller
             'phone'=>'required',
             'lead_status' => 'required',
         ]);
-        //$username = Auth::user()->uname;
-        $get_user_details =  DB::table('create_leads')
-        ->join('users', 'create_leads.id', '=', 'users.id')
-        ->select('users.uname')
-        ->where('users.id', $userId)
-        ->get();
-
-        //$user_array = (array) $get_user_details;
-
-        //$userArray = $get_user_details->toArray();
-        //$jsn = json_decode($get_user_details, JSON_PRETTY_PRINT);
-       // print_r($get_user_details);exit;
-
-        // if(CreateLead::where('email', $request->email)->first()){
-        //     return response([
-        //         'message' => 'Email already exists',
-        //         'status'=>'failed'
-        //     ], 200);
-        // }
+            //$username = Auth::user()->uname;
+            $get_user_details =  DB::table('create_leads')
+            ->join('users', 'create_leads.id', '=', 'users.id')
+            ->select('users.uname')
+            ->where('users.id', $userId)
+            ->get();
 
             $leads = new CreateLead;
             $leads->uuid = $uuid;
@@ -114,7 +97,7 @@ class CreateLeadController extends Controller
             $leads->lead_Source = $request->lead_Source;
             $leads->lead_Owner = $lead_Owner;
             $leads->created_by = $get_user_details;
-            $leads->titel = $request->titel;
+            $leads->title = $request->title;
             $leads->fax = $request->fax;
             $leads->phone = $request->phone;
             $leads->mobile = $request->mobile;

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Controllers\AllInOneController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -108,10 +109,14 @@ class UserController extends Controller
 
     public function userList()
     {
-        $user_list = User::all();
+        
+        $data_list = AllInOneController::tabledetails_col("tasks","*");
+         
+
+        
+        
         return response([
-            'user_list'=>$user_list,
-            'message' => 'All user list',
+            'data_list'=>$data_list,
             'status'=>'success'
         ], 200);
     }
