@@ -92,9 +92,8 @@ class CompanyController extends Controller
 
             $company->save();
             $cid=$company->id;
-
+            //Insert data in role table
             $role = new Role;
-
             $role->p_id = "0";
             $role->company_id = $cid;
             $role->role_name = "CEO";
@@ -112,27 +111,10 @@ class CompanyController extends Controller
     public function showCompany(Company $company)
     {
         
-        $userId = Auth::id();
+        $data_list = AllInOneController::tabledetails_col("companies","*");
 
-        // $data = DB::table('users')
-        // ->join('create_leads','users.id','=','create_leads.user_id')
-        // ->select('users.uname','users.urole','create_leads.*')
-        // ->where('users.id',$userId)->get();
-
-        // echo "<pre>";
-        // print_r($data);exit;
-
-        //print_r($userId); die;
-        $data = DB::table('users')
-        ->select('users.id',  'companies.*')
-        //->join('clients', 'users.id', '=', 'clients.user_id')
-        ->join('companies', 'users.id', '=', 'companies.user_id')
-        ->where('users.id', $userId)
-        ->limit(7)
-        ->orderBy('created_at', 'desc')
-        ->get();
         
-        return response()->json(['data' => $data], 201);
+        return response()->json(['data_list' => $data_list], 201);
         
     }
 

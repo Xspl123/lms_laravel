@@ -21,7 +21,7 @@ class AllInOneController extends Controller
        
         $data = DB::table($table)->select($column)
         ->orderBy('id','ASC')
-        ->get();
+        ->paginate(3, ['*'], 'pageName');
         return $data;
     }
 
