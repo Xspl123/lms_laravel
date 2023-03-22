@@ -16,7 +16,7 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function showSingleTask()
     {
         //
     }
@@ -138,5 +138,14 @@ class TaskController extends Controller
         $task->delete();
 
         return response()->json(['message' => 'Task deleted'], 200);
+    }
+
+
+    public function deleteAllTasks(Task $task)
+    {
+        $task = Task::truncate();
+
+        return response()->json(['message' => 'All tasks deleted successfull'], 200);
+
     }
 }

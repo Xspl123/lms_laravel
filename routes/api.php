@@ -24,6 +24,12 @@ use App\Http\Controllers\EmployeeController;
     Route::get('/getcity/{id}', [Contact::class, 'getcity']);
     Route::get('/userList', [UserController::class, 'userList']);
     Route::get('/index', [EmployeeController::class, 'index']);
+
+
+    Route::get('/roles', [RoleController::class,'index']);
+    Route::post('/roles', [RoleController::class,'store']);
+    Route::put('/roles/{id}', [RoleController::class,'update']);
+    Route::delete('/roles/{id}', [RoleController::class,'destroy']);
 // Protected Routes
 
 Route::middleware(['auth:sanctum'])->group(function(){
@@ -36,7 +42,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/CreateLead', [CreateLeadController::class, 'CreateUserLead']);
     Route::delete('/destroyLead/{id}', [CreateLeadController::class, 'destroyLead']);
     Route::put('/updateLead/{id}', [CreateLeadController::class, 'updateLead']);
-    Route::put('/updateCreatedBy/{id}', [CreateLeadController::class, 'updateCreatedBy']);
+    Route::delete('/deleteAllLeads', [CreateLeadController::class, 'deleteAllLeads']);
     
     //change password route
     Route::post('/changepassword', [UserController::class, 'change_password']);
@@ -65,6 +71,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/showTaskList', [TaskController::class, 'showTaskList']);
     Route::put('/updateTask/{id}', [TaskController::class, 'updateTask']);
     Route::delete('/deleteTask/{id}', [TaskController::class, 'deleteTask']);
+    Route::delete('/deleteAllTasks', [TaskController::class, 'deleteAllTasks']);
     //role and permission route
     Route::post('/roles/{role}/permissions', [RolePermissionController::class, 'givePermissionToRole'])
     ->name('roles.givePermissionToRole');

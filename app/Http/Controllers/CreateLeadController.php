@@ -12,8 +12,9 @@ class CreateLeadController extends Controller
 { 
     public function showSingleLead($uuid)
     {   
+       // $cname = AllInOneController::tabledetails_col('companies','*','uuid',$uuid );
         
-        $data_list = AllInOneController::singlelead('create_leads','*','uuid',$uuid);
+       $data_list = AllInOneController::singlelead('create_leads','*','uuid',$uuid);
         return response([
             
             'data_list'=>$data_list,
@@ -37,8 +38,6 @@ class CreateLeadController extends Controller
     }
     //create  leads
     public function CreateUserLead(Request $request){
-
-       
         $lead_Owner = Auth::user()->uname;
         $userId = Auth::id();
         $uuid = mt_rand(10000000, 99999999);
@@ -49,22 +48,25 @@ class CreateLeadController extends Controller
             'phone'=>'required',
             'lead_status' => 'required',
         ]);
-            //$username = Auth::user()->uname;
-            $get_user_details =  DB::table('create_leads')
-            ->join('users', 'create_leads.id', '=', 'users.id')
-            ->select('users.uname')
-            ->where('users.id', $userId)
-            ->get();
+           
+            $username = Auth::user()->uname;
+            // $get_user_details =  DB::table('create_leads')
+            // ->join('users', 'create_leads.id', '=', 'users.id')
+            // ->select('users.uname')
+            // ->where('users.id', $userId)
+            // ->get();
+
+           // print_r($username);exit;
 
             $leads = new CreateLead;
             $leads->uuid = $uuid;
             $leads->lead_Name = $request->lead_Name;
-            $leads->company = $request->company;
+            $leads->company = $request->company;;
             $leads->email = $request->email;
             $leads->fullName = $request->fullName;
             $leads->lead_Source = $request->lead_Source;
             $leads->lead_Owner = $lead_Owner;
-            $leads->created_by = $get_user_details;
+            $leads->created_by = $username;
             $leads->title = $request->title;
             $leads->fax = $request->fax;
             $leads->phone = $request->phone;
@@ -122,13 +124,12 @@ class CreateLeadController extends Controller
     
     }
 
-    public function updateCreatedBy(Request $request, $id)
+    public function deleteAllLeads()
     {
-        $updateCreatedBy = CreateLead::find($id);
-        
-        echo "<pre>";
+        $task = CreateLead::truncate();
 
-        print_r($updateCreatedBy);
+        return response()->json(['message' => 'All tasks deleted successfull'], 200);
+
     }
 
     

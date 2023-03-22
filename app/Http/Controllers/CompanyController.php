@@ -44,12 +44,8 @@ class CompanyController extends Controller
     public function addCompany(Request $request)
     {
         $cid = '';
-
-        // $userId = Auth::uname();
         $username = Auth::User()->uname;   
         $userId = Auth::User()->id; 
-        //echo "addcomany"; die;
-        //$uuid = Str::uuid();
         $uuid = mt_rand(10000000, 99999999);
         // $hexString = dechex($randomNumber);
         // $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $hexString)->toString();
