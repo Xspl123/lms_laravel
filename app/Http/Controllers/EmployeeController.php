@@ -5,6 +5,7 @@ use App\Http\Controllers\AllInOneController;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Helpers\CommonHelper;
+use App\Helpers\ApiHelperSearchData;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;  
 
@@ -15,15 +16,14 @@ class EmployeeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // $result = app('App\Http\Controllers\AllInOneController')->userdetails();
-        //$result = AllInOneController::userdetails();
-        //print_r($result);
-        // return response([
-        //     'result'=>$result,
-        //     'status'=>'success'
-        // ], 200);
+            $employee = Employee::query();
+            $employeeData = ApiHelperSearchData::search($employee, $request, 'employees', true);
+            return response()->json([
+                'employee' => $employeeData['results'],
+                'employee_count' => $employeeData['total_count'],
+            ]);
     
     }
 
@@ -45,7 +45,6 @@ class EmployeeController extends Controller
      */
     public function storeEmployee(Request $request)
     {
-         // Validate the input data
          $request->validate([
             'full_name' => 'required|string|max:255',
             'phone' => [
@@ -61,16 +60,14 @@ class EmployeeController extends Controller
             'job' => 'required'
         ]);
 
-        // Prepare data for saving
         $data = $request->only(['full_name', 'phone', 'email','job', 'note','client_id','is_active','user_id']);
         $model = Employee::class;
         CommonHelper::saveDatam($model, $data);
 
-        return response([
-                'data' =>$data,
-                //'values'=>$values,
-                'status'=>'success'
-             ], 200);
+        return response(['data' =>$data,'status'=>'success'], 200);
+                
+                
+             
             
     }
 

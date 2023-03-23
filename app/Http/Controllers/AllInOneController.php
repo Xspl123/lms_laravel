@@ -20,7 +20,6 @@ class AllInOneController extends Controller
         $data = DB::table($table)->select($column)
         ->orderBy('id','ASC')
         ->paginate(3, ['*'], 'pageName');
-        $datacount = $data->count();
         return $data;
     }
 

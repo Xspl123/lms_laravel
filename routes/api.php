@@ -24,7 +24,6 @@ use App\Http\Controllers\EmployeeController;
     Route::get('/getcity/{id}', [Contact::class, 'getcity']);
     Route::get('/userList', [UserController::class, 'userList']);
     
-    
 
 
     Route::get('/roles', [RoleController::class,'index']);
@@ -94,7 +93,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/showRole',[RoleController::class,'showRole']);
 
     //Employee Route
-
     Route::post('/storeEmployee', [EmployeeController::class, 'storeEmployee']);
+    Route::get('/empsearchdata', [EmployeeController::class, 'index']);
 
 });
