@@ -23,7 +23,8 @@ use App\Http\Controllers\EmployeeController;
     Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset']);
     Route::get('/getcity/{id}', [Contact::class, 'getcity']);
     Route::get('/userList', [UserController::class, 'userList']);
-    Route::get('/index', [EmployeeController::class, 'index']);
+    
+    
 
 
     Route::get('/roles', [RoleController::class,'index']);
@@ -91,5 +92,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     Route::post('/createRole',[RoleController::class,'createRole']);
     Route::get('/showRole',[RoleController::class,'showRole']);
+
+    //Employee Route
+
+    Route::post('/storeEmployee', [EmployeeController::class, 'storeEmployee']);
 
 });

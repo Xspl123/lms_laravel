@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AllInOneController;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use App\Helpers\CommonHelper;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;  
 
 class EmployeeController extends Controller
 {
@@ -40,9 +43,35 @@ class EmployeeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeEmployee(Request $request)
     {
-        //
+         // Validate the input data
+         $request->validate([
+            'full_name' => 'required|string|max:255',
+            'phone' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if (!preg_match('/^\d{10}$/', $value)) {
+                        $fail('The phone must be exactly 10 digits.');
+                    }
+                },
+            ],
+            'email' => 'required|email|unique:employees',
+            'job' => 'required'
+        ]);
+
+        // Prepare data for saving
+        $data = $request->only(['full_name', 'phone', 'email','job', 'note','client_id','is_active','user_id']);
+        $model = Employee::class;
+        CommonHelper::saveDatam($model, $data);
+
+        return response([
+                'data' =>$data,
+                //'values'=>$values,
+                'status'=>'success'
+             ], 200);
+            
     }
 
     /**

@@ -105,15 +105,15 @@ class ProductController extends Controller
      */
     public function showProductList(Product $product)
     {
-        $userId = Auth::user()->id;
-        $product = Product::join('users', 'products.user_id', '=', 'users.id')
-                   ->select('products.*')
-                   ->where('users.id', $userId)
-                   ->orderBy('id', 'desc')
-                   ->get();
-                   
+        // $userId = Auth::user()->id;
+        // $product = Product::join('users', 'products.user_id', '=', 'users.id')
+        //            ->select('products.*')
+        //            ->where('users.id', $userId)
+        //            ->orderBy('id', 'desc')
+        //            ->get();
+        $data_list = AllInOneController::tabledetails_col("products","*");       
         return response([
-            'product'=>$product,
+            'data_list'=>$data_list,
             'status'=>'success'
         ], 200);
     }

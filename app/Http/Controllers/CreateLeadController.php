@@ -28,9 +28,7 @@ class CreateLeadController extends Controller
     public function userLead(){
         $data_list = AllInOneController::tabledetails_col("create_leads","*");
         $column = AllInOneController::tabledetails_col("all_fields_columns","fieldsName,Column_Name,Column_order");
-        $count = DB::table('create_leads')->count();
         return response([
-            'count' => $count,
             'data_list'=>$data_list,
             'column' => $column,
             'status'=>'success'
@@ -45,7 +43,15 @@ class CreateLeadController extends Controller
             'lead_Name' => 'required',
             'email' => 'required|email',
             'fullName' => 'required',
-            'phone'=>'required',
+            'phone'=>[
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if (!preg_match('/^\d{10}$/', $value)) {
+                        $fail('The phone must be exactly 10 digits.');
+                    }
+                },
+            ],
             'lead_status' => 'required',
         ]);
            

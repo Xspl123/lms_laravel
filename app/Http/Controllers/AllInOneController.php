@@ -16,12 +16,11 @@ class AllInOneController extends Controller
 
     public function tabledetails_col($table,$col,$order=''){
 
-            $column=explode(',',$col);
-           
-       
+        $column=explode(',',$col);
         $data = DB::table($table)->select($column)
         ->orderBy('id','ASC')
         ->paginate(3, ['*'], 'pageName');
+        $datacount = $data->count();
         return $data;
     }
 
