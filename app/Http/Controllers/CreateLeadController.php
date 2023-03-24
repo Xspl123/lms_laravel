@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;    
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\ApiHelperSearchData;
 
 class CreateLeadController extends Controller
 { 
@@ -136,6 +137,16 @@ class CreateLeadController extends Controller
 
         return response()->json(['message' => 'All tasks deleted successfull'], 200);
 
+    }
+
+    public function searchlead(Request $request)
+    {
+        $searchlead = CreateLead::query();
+        $searchleadData = ApiHelperSearchData::search($searchlead, $request, 'create_leads', true);
+        return response()->json([
+            'employee' => $searchleadData['results'],
+            'employee_count' => $searchleadData['total_count'],
+        ]);
     }
 
     

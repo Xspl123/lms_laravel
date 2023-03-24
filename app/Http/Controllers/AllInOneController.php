@@ -19,7 +19,7 @@ class AllInOneController extends Controller
         $column=explode(',',$col);
         $data = DB::table($table)->select($column)
         ->orderBy('id','ASC')
-        ->paginate(3, ['*'], 'pageName');
+        ->paginate();
         return $data;
     }
 

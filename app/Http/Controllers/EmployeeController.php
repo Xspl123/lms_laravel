@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AllInOneController;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use App\Helpers\DataFetcher;
 use App\Helpers\CommonHelper;
 use App\Helpers\ApiHelperSearchData;
 use Illuminate\Support\Facades\Validator;
@@ -114,5 +115,11 @@ class EmployeeController extends Controller
     public function destroy(Employee $employee)
     {
         //
+    }
+
+    public function getemp(Request $request)
+    {
+        $getemp = DataFetcher::getEmp(['*'], $request->input('perPage', 10));
+        return response(['getemp' =>$getemp,'status'=>'success'], 200);
     }
 }

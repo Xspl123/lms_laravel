@@ -43,6 +43,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::delete('/destroyLead/{id}', [CreateLeadController::class, 'destroyLead']);
     Route::put('/updateLead/{id}', [CreateLeadController::class, 'updateLead']);
     Route::delete('/deleteAllLeads', [CreateLeadController::class, 'deleteAllLeads']);
+    Route::get('/searchlead', [CreateLeadController::class, 'searchlead']);
     
     //change password route
     Route::post('/changepassword', [UserController::class, 'change_password']);
@@ -95,5 +96,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //Employee Route
     Route::post('/storeEmployee', [EmployeeController::class, 'storeEmployee']);
     Route::get('/empsearchdata', [EmployeeController::class, 'index']);
+    Route::get('/getemployee', [EmployeeController::class, 'getemp']);
 
 });

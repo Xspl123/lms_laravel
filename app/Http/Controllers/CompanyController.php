@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Role;
-        
+use App\Helpers\DataFetcher;        
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
@@ -108,14 +108,14 @@ class CompanyController extends Controller
      * @param  \App\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function showCompany(Company $company)
+    public function showCompany(Request $request)
     {
         
-        $data_list = AllInOneController::tabledetails_col("companies","*");
-
+        // $data_list = AllInOneController::tabledetails_col("companies","*");
+        // return response()->json(['data_list' => $data_list], 201);
         
-        return response()->json(['data_list' => $data_list], 201);
-        
+        $getCompanies = DataFetcher::getCompanies(['*'], $request->input('perPage', 10));
+        return response(['getCompanies' =>$getCompanies,'status'=>'success'], 200);
     }
 
     /**
