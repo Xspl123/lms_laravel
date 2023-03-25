@@ -6,7 +6,6 @@ use App\Models\Client;
 use App\Helpers\TableHelper;
 use App\Services\ClientService;
 use Illuminate\Support\Facades\DB;
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
@@ -45,7 +44,7 @@ class ClientController extends Controller
             'clcountry' => 'required'
         ]);
           
-        // Insert the data using the MyService class
+        // Insert the data using the clientService class
         $client = $this->clientService->insertData($validatedData);
         return response()->json(['message' => 'Client Added successfully','client' => $client], 201);
     }
