@@ -3,23 +3,25 @@
 namespace App\Http\Controllers;
 use App\Models\CreateLead;
 use App\Models\AllFieldsColumn;
+use App\Models\History;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;    
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ApiHelperSearchData;
+use Illuminate\Support\Facades\Log;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class CreateLeadController extends Controller
 { 
     public function showSingleLead($uuid)
     {   
-       // $cname = AllInOneController::tabledetails_col('companies','*','uuid',$uuid );
-        
-       $data_list = AllInOneController::singlelead('create_leads','*','uuid',$uuid);
+       
+       $data_list = AllInOneController::singledata('create_leads','*','uuid',$uuid);
+
         return response([
-            
             'data_list'=>$data_list,
-            
             'status'=>'success'
         ], 200);
 
@@ -27,11 +29,12 @@ class CreateLeadController extends Controller
 
     //show  leads
     public function userLead(){
-        $data_list = AllInOneController::tabledetails_col("create_leads","*");
         $column = AllInOneController::tabledetails_col("all_fields_columns","fieldsName,Column_Name,Column_order");
+        $data_list = AllInOneController::getTableData("create_leads");
+         
         return response([
-            'data_list'=>$data_list,
-            'column' => $column,
+            'column'=>$column,
+            'data_list' => $data_list,
             'status'=>'success'
         ], 200);
     }
@@ -74,7 +77,7 @@ class CreateLeadController extends Controller
             $leads->lead_Source = $request->lead_Source;
             $leads->lead_Owner = $lead_Owner;
             $leads->created_by = $username;
-            $leads->title = $request->title;
+           // $leads->title = $request->title;
             $leads->fax = $request->fax;
             $leads->phone = $request->phone;
             $leads->mobile = $request->mobile;
@@ -95,11 +98,21 @@ class CreateLeadController extends Controller
             $leads->user_id = $userId;
             $leads->save();
 
-        return response([
-            'message' => 'Lead created Successfully',
-            'status'=>'success',
-            'leads' => $uuid
-        ], 200);
+            Log::channel('create_leads')->info('A new lead has been created. lead data: '.$leads);
+
+            $history = new History;
+            $history->uuid = $uuid;
+            $history->process_name  = 'leads';
+            $history->created_by = $username;
+            $history->feedback = 'Lead Created';
+            $history->status = 'Add';
+            $history->save();
+
+            return response([
+                'message' => 'Lead created Successfully',
+                'status'=>'success',
+                'leads' => $uuid
+            ], 200);
     }
 
 
@@ -116,10 +129,10 @@ class CreateLeadController extends Controller
         return response()->json(['message' => 'Lead deleted'], 200);
     }
 
-    public function updateLead(Request $request, $id)
+    public function updateLead(Request $request, $uuid)
     {
-        $updateLead = CreateLead::find($id);
-
+        $updateLead = CreateLead::where('uuid', $uuid)->first();
+       
         if (!$updateLead) {
             return response()->json(['message' => 'Lead not found'], 404);
         }
@@ -141,14 +154,17 @@ class CreateLeadController extends Controller
 
     public function searchlead(Request $request)
     {
-        $searchlead = CreateLead::query();
-        $searchleadData = ApiHelperSearchData::search($searchlead, $request, 'create_leads', true);
-        return response()->json([
-            'employee' => $searchleadData['results'],
-            'employee_count' => $searchleadData['total_count'],
-        ]);
-    }
+        $searchTerm = $request->input('search_term');
+        $searchlead = ApiHelperSearchData::search('create_leads', 'id', $searchTerm);
 
+        // Do something with the search results, such as returning them as a response
+        return response()->json(['message' => 'Searching Lead', 'searchlead' => $searchlead], 200);    }
+
+    public function paginateData()
+    {
+        $paginateData = AllInOneController::getTableData('create_leads');
+        return response()->json(['message' => 'Lead List', 'paginateData' => $paginateData], 200);
+    }
     
 
 }

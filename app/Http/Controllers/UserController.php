@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Http\Controllers\AllInOneController;
-
+use App\Helpers\TableHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -111,9 +111,9 @@ class UserController extends Controller
     public function userList()
     {
         
-        $userlist = AllInOneController::singlelead("users","*");
+        $users = TableHelper::getTableData('users', ['id','uname','email','urole']);
         return response([
-            'userlist'=>$userlist,
+            'userlist'=>$users,
             'status'=>'success'
         ], 200);
     }

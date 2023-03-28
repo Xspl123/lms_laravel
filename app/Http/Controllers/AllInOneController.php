@@ -19,11 +19,11 @@ class AllInOneController extends Controller
         $column=explode(',',$col);
         $data = DB::table($table)->select($column)
         ->orderBy('id','ASC')
-        ->paginate();
+        ->get();
         return $data;
     }
 
-    public function singlelead($table,$column,$scloumn,$dcloumn)
+    public function singledata($table,$column,$scloumn,$dcloumn)
     {
         $leads = DB::table($table)->select($column)->where($scloumn,$dcloumn)->get();
         if (!$leads) {
@@ -42,7 +42,7 @@ class AllInOneController extends Controller
 
     public function getTableData($tableName, $columns = ['*'])
     {
-        $data = DB::table($tableName)->select($columns)->get();
+        $data = DB::table($tableName)->select($columns)->paginate();
 
         return $data;
     }

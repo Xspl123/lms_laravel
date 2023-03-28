@@ -14,6 +14,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AllFieldsColumnController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\HistoryController;
 
 
 // Public Routes
@@ -41,9 +42,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/showSingleLead/{uuid}', [CreateLeadController::class, 'showSingleLead']);
     Route::post('/CreateLead', [CreateLeadController::class, 'CreateUserLead']);
     Route::delete('/destroyLead/{id}', [CreateLeadController::class, 'destroyLead']);
-    Route::put('/updateLead/{id}', [CreateLeadController::class, 'updateLead']);
+    Route::put('/updateLead/{uuid}', [CreateLeadController::class, 'updateLead']);
     Route::delete('/deleteAllLeads', [CreateLeadController::class, 'deleteAllLeads']);
     Route::get('/searchlead', [CreateLeadController::class, 'searchlead']);
+    Route::get('/paginateData', [CreateLeadController::class, 'paginateData']);
     
     //change password route
     Route::post('/changepassword', [UserController::class, 'change_password']);
@@ -97,5 +99,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/storeEmployee', [EmployeeController::class, 'storeEmployee']);
     Route::get('/empsearchdata', [EmployeeController::class, 'index']);
     Route::get('/getemployee', [EmployeeController::class, 'getemp']);
+
+    //History Route 
+    Route::get('/getHistory/{uuid}', [HistoryController::class, 'getHistory']);
+
 
 });

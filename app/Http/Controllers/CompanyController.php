@@ -98,9 +98,44 @@ class CompanyController extends Controller
             $role->company_id = $cid;
             $role->role_name = "CEO";
             $role->save();
-            return response()->json(['message' => 'Company Added successfully','company' => $company], 201);
+            $this->createRoleTree($role, [
+                [
+                    'role_name' => 'Manager',
+                    'child_roles' => [
+                        ['name' => 'Team Lead'],
+                        ['name' => 'Supervisor'],
+                    ],
+                ],
+                [
+                    'name' => 'Employee',
+                    'child_roles' => [
+                        ['name' => 'Staff'],
+                        ['name' => 'Trainee'],
+                    ],
+                ],
+            ]);
+    
+            return response()->json([
+                'company' => $company,
+            ], 201);
+        }
+    
+        private function createRoleTree(Role $parentRole, array $childRoles)
+        {
+            foreach ($childRoles as $childRoleData) {
+                $childRole = Role::create([
+                    'role_name' => $childRoleData['role_name'],
+                    'p_id' => $parentRole->id,
+                ]);
+    
+                $parentRole->childRoles()->save($childRole);
+    
+                if (isset($childRoleData['child_roles'])) {
+                    $this->createRoleTree($childRole, $childRoleData['child_roles']);
+                }
+            }
+        }
 
-    }
 
     /**
      * Display the specified resource.chlao isko route banale

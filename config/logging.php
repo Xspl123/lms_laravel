@@ -53,6 +53,22 @@ return [
             'channels' => ['single'],
             'ignore_exceptions' => false,
         ],
+        
+        'monolog' => [
+            'driver' => 'monolog',
+            'handler' => Monolog\Handler\StreamHandler::class,
+            'with' => [
+                'stream' => storage_path('logs/monolog.log'),
+            ],
+        ],
+        
+
+        'create_leads' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/create_leads.log'),
+            'level' => 'info',
+        ],
+        
 
         'single' => [
             'driver' => 'single',
