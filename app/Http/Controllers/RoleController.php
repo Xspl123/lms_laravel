@@ -13,26 +13,14 @@ class RoleController extends Controller
     
     public function index()
     {
-        //
+       
     }
 
    
     public function createRole(Request $request )
     {
-        
-       
-            // $role_company = DB::table('roles')
-            // ->select('*')
-            // ->join('companies','roles.id','=','companies.id')
-            // ->where('companies.id','=', $roles_id)
-            // ->get();
-
-            // return $role_company;exit; 
-
         $rules = [
             'role_name' => 'required|unique:roles,role_name',
-            
-           
         ];
           
         $validator = Validator::make($request->all(), $rules);
@@ -67,10 +55,10 @@ class RoleController extends Controller
        $role_company = DB::table('roles')
         ->join('companies', 'roles.company_id', '=', 'companies.id')
          ->select('roles.*', 'companies.cname')
+         ->where('company_id','12')
         ->get();
-        //print_r($role_company);
         return response()->json(['role_company' => $role_company], 201);
-
+   
     }
 
    
@@ -90,4 +78,32 @@ class RoleController extends Controller
     {
         //
     }
+
+
+    public function getRolesHierarchy() {
+        $roles = DB::table('roles')
+                    ->select('id', 'role_name', 'p_id','company_id')
+                    ->where('company_id', 12)
+                    ->get(); // Get all roles with p_id 0 (i.e. CEO)
+    
+        $rolesWithChildRoles = $this->getChildRoles($roles);
+    
+        return $rolesWithChildRoles;
+    }
+    
+    private function getChildRoles($roles) {
+        foreach($roles as $role) {
+            $childRoles = DB::table('roles')
+                            ->where('p_id', $role->id)
+                            ->get(); // Get all child roles for current role
+    
+            if($childRoles->count() > 0) {
+                $role->childRoles = $childRoles;
+                $this->getChildRoles($childRoles);
+            }
+        }
+    
+        return response()->json(['roles' => $roles]); 
+    
+        }
 }

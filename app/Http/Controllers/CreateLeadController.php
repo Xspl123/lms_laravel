@@ -31,7 +31,7 @@ class CreateLeadController extends Controller
     public function userLead(){
         $column = AllInOneController::tabledetails_col("all_fields_columns","fieldsName,Column_Name,Column_order");
         $data_list = AllInOneController::getTableData("create_leads");
-         
+        
         return response([
             'column'=>$column,
             'data_list' => $data_list,
@@ -60,14 +60,6 @@ class CreateLeadController extends Controller
         ]);
            
             $username = Auth::user()->uname;
-            // $get_user_details =  DB::table('create_leads')
-            // ->join('users', 'create_leads.id', '=', 'users.id')
-            // ->select('users.uname')
-            // ->where('users.id', $userId)
-            // ->get();
-
-           // print_r($username);exit;
-
             $leads = new CreateLead;
             $leads->uuid = $uuid;
             $leads->lead_Name = $request->lead_Name;

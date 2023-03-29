@@ -16,9 +16,9 @@ class Role extends Model
         return $this->belongsTo(Role::class, 'p_id');
     }
 
-    public function childRoles()
-    {
-        return $this->hasMany(Role::class, 'p_id');
+
+    public function childRoles() {
+        return $this->hasMany(Role::class, 'p_id', 'id');
     }
  
 }

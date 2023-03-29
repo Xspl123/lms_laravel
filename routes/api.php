@@ -94,6 +94,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     Route::post('/createRole',[RoleController::class,'createRole']);
     Route::get('/showRole',[RoleController::class,'showRole']);
+    Route::get('/getRolesHierarchy',[RoleController::class,'getRolesHierarchy']);
 
     //Employee Route
     Route::post('/storeEmployee', [EmployeeController::class, 'storeEmployee']);
