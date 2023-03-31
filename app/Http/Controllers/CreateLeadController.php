@@ -120,6 +120,7 @@ class CreateLeadController extends Controller
                 $history->feedback = $feadback;
                 $history->status = 'Updated';
                 $history->save();
+                Log::channel('update_leads')->info('lead has been updated. lead data: '.$feadback);
                 return response()->json(['message' => 'Lead has been updated'], 200);
             }
              

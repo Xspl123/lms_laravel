@@ -35,6 +35,7 @@
             $company->cis_active = $data['cis_active'] ?? null;
             $company->user_id = $userId;
             $company->save();
+            Log::channel('create_leads')->info('A new company has been created. company data: '.$company);
             $cid=$company->id;
 
             //Insert data in role table

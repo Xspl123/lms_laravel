@@ -68,7 +68,19 @@ return [
             'path' => storage_path('logs/create_leads.log'),
             'level' => 'info',
         ],
-        
+
+        'update_leads' => [
+            'driver' =>'single',
+            'path' => storage_path('logs/update_leads.log'),
+            'level' => 'info',
+            'bubble' => true,
+        ],
+
+        ' companies' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/ companies.log'),
+            'level' => 'info',
+        ],
 
         'single' => [
             'driver' => 'single',
