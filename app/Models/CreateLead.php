@@ -12,6 +12,15 @@ class CreateLead extends Model
         return $this->belongsTo(Company::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
     protected $fillable = [
         'lead_Name', 'email', 'fullName','lead_Owner','phone','mobile','lead_status','user_id'
         ];

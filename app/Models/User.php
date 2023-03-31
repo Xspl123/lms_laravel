@@ -22,7 +22,7 @@ class User extends Authenticatable
 
      public function roles()
     {
-    return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class);
     }
 
     protected $fillable = [
@@ -54,4 +54,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function create_leads()
+    {
+        return $this->hasMany(CreateLead::class);
+    }
 }

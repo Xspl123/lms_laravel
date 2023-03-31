@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 use App\Models\CreateLead;
 use App\Models\AllFieldsColumn;
 use App\Models\History;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Services\CreateLeadService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;    
 use Illuminate\Support\Facades\Validator;
@@ -15,6 +17,12 @@ use Monolog\Handler\StreamHandler;
 
 class CreateLeadController extends Controller
 { 
+    public function __construct(CreateLeadService $createLeadService)
+    {
+        $this->createLeadService = $createLeadService;
+    }
+
+
     public function showSingleLead($uuid)
     {   
        
@@ -39,13 +47,11 @@ class CreateLeadController extends Controller
         ], 200);
     }
     //create  leads
-    public function CreateUserLead(Request $request){
-        $lead_Owner = Auth::user()->uname;
-        $userId = Auth::id();
-        $uuid = mt_rand(10000000, 99999999);
-        $request->validate([
+    public function CreateUserLead(Request $request ,CreateLeadService $createLeadService){
+        
+        $validatedData = $request->validate([
             'lead_Name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:create_leads,email',
             'fullName' => 'required',
             'phone'=>[
                 'required',
@@ -59,52 +65,8 @@ class CreateLeadController extends Controller
             'lead_status' => 'required',
         ]);
            
-            $username = Auth::user()->uname;
-            $leads = new CreateLead;
-            $leads->uuid = $uuid;
-            $leads->lead_Name = $request->lead_Name;
-            $leads->company = $request->company;;
-            $leads->email = $request->email;
-            $leads->fullName = $request->fullName;
-            $leads->lead_Source = $request->lead_Source;
-            $leads->lead_Owner = $lead_Owner;
-            $leads->created_by = $username;
-           // $leads->title = $request->title;
-            $leads->fax = $request->fax;
-            $leads->phone = $request->phone;
-            $leads->mobile = $request->mobile;
-            $leads->website = $request->website;
-            $leads->lead_status = $request->lead_status;
-            $leads->industry = $request->industry;
-            $leads->rating = $request->rating;
-            $leads->noOfEmployees = $request->noOfEmployees;
-            $leads->annualRevenue = $request->annualRevenue;
-            $leads->skypeID = $request->skypeID;
-            $leads->secondaryEmail = $request->secondaryEmail;
-            $leads->twitter = $request->twitter;
-            $leads->street = $request->street;
-            $leads->pinCode = $request->pinCode;
-            $leads->state = $request->state;
-            $leads->country = $request->country;
-            $leads->discription = $request->discription;
-            $leads->user_id = $userId;
-            $leads->save();
-
-            Log::channel('create_leads')->info('A new lead has been created. lead data: '.$leads);
-
-            $history = new History;
-            $history->uuid = $uuid;
-            $history->process_name  = 'leads';
-            $history->created_by = $username;
-            $history->feedback = 'Lead Created';
-            $history->status = 'Add';
-            $history->save();
-
-            return response([
-                'message' => 'Lead created Successfully',
-                'status'=>'success',
-                'leads' => $uuid
-            ], 200);
+        $leads = $this->createLeadService->insertData($validatedData);
+        return response(['message' => 'Lead created Successfully','status'=>'success','leads' => $leads], 200);
     }
 
 
@@ -123,15 +85,47 @@ class CreateLeadController extends Controller
 
     public function updateLead(Request $request, $uuid)
     {
+
+        
+        $username = Auth::user()->uname;
         $updateLead = CreateLead::where('uuid', $uuid)->first();
        
         if (!$updateLead) {
             return response()->json(['message' => 'Lead not found'], 404);
         }
 
+        $originalData = clone $updateLead;
+     
         $updateLead->update($request->all());
 
-        return response()->json(['message' => 'Lead updated', 'updateLead' => $updateLead], 200);
+        $changes = $updateLead->getChanges();
+         
+         $coloumname='';
+         $after_data='';
+         $beforedate='';
+         $coloumnamekey= array_key_first($changes);
+         
+        foreach($changes as $key=>$value) {
+            if($key == $coloumnamekey) {
+                $coloumname=$value;
+                $coloumname=$key;
+                $after_data=$originalData[$key];
+                $after_data ? $after_data : $after_data='Null Values'; 
+                $beforedate= $value;
+                $feadback= $coloumname.' was updated from '.$after_data.'  to '.$beforedate;
+                $history = new History;
+                $history->uuid = $uuid;
+                $history->process_name  = 'leads';
+                $history->created_by = $username;
+                $history->feedback = $feadback;
+                $history->status = 'Updated';
+                $history->save();
+                return response()->json(['message' => 'Lead has been updated'], 200);
+            }
+             
+        }
+       
+         return response()->json(['message' => ' Lead has been not updated'], 200);
     
     
     }
@@ -154,8 +148,32 @@ class CreateLeadController extends Controller
 
     public function paginateData()
     {
-        $paginateData = AllInOneController::getTableData('create_leads');
-        return response()->json(['message' => 'Lead List', 'paginateData' => $paginateData], 200);
+            $leads="";
+            $userId = Auth::id();
+
+        // Retrieve the user and their role
+
+            $user = User::find($userId);
+            $role = $user->urole;
+           
+            if ($role == 'Php Devloper') {
+                // Retrieve all leads
+                $leads = CreateLead::all();
+            } elseif ($role == 'Manager') {
+                // Retrieve leads for the manager's company
+                $leads = CreateLead::whereHas('user', function ($query) use ($user) {
+                    $query->where('company_id', $user->company_id);
+                })->get();
+            } else {
+                echo 'not found';
+                // Retrieve leads for the user
+                //$leads = $user->leads;
+            }
+
+            
+
+         return response()->json(['message' => 'user List', 'leads' => $leads], 200);
+    
     }
     
 

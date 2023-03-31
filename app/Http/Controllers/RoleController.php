@@ -81,13 +81,13 @@ class RoleController extends Controller
 
 
     public function getRolesHierarchy() {
+        $companyId = DB::table('companies')->where('cname', 'Xenottabyte')->value('id');
         $roles = DB::table('roles')
                     ->select('id', 'role_name', 'p_id','company_id')
-                    ->where('company_id', 12)
+                    ->where('company_id', $companyId)
                     ->get(); // Get all roles with p_id 0 (i.e. CEO)
     
         $rolesWithChildRoles = $this->getChildRoles($roles);
-    
         return $rolesWithChildRoles;
     }
     

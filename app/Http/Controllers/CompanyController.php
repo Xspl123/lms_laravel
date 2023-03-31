@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\Role;
 use App\Helpers\DataFetcher;        
 use Illuminate\Http\Request;
+use App\Services\CompanyService;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -15,128 +16,54 @@ use Illuminate\Support\Facades\Validator;
 
 class CompanyController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+
+    public function __construct(CompanyService $companyService)
+    {
+        $this->companyService = $companyService;
+    }
+
+
+
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function addCompany(Request $request)
+    public function addCompany(Request $request,CompanyService $companyService)
     {
-        $cid = '';
-        $username = Auth::User()->uname;   
-        $userId = Auth::User()->id; 
-        $uuid = mt_rand(10000000, 99999999);
-        // $hexString = dechex($randomNumber);
-        // $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $hexString)->toString();
-         //print_r($uuid);exit;
-        $rules = [
-            'cname' => 'required|unique:companies,cname',
-            'cemail' => 'required|email|unique:companies,cemail',
-            //'ctax_number' => 'required',
-            'cphone' => 'required|integer',
-            'ccity' => 'required|string',
-            //'cbilling_address' => 'required',
-            'ccountry' => 'required',
-            //'cpostal_code' => 'required',
-            //'cemployees_size' => 'nullable|integer',
-            //'cfax' => 'nullable|string',
-            //'cdescription' => 'nullable|string',
-            'domain_name' => 'required|unique:companies,domain_name',
-            'cis_active' => 'required',
-        ];
-          
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-            $company = new Company;
-            $company->uuid = $uuid;
-            $company->cname = $request->cname;
-            $company->cemail = $request->cemail;
-            $company->ctax_number = $request->ctax_number;
-            $company->cphone = $request->cphone;
-            $company->ccity = $request->ccity;
-            $company->cbilling_address = $request->cbilling_address;
-            $company->ccountry = $request->ccountry;
-            $company->cpostal_code = $request->cpostal_code;
-            $company->cemployees_size = $request->cemployees_size;
-            $company->cfax = $request->cfax;
-            $company->cdescription = $request->cdescription;
-            $company->domain_name = $request->domain_name;
-            //$comany->comanyOwner = $username;
-            $company->cis_active = $request->cis_active;
-            //$company->client_id = $request->client_id;
-            $company->user_id = $userId;
-
-            $company->save();
-            $cid=$company->id;
-            //Insert data in role table
-            $role = new Role;
-            $role->p_id = "0";
-            $role->company_id = $cid;
-            $role->role_name = "CEO";
-            $role->save();
-            $this->createRoleTree($role, [
-                [
-                    'role_name' => 'Manager',
-                    'child_roles' => [
-                        ['name' => 'Team Lead'],
-                        ['name' => 'Supervisor'],
-                    ],
+            $validatedData = $request->validate([
+                'cname' => 'required|unique:companies,cname',
+                'cemail' => 'required|email|unique:companies,cemail',
+                'cphone'=>[
+                    'required',
+                    'string',
+                    function ($attribute, $value, $fail) {
+                        if (!preg_match('/^\d{10}$/', $value)) {
+                            $fail('The phone must be exactly 10 digits.');
+                        }
+                    },
                 ],
-                [
-                    'name' => 'Employee',
-                    'child_roles' => [
-                        ['name' => 'Staff'],
-                        ['name' => 'Trainee'],
-                    ],
-                ],
+                'ccity' => 'required|string',
+                'ccountry' => 'required',
+                'domain_name' => 'required|unique:companies,domain_name',
+                'cis_active' => 'required'
             ]);
+               
+            $company = $this->companyService->insertData($validatedData);
+            return response(['message' => 'Company created Successfully','status'=>'success','company' => $company], 200);
+    }
     
-            return response()->json([
-                'company' => $company,
-            ], 201);
-        }
-    
-        private function createRoleTree(Role $parentRole, array $childRoles)
-        {
-            foreach ($childRoles as $childRoleData) {
-                $childRole = Role::create([
-                    'role_name' => $childRoleData['role_name'],
-                    'p_id' => $parentRole->id,
-                ]);
-    
-                $parentRole->childRoles()->save($childRole);
-    
-                if (isset($childRoleData['child_roles'])) {
-                    $this->createRoleTree($childRole, $childRoleData['child_roles']);
-                }
-            }
-        }
+        
 
-
+        
+    
     /**
      * Display the specified resource.chlao isko route banale
      *
@@ -179,7 +106,8 @@ class CompanyController extends Controller
         }
 
         $company->update($request->all());
-        return response()->json(['message' => 'Company updated successfully','company' => $company]);
+        
+        return response()->json(['message' => 'Company updated successfully']);
     }
 
     /**

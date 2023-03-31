@@ -22,5 +22,10 @@ class Company extends Model
             return $this->hasMany(Role::class);
         }    
 
+        public function users()
+        {
+            return $this->hasMany(User::class);
+        }
+
     use HasFactory;
 }

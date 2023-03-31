@@ -17,12 +17,17 @@ class UserController extends Controller
     public function register(Request $request){
         //$uuid = Str::uuid();
         //print_r($uuid); exit;
+        $companyId = DB::table('companies')->where('cname', 'Xenottabyte')->value('id');
+        $pId = DB::table('roles')->where('p_id', 16)->value('id');
+        print_r($pId); exit;
+        $roleName = DB::table('roles')->where('id', 14)->value('role_name');
+         //print_r($roleName); exit;
         $request->validate([
             'uname' => 'required|string',
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required|min:6|confirmed',
             'uphone' => 'required|string',
-            'urole' => 'required|string',
+            // 'urole' => 'required|string',
             'domain_name' =>'required|unique:users,domain_name',
             'uexperience' => 'required|string',
             'tc'=>'required',
@@ -39,10 +44,11 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'uphone' => $request->uphone,
-            'urole' => $request->urole,
+            'urole' => $roleName,
             'domain_name' => $request->domain_name,
             'uexperience' => $request->uexperience,
-            //'uuid' => $uuid,
+            'company_id' => $companyId,
+            'role_id' => $roleId,
             'tc'=>json_decode($request->tc),
         ]);
         $token = $user->createToken($request->email)->plainTextToken;
@@ -112,6 +118,7 @@ class UserController extends Controller
     {
         
         $users = TableHelper::getTableData('users', ['id','uname','email','urole']);
+        
         return response([
             'userlist'=>$users,
             'status'=>'success'
