@@ -11,6 +11,7 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "maatwebsite/excel": "^3.1",
         "mledoze/countries": "^4.1",
         "monolog/monolog": "^2.9",
         "owen-it/laravel-auditing": "^13.5",

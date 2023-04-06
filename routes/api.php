@@ -15,29 +15,33 @@ use App\Http\Controllers\AllFieldsColumnController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\ExcelController;
 
 
 // Public Routes
-    Route::post('/register', [UserController::class, 'register']);
+    
     Route::post('/login', [UserController::class, 'login']);
     Route::post('/send-reset-password-email', [PasswordResetController::class, 'send_reset_password_email']);
     Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset']);
     Route::get('/getcity/{id}', [Contact::class, 'getcity']);
     Route::get('/userList', [UserController::class, 'userList']);
     
-
-
     Route::get('/roles', [RoleController::class,'index']);
     Route::post('/roles', [RoleController::class,'store']);
     Route::put('/roles/{id}', [RoleController::class,'update']);
     Route::delete('/roles/{id}', [RoleController::class,'destroy']);
+    
 // Protected Routes
 
 Route::middleware(['auth:sanctum'])->group(function(){
+    Route::post('/register', [UserController::class, 'register_user']);
     //user logged and logout route
     Route::post('/logout', [UserController::class, 'logout']);
     Route::get('/loggeduser', [UserController::class, 'logged_user']);
+
     //lead route
+    Route::post('/import-leads',[ExcelController::class,'fileImport']);
+    Route::get('/export-leads',[ExcelController::class,'fileExport']);
     Route::get('/leadList', [CreateLeadController::class, 'userLead']);
     Route::get('/showSingleLead/{uuid}', [CreateLeadController::class, 'showSingleLead']);
     Route::post('/CreateLead', [CreateLeadController::class, 'CreateUserLead']);

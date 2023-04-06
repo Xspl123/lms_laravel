@@ -69,20 +69,9 @@ class ClientController extends Controller
     }
 
    
-    public function updateClient(Request $request, Client $client ,$id)
+    public function updateClient(Request $request, ClientService $clientService)
     {
-        //echo "hello update";
-
-        $client = Client::find($id);
-        //print_r($client); exit;
-        if (!$client) {
-           return response()->json(['message' => 'Client not found']);
-
-        }
-
-        $client->update($request->all());
-           
-            return response()->json(['message' => 'Client Updated successfully','client' => $client]);
+        
     }
 
     

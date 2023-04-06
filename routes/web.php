@@ -5,7 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Contact;
 use App\Http\Controllers\ClientController;
-use App\Http\Controllers\CountryStateCityController;
+use App\Http\Controllers\ExcelController;
 
 
 
@@ -21,12 +21,23 @@ use App\Http\Controllers\CountryStateCityController;
 |
 */
 
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
+
+Route::get('/file-import',[ExcelController::class,'fileImportExport'])->name('import-view');
+Route::post('/import',[ExcelController::class,'fileImport'])->name('import');
+Route::get('/export-users',[ExcelController::class,'fileExport'])->name('export-users');
+
+
+
 //Route::get('/register', [UserController::class, 'register']);
 
+
+Route::post('excel/upload', [ExcelController::class,'upload']);
+Route::post('excel/download', [ExcelController::class,'download']);
+
 Route::get('/showCompanyList', [CompanyController::class, 'showCompany']);
-Route::get('/', function () {
-    return view('welcome');
-}); 
+
 Route::get('/FunctionName', [Contact::class, 'FunctionName']);
 Route::get('/FunctionName', [Contact::class, 'FunctionName']);
 

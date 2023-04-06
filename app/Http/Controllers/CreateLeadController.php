@@ -85,8 +85,6 @@ class CreateLeadController extends Controller
 
     public function updateLead(Request $request, $uuid)
     {
-
-        
         $username = Auth::user()->uname;
         $updateLead = CreateLead::where('uuid', $uuid)->first();
        
@@ -125,10 +123,7 @@ class CreateLeadController extends Controller
             }
              
         }
-       
          return response()->json(['message' => ' Lead has been not updated'], 200);
-    
-    
     }
 
     public function deleteAllLeads()
@@ -149,33 +144,17 @@ class CreateLeadController extends Controller
 
     public function paginateData()
     {
-            $leads="";
-            $userId = Auth::id();
+        
 
-        // Retrieve the user and their role
-
-            $user = User::find($userId);
-            $role = $user->urole;
-           
-            if ($role == 'Php Devloper') {
-                // Retrieve all leads
-                $leads = CreateLead::all();
-            } elseif ($role == 'Manager') {
-                // Retrieve leads for the manager's company
-                $leads = CreateLead::whereHas('user', function ($query) use ($user) {
-                    $query->where('company_id', $user->company_id);
-                })->get();
-            } else {
-                echo 'not found';
-                // Retrieve leads for the user
-                //$leads = $user->leads;
-            }
+        $leads = CreateLead::all();
 
             
 
          return response()->json(['message' => 'user List', 'leads' => $leads], 200);
     
     }
+
+    
     
 
 }

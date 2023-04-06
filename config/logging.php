@@ -76,6 +76,27 @@ return [
             'bubble' => true,
         ],
 
+        'add_product' => [
+            'driver' =>'single',
+            'path' => storage_path('logs/add_product.log'),
+            'level' => 'info',
+            'bubble' => true,
+        ],
+
+        'update_product' => [
+            'driver' =>'single',
+            'path' => storage_path('logs/update_product.log'),
+            'level' => 'info',
+            'bubble' => true,
+        ],
+
+        'deleted_product' => [
+            'driver' =>'single',
+            'path' => storage_path('logs/deleted_product.log'),
+            'level' => 'info',
+            'bubble' => true,
+        ],
+
         ' companies' => [
             'driver' => 'single',
             'path' => storage_path('logs/ companies.log'),

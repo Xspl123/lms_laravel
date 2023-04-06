@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Deal;
+use App\Services\DealService;
 use App\Models\CreateLead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,11 +12,13 @@ use Illuminate\Support\Facades\Validator;
 
 class DealController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+      
+    public function __construct(DealService $dealService)
+    {
+        $this->dealService = $dealService;
+    }
+
+
     public function index()
     {
         //
@@ -37,14 +40,12 @@ class DealController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeDeal(Request $request)
+    public function storeDeal(Request $request, DealService $dealService)
     {
-       
-        $deal_Owner = Auth::user()->uname;
-        $userId = Auth::id();
-        $rules = [
+        $validatedData = $request->validate([
             'dealName' => 'required',
             'accountName' => 'required',
+            'type' => 'nullable',
             'amount' => 'required',
             'closingDate' => 'required',
             'stage' => 'required',
@@ -52,36 +53,15 @@ class DealController extends Controller
             'expectedRevenue' => 'required',
             'campaignSource' => 'required',
             'description' => 'nullable',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $deals = Deal::updateOrCreate([
-            'dealOwner' => $deal_Owner,
-            'dealName' => $request->dealName,
-            'accountName' => $request->accountName,
-            'type' =>$request->type,
-            'amount' => $request->amount,
-            'leadOwner' => $deal_Owner,
-            'closingDate' => $request->closingDate,
-            'stage' => $request->stage,
-            'probability' => $request->probability,
-            'expectedRevenue' => $request->expectedRevenue,
-            'campaignSource'=> $request->campaignSource,
-            'description'=> $request->description,
-            'user_id' => $userId
-
         ]);
-         
-        return response([
-            'message' => 'Lead created Successfully',
-            'status'=>'success'
-        ], 200);
+        $deals = $this->dealService->addDeal($validatedData);
 
+        return response()->json([
+            'deals' => $deals,
+           'message' => 'Deal has been created',
+        ], 201);
+        
+    
 
     }
 
@@ -126,7 +106,7 @@ class DealController extends Controller
      * @param  \App\Models\Deal  $deal
      * @return \Illuminate\Http\Response
      */
-    public function updateDeal(Request $request, Deal $deal ,$id)
+    public function updateDeal(Request $request, DealService $dealService ,$id)
     {
         $deal = Deal::find($id);
         if (!$deal) {

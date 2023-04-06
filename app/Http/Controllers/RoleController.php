@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;    
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Arr;
 
 class RoleController extends Controller
-{
-    
+{   
+
+
     public function index()
     {
        
@@ -19,8 +22,12 @@ class RoleController extends Controller
    
     public function createRole(Request $request )
     {
+        $userId = Auth::id();
+        $compId = Company::latest()->value('id');
+        //print_r($compId);exit;
         $rules = [
-            'role_name' => 'required|unique:roles,role_name',
+            //'role_name' => 'required|unique:roles,role_name',
+            'company_id' => 'required|unique:roles,company_id',
         ];
           
         $validator = Validator::make($request->all(), $rules);
@@ -33,7 +40,7 @@ class RoleController extends Controller
             $role = new Role;
 
             $role->p_id = $request->p_id;
-            $role->company_id = $request->company_id;
+            $role->company_id = $compId;
             $role->role_name = $request->role_name;
 
             $role->save();
@@ -81,29 +88,35 @@ class RoleController extends Controller
 
 
     public function getRolesHierarchy() {
-        $companyId = DB::table('companies')->where('cname', 'Xenottabyte')->value('id');
+         
+        $campany_id = auth()->user()->company_id;
+        //print_r($campany_id);exit;
         $roles = DB::table('roles')
                     ->select('id', 'role_name', 'p_id','company_id')
-                    ->where('company_id', $companyId)
+                    ->where('id', $campany_id)
                     ->get(); // Get all roles with p_id 0 (i.e. CEO)
-    
-        $rolesWithChildRoles = $this->getChildRoles($roles);
-        return $rolesWithChildRoles;
+
+         $rolesWithChildRoles = $this->getChildRoles($roles);
+         return $rolesWithChildRoles;
     }
     
     private function getChildRoles($roles) {
+        
         foreach($roles as $role) {
+       
             $childRoles = DB::table('roles')
                             ->where('p_id', $role->id)
                             ->get(); // Get all child roles for current role
-    
+               
             if($childRoles->count() > 0) {
                 $role->childRoles = $childRoles;
                 $this->getChildRoles($childRoles);
+            }else{
+               // print_r($rl);
             }
         }
-    
+
         return response()->json(['roles' => $roles]); 
-    
+       
         }
 }

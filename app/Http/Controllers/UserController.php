@@ -4,31 +4,33 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AllInOneController;
 use App\Helpers\TableHelper;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Str;
 use App\Models\User;
+
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ImportUser;
+use App\Exports\ExportUser;
 use App\Models\Role;
+use App\Models\Company;
 use App\Models\CreateLeads;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 
 class UserController extends Controller
 {
-    public function register(Request $request){
-        //$uuid = Str::uuid();
-        //print_r($uuid); exit;
-        $companyId = DB::table('companies')->where('cname', 'Xenottabyte')->value('id');
-        $pId = DB::table('roles')->where('p_id', 16)->value('id');
-        print_r($pId); exit;
-        $roleName = DB::table('roles')->where('id', 14)->value('role_name');
-         //print_r($roleName); exit;
+    public function register_user(Request $request){
+
+         $campany_id = auth()->user()->company_id;
+       
         $request->validate([
             'uname' => 'required|string',
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required|min:6|confirmed',
             'uphone' => 'required|string',
-            // 'urole' => 'required|string',
-            'domain_name' =>'required|unique:users,domain_name',
+            'role_id' => 'required|numeric',
+            'domain_name' =>'required',
             'uexperience' => 'required|string',
             'tc'=>'required',
         ]);
@@ -44,11 +46,11 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'uphone' => $request->uphone,
-            'urole' => $roleName,
+            'urole' => $request->urole,
             'domain_name' => $request->domain_name,
             'uexperience' => $request->uexperience,
-            'company_id' => $companyId,
-            'role_id' => $roleId,
+            'company_id' => $campany_id,
+            'role_id' =>  $request->role_id,
             'tc'=>json_decode($request->tc),
         ]);
         $token = $user->createToken($request->email)->plainTextToken;
@@ -123,5 +125,18 @@ class UserController extends Controller
             'userlist'=>$users,
             'status'=>'success'
         ], 200);
+    }
+
+    public function importView(Request $request){
+        return view('import');
+    }
+
+    public function import(Request $request){
+        Excel::import(new ImportUser, $request->file('file')->store('files'));
+        return redirect()->back();
+    }
+
+    public function exportUsers(Request $request){
+        return Excel::download(new ExportUser, 'users.xlsx');
     }
 }

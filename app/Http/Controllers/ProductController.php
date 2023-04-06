@@ -3,106 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+   
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
+     
+    
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    
+    public function createProduct(Request $request,ProductService $productService)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function createProduct(Request $request)
-    {
-        $productOwner = Auth::user()->uname;
-         //print_r($productOwner); die;
-        $userId = Auth::id();
-       // print_r($userId); die;
-        $rules = [
+        $validatedData = $request->validate([
             'productName' => 'required',
             'productCode' => 'required',
-            'vendorName' => 'required',
-            'productActive' => 'required',
-            'manufacturer' => 'required',
-            'productCategory' => 'required',
-            'salesStartDate' => 'required',
-            'salesEndDate' => 'required',
-            'supportStartDate' => 'required',
-            'unitPrice' => 'required',
-            'commissionRate' => 'required',
-            'usageUnit' => 'required',
-            'qtyOrdered' => 'required',
-            'quantityinStock' => 'required',
-            'reorderLevel' => 'required',
-            'handler' => 'required',
-            'quantityinDemand'=> 'required',
-            'description' => 'required',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $product =  new Product;
-        $product->productOwner = $productOwner;
-        $product->productName = $request->productName;
-        $product->productCode = $request->productCode;
-        $product->vendorName = $request->vendorName;
-        $product->productActive = $request->productActive;
-        $product->manufacturer = $request->manufacturer;
-        $product->productCategory = $request->productCategory;
-        $product->salesStartDate = $request->salesStartDate;
-        $product->salesEndDate = $request->salesEndDate;
-        $product->supportStartDate = $request->supportStartDate;
-        $product->unitPrice = $request->unitPrice;
-        $product->commissionRate = $request->commissionRate;
-        $product->usageUnit = $request->usageUnit;
-        $product->qtyOrdered = $request->qtyOrdered;
-        $product->quantityinStock = $request->quantityinStock;
-        $product->reorderLevel = $request->reorderLevel;
-        $product->handler = $request->handler;
-        $product->quantityinDemand = $request->quantityinDemand;
-        $product->description = $request->description;
-        $product->user_id = $userId;
-        $product->save();
-        //print_r($product);die;
-
-        return response()->json(['message' => 'Product Added successfully'], 201); 
-
+            'vendorName' => 'nullable',
+            'productActive' => 'nullable',
+            'manufacturer' => 'nullable',
+            'productCategory' => 'nullable',
+            'salesStartDate' => 'nullable',
+            'salesEndDate' => 'nullable',
+            'supportStartDate' => 'nullable',
+            'unitPrice' => 'nullable',
+            'commissionRate' => 'nullable',
+            'usageUnit' => 'nullable',
+            'qtyOrdered' => 'nullable',
+            'quantityinStock' => 'nullable',
+            'reorderLevel' => 'nullable',
+            'handler' => 'nullable',
+            'quantityinDemand'=> 'nullable',
+            'description' => 'nullable',
+        ]);
+        
+        $result = $this->productService->addProduct($validatedData);
+    
+        return response()->json(['success' => true, 'message' => 'Product added successfully']);
+        
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
+   
     public function showProductList(Product $product)
     {
         // $userId = Auth::user()->id;
@@ -146,6 +100,9 @@ class ProductController extends Controller
 
         $product->update($request->all());
 
+        Log::channel('update_product')->info(' update_product  has been successfull. updated product data: '.$product);
+
+
         return response()->json(['message' => 'Product updated', 'product' => $product], 200);
     }
 
@@ -164,6 +121,9 @@ class ProductController extends Controller
         }
 
         $product->delete();
+
+        Log::channel('deleted_product')->info(' Product  has been deleted successfull. delete product data: '.$product);
+
 
         return response()->json(['message' => 'Product deleted'], 200);
     }

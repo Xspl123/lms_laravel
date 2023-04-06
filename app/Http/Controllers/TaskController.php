@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Services\TaskService;
 use App\Http\Controllers\AllInOneController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,75 +12,42 @@ use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+
+    public function __construct(TaskService $taskService)
+    {
+        $this->taskService = $taskService;
+    }
+
     public function showSingleTask()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+   
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function createTask(Request $request)
+    
+    public function createTask(Request $request,TaskService $taskService)
     {
-        $TaskOwner = Auth::user()->uname;
-        //print_r($TaskOwner); die;
-        $userId = Auth::id();
-       // print_r($userId); die;
-        $rules = [
+        $validatedData = $request->validate([
             'Subject' => 'required',
             'DueDate' => 'required',
-            'Status' => 'required',
+            'Status'=> 'required',
             'Priority' => 'required',
             'Reminder' => 'required',
             'Repeat' => 'required',
-            'Description' => 'required',
-        ];
-          
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-            $task = new Task;
-
-            $task->TaskOwne = $TaskOwner;
-            $task->Subject = $request->Subject;
-            $task->DueDate = $request->DueDate;
-            $task->Status = $request->Status;
-            $task->Priority = $request->Priority;
-            $task->Reminder = $request->Reminder;
-            $task->Repeat = $request->Repeat;
-            $task->Description = $request->Description;
-            $task->user_id = $userId;
-            $task->save();
-            return response()->json(['message' => 'Task Added successfully'], 201);
+            'Description' => 'required'
+        ]);
+        
+        $task = $this->taskService->insertData($validatedData);
+        return response(['message' => 'Task created Successfully','status'=>'success','task' => $task], 200);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
+  
     public function showTaskList()
     {
   
@@ -90,24 +58,12 @@ class TaskController extends Controller
         ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
+   
     public function edit(Task $task)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
     public function updateTask(Request $request ,$id)
     {
         $task = Task::find($id);
@@ -121,12 +77,6 @@ class TaskController extends Controller
         return response()->json(['message' => 'Task updated', 'task' => $task], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
     public function deleteTask(Task $task, $id)
     {
         $task = Task::find($id);

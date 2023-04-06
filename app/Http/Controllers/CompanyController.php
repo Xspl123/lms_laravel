@@ -39,8 +39,8 @@ class CompanyController extends Controller
     public function addCompany(Request $request,CompanyService $companyService)
     {
             $validatedData = $request->validate([
-                'cname' => 'required|unique:companies,cname',
-                'cemail' => 'required|email|unique:companies,cemail',
+                'cname' => 'required',
+                'cemail' => 'required',
                 'cphone'=>[
                     'required',
                     'string',

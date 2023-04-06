@@ -3,6 +3,7 @@
     namespace App\Services;
     use App\Models\Company;
     use App\Models\Role;
+    use App\Models\User;
     use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Auth;
 
@@ -36,35 +37,33 @@
             $company->user_id = $userId;
             $company->save();
             Log::channel('create_leads')->info('A new company has been created. company data: '.$company);
-            $cid=$company->id;
+            
+            $cid = $company->id;
 
-            //Insert data in role table
-         
             $ceo = Role::create([
                 'company_id' => $cid,
                 'role_name' => 'CEO',
                 'p_id' => 0,
             ]);
     
-            $company->roles()->save($ceo);
-    
-            $this->createChildRoles($ceo, [
-                [
-                    'role_name' => 'Manager',
-                    'child_roles' => [
-                        ['role_name' => 'Team Lead'],
-                        ['role_name' => 'Supervisor'],
-                    ],
-                ],
-                [
-                    'role_name' => 'Employee',
-                    'child_roles' => [
-                        ['role_name' => 'Staff'],
-                        ['role_name' => 'Trainee'],
-                    ],
-                ],
-            ]);
+            $ceo->save();
+            $roleId=$ceo->id;
 
+            $user = new User;
+            $user->uname = isset($data['cname']) ? $data['cname'] : null;
+            $user->email = $data['cemail'] ?? null;
+           // $user->password = $data['password'] ?? null;
+            $user->uphone = $data['cphone'] ?? null;
+            $user->urole = 'CEO';
+          // $user->urole = 'CEO' ?? null;
+            //$user->domain_name = $request->domain_name;
+            //$user->uexperience = $request->uexperience;
+            $user->company_id = $cid;
+             $user->role_id = $roleId;
+            //$user->tc = json_decode($request->tc);
+            $user->save();
+
+        
             return $company;
             
     

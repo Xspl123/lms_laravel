@@ -25,5 +25,27 @@ class ClientService
         $client->save();
         return $client;
     }
+
+
+    public function updateData($data)
+    {
+        // Find the data record in the database based on the ID
+        $dataRecord = Data::find($data['id']);
+
+        // Update the record with the new data
+        $client->clfull_name = $data['clfull_name'];
+        $client->clphone = $data['clphone'];
+        $client->clemail = $data['clemail'];
+        $client->clsection = $data['clsection'];
+        $client->clbudget = $data['clbudget'];
+        $client->cllocation = $data['cllocation'];
+        $client->clzip = $data['clzip'];
+        $client->clcity = $data['clcity'];
+        $client->clcountry = $data['clcountry'];
+        $client->user_id = $userId;
+        
+        // Save the updated record to the database
+        $client->save();
+    }
 }
 
