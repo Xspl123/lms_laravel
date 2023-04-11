@@ -40,6 +40,7 @@ class CompanyController extends Controller
     {
             $validatedData = $request->validate([
                 'cname' => 'required',
+                'company' => 'required',
                 'cemail' => 'required',
                 'cphone'=>[
                     'required',

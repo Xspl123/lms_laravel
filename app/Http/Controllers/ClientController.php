@@ -51,12 +51,12 @@ class ClientController extends Controller
 
     public function showClientList(Client $client)
     {
-        $clients = TableHelper::getTableData('clients', ['id', 'clfull_name']);
-        $users = TableHelper::getTableData('users', ['id','uname','urole']);
+        $clients = TableHelper::getTableData('clients', ['*']);
+        //$users = TableHelper::getTableData('users', ['id','uname','urole']);
     
         $data = [
             'clients' => $clients,
-            'users' => $users,
+            //'users' => $users,
         ];
     
         return response()->json($data);
@@ -69,9 +69,16 @@ class ClientController extends Controller
     }
 
    
-    public function updateClient(Request $request, ClientService $clientService)
+    public function updateClient(Request $request, $id)
     {
+        $client = Client::find($id);
+        if (!$client) {
+            return response()->json(['message' => 'client not found']);
+        }
+
+        $client->update($request->all());
         
+        return response()->json(['message' => 'client updated successfully','client' => $client]);
     }
 
     

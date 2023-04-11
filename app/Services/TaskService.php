@@ -11,7 +11,6 @@
 
             $TaskOwner = Auth::user()->uname;
             $userId = Auth::id();
-
             $task = new Task;
             $task->TaskOwner = $TaskOwner;
             $task->Subject = $data['Subject'] ?? null;

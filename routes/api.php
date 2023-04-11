@@ -16,7 +16,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ExcelController;
-
+use App\Http\Controllers\MeetingController;
 
 // Public Routes
     
@@ -25,7 +25,7 @@ use App\Http\Controllers\ExcelController;
     Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset']);
     Route::get('/getcity/{id}', [Contact::class, 'getcity']);
     Route::get('/userList', [UserController::class, 'userList']);
-    
+    Route::post('/addCompany', [CompanyController::class, 'addCompany']);
     Route::get('/roles', [RoleController::class,'index']);
     Route::post('/roles', [RoleController::class,'store']);
     Route::put('/roles/{id}', [RoleController::class,'update']);
@@ -54,7 +54,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //change password route
     Route::post('/changepassword', [UserController::class, 'change_password']);
     //company route
-    Route::post('/addCompany', [CompanyController::class, 'addCompany']);
+    
     Route::get('/showCompanyList', [CompanyController::class, 'showCompany']);
     Route::delete('/deleteCompany/{id}', [CompanyController::class, 'deleteCompany']);
     Route::put('/updateCompany/{id}',[CompanyController::class,'updateCompany']);
@@ -107,6 +107,19 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     //History Route 
     Route::get('/getHistory/{uuid}', [HistoryController::class, 'getHistory']);
+
+    //Meeting Route
+    Route::post('/createMeeting', [MeetingController::class, 'createMeeting']);
+    Route::get('/showMeetings', [MeetingController::class,'showMeetings']);
+    Route::put('/updateMeetings/{id}', [MeetingController::class, 'updateMeetings']);
+    Route::delete('/deleteMeetings/{id}', [MeetingController::class, 'deleteMeetings']);
+    Route::get('/showSingMeetings/{id}', [MeetingController::class, 'showSingMeetings']);
+    Route::get('/getMeetingsHierarchy', [MeetingController::class, 'getMeetingsHierarchy']);
+    Route::get('/getMeetingsByDepartment', [MeetingController::class, 'getMeetingsByDepartment']);
+    Route::get('/getMeetingsByDepartmentHierarchy', [MeetingController::class, 'getMeetingsByDepartmentHierarchy']);
+    Route::get('/getMeetingsByStatus', [MeetingController::class, 'getMeetingsByStatus']);
+     
+
 
 
 });

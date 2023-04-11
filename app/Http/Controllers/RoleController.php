@@ -12,7 +12,7 @@ use Illuminate\Support\Arr;
 
 class RoleController extends Controller
 {   
-
+    private $roles_name;
 
     public function index()
     {
@@ -26,8 +26,8 @@ class RoleController extends Controller
         $compId = Company::latest()->value('id');
         //print_r($compId);exit;
         $rules = [
-            //'role_name' => 'required|unique:roles,role_name',
-            'company_id' => 'required|unique:roles,company_id',
+            'role_name' => 'required|unique:roles,role_name',
+            //'company_id' => 'required|unique:roles,company_id',
         ];
           
         $validator = Validator::make($request->all(), $rules);
@@ -87,21 +87,26 @@ class RoleController extends Controller
     }
 
 
-    public function getRolesHierarchy() {
+    public function getRolesHierarchy() { 
          
         $campany_id = auth()->user()->company_id;
-        //print_r($campany_id);exit;
+        $id = auth()->user()->id;
+        $roleId = auth()->user()->role_id;
         $roles = DB::table('roles')
                     ->select('id', 'role_name', 'p_id','company_id')
-                    ->where('id', $campany_id)
+                    ->where('id', $roleId)
+                    ->orWhere('company_id', $campany_id)
                     ->get(); // Get all roles with p_id 0 (i.e. CEO)
 
          $rolesWithChildRoles = $this->getChildRoles($roles);
-         return $rolesWithChildRoles;
+
+          
+        // print_r($rolesWithChildRoles);  //Outputs the reduced aray
+          return $rolesWithChildRoles;
     }
     
-    private function getChildRoles($roles) {
-        
+    public function getChildRoles($roles) {
+          
         foreach($roles as $role) {
        
             $childRoles = DB::table('roles')
@@ -111,12 +116,21 @@ class RoleController extends Controller
             if($childRoles->count() > 0) {
                 $role->childRoles = $childRoles;
                 $this->getChildRoles($childRoles);
+                $roles_name= $this->showroles($role->role_name);
             }else{
-               // print_r($rl);
+                $roles_name= $this->showroles($role->role_name);
             }
         }
 
-        return response()->json(['roles' => $roles]); 
+        return response()->json(['roles' => $roles,'Role_name'=>$roles_name]); 
        
         }
+
+        public function showroles($roles){
+            
+               $this->roles_name[] = $roles;
+              
+               return $this->roles_name;
+        }
+
 }

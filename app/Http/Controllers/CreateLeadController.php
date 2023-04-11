@@ -5,6 +5,7 @@ use App\Models\CreateLead;
 use App\Models\AllFieldsColumn;
 use App\Models\History;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Services\CreateLeadService;
 use Illuminate\Support\Facades\DB;
@@ -37,8 +38,9 @@ class CreateLeadController extends Controller
 
     //show  leads
     public function userLead(){
+        
         $column = AllInOneController::tabledetails_col("all_fields_columns","fieldsName,Column_Name,Column_order");
-        $data_list = AllInOneController::getTableData("create_leads");
+        $data_list = AllInOneController::getTableData('create_leads','*');
         
         return response([
             'column'=>$column,
@@ -143,18 +145,24 @@ class CreateLeadController extends Controller
         return response()->json(['message' => 'Searching Lead', 'searchlead' => $searchlead], 200);    }
 
     public function paginateData()
-    {
-        
-
-        $leads = CreateLead::all();
-
-            
-
-         return response()->json(['message' => 'user List', 'leads' => $leads], 200);
+    {  
+        $role= new RoleController;
+        $getRole = $role->getRolesHierarchy();
+        $getRole = $this->role()->with('childRoles')->get();
+        $roleIds = $role->pluck('id')->toArray();
+        $childRoleIds = $role->flatMap(function ($role) {
+            return $role->childRoles->pluck('id');
+        })->toArray();
     
+        return CreateLead::whereIn('user_id', function ($query) use ($roleIds, $childRoleIds) {
+            $query->select('id')
+                ->from('users')
+                ->join('roles', 'users.id', '=', 'roles.user_id')
+                ->whereIn('role_user.role_id', array_merge($roleIds, $childRoleIds));
+        })->get();
     }
 
     
-    
+   
 
 }

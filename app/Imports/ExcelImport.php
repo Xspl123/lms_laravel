@@ -47,7 +47,6 @@ class ExcelImport implements ToModel
             'created_at' => $row['29'],
             'updated_at' => $row['30'],
             'title' => $row['31'],   
-            
         ]);
     }
 }

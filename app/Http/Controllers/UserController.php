@@ -70,7 +70,7 @@ class UserController extends Controller
         if($user && Hash::check($request->password, $user->password)){
             $token = $user->createToken($request->email)->plainTextToken;
             //$user_details = User::all();
-            //print_r($user_details); exit;
+            //print_r($user_details); exit; 
             return response([
                 'token'=>$token,
                 'message' => 'Login Success',

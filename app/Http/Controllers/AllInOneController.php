@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\RoleController;
 use Illuminate\Http\Request;
+ use Illuminate\Support\Facades\Auth;    
+ 
+use Illuminate\Support\Arr;
 
 class AllInOneController extends Controller
 {
@@ -38,12 +42,51 @@ class AllInOneController extends Controller
             
             }
     }
+    public function alluserdata_campany()
+    {
+        return ['foo', 'bar', 'baz'];
+    }
 
+    public function role(){
 
+        $role = DB::table('roles')->select('id','name')->get();
+    }
+
+    
     public function getTableData($tableName, $columns = ['*'])
     {
-        $data = DB::table($tableName)->select($columns)->latest()->paginate(10);
 
+        $roleId = auth()->user()->role_id;
+        $company_id = auth()->user()->company_id;
+        $data = DB::table($tableName)->select($columns)->where('role_id',$roleId)->get();
+
+        $role= new RoleController;
+        $getRole = $role->getRolesHierarchy();
+        
+        $role_name = $getRole->original['Role_name'];
+        //$data = $this->alluserdata_campany();
+        $data = DB::table('users')
+        ->select('id')
+        ->where('company_id', $company_id)
+        ->whereIn('urole', ['CEO'])
+        ->get();
+      // print_r($data);exit;
+       $id = ''; 
+    
+    foreach ($data as $item) {
+        if ($item->id == $id) {
+            // id found
+            
+            break; // exit the loop
+        }
+        print_r ($item);exit;
+
+    }
+    
+    //if the loop completes without finding the id, it is not present in the $data collection
+    $data = DB::table($tableName)->select($columns)->whereIn('lead_Owner',$data)->latest()->paginate(10);
+
+        $data = DB::table($tableName)->select($columns)->latest()->paginate(10);
         return $data;
     }
 

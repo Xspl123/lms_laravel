@@ -16,7 +16,8 @@ class CreateLeadService
         $userId = Auth::id();
         $uuid = mt_rand(10000000, 99999999);
         $username = Auth::user()->uname;
-        
+        $roleId = auth()->user()->role_id;
+
         $leads = new CreateLead;
         $leads->uuid = $uuid;
         $leads->lead_Name = $data['lead_Name'] ?? null;
@@ -25,7 +26,7 @@ class CreateLeadService
         $leads->fullName = $data['fullName'] ?? null;
         $leads->lead_Source = $data['lead_Source'] ?? null;
         $leads->lead_Owner = $lead_Owner;
-        $leads->created_by = $username;
+        $leads->created_by = $userId;
         $leads->fax = $data['fax'] ?? null;
         $leads->phone = $data['phone'] ?? null;
         $leads->mobile = $data['mobile'] ?? null;
@@ -42,7 +43,7 @@ class CreateLeadService
         $leads->state = $data['state'] ?? null;
         $leads->country = $data['country'] ?? null;
         $leads->discription = $data['discription'] ?? null;
-        $leads->role_id = $data['role_id'] ?? null;
+        $leads->role_id = $roleId;
         $leads->user_id = $userId;
         $leads->save();
 
