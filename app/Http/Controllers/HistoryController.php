@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\History;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AllInOneController;
+use App\Helpers\TableHelper;
 
 class HistoryController extends Controller
 {
@@ -15,7 +16,8 @@ class HistoryController extends Controller
      */
     public function getHistory($uuid)
     {
-        $getHistory = AllInOneController::singledata('histories','*','uuid',$uuid);
+       // $getHistory = TableHelper::getTableData('histories', ['*','uuid',$uuid]);
+          $getHistory = AllInOneController::singledataOR('histories','*','uuid',$uuid);
         return response([
             'data_list'=>$getHistory,
             'status'=>'success'

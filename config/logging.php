@@ -63,6 +63,12 @@ return [
         ],
         
 
+        'create_task' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/create_task.log'),
+            'level' => 'info',
+        ],
+
         'create_leads' => [
             'driver' => 'single',
             'path' => storage_path('logs/create_leads.log'),
@@ -72,6 +78,13 @@ return [
         'update_leads' => [
             'driver' =>'single',
             'path' => storage_path('logs/update_leads.log'),
+            'level' => 'info',
+            'bubble' => true,
+        ],
+
+        'update_task' => [
+            'driver' =>'single',
+            'path' => storage_path('logs/update_task.log'),
             'level' => 'info',
             'bubble' => true,
         ],

@@ -7,5 +7,35 @@ use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
+    protected $fillable = [
+
+        'AccountOwner',
+        'AccountName',
+        'AccountSite',
+        'ParentAccount',
+        'AccountNumber',
+        'AccountType',
+        'Industry',
+        'AnnualRevenue',
+        'Rating',
+        'Phone',
+        'Fax',
+        'Website',
+        'TickerSymbol',
+        'Ownership',
+        'Employees',
+        'SICCode',
+        'BillingStreet',
+        'BillingCity',
+        'BillingState',
+        'BillingCode',
+        'BillingCountry',
+        'ShippingStreet',
+        'ShippingCity',
+        'ShippingState',
+        'ShippingCode',
+        'ShippingCountry',
+        'Description'
+    ];
     use HasFactory;
 }

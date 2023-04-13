@@ -8,7 +8,7 @@ class TableHelper
 {
     public static function getTableData($tableName, $columns = ['*'])
     {
-        $data = DB::table($tableName)->select($columns)->latest()->paginate();
+        $data = DB::table($tableName)->select($columns)->latest()->get();
 
         return $data;
     }
