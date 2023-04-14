@@ -22,7 +22,7 @@
             $company->cname = $data['cname'] ?? null;
             $company->company = isset($data['company']) ? $data['company'] : null;
             $company->role = isset($data['role']) ? $data['role'] : null;
-            $company->exp = $data['exp'] ?? null;
+            $company->experience = $data['experience'] ?? null;
             $company->email = $data['email'] ?? null;
             $company->ctax_number = $data['ctax_number'] ?? null;
             $company->location = $data['location'] ?? null;

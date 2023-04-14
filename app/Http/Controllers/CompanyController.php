@@ -25,18 +25,6 @@ class CompanyController extends Controller
     }
 
 
-
-    public function index()
-    {
-        //
-    }
-
-  
-    public function create()
-    {
-        //
-    }
-
     public function addCompany(Request $request,CompanyService $companyService)
     {
             $validatedData = $request->validate([
@@ -63,7 +51,7 @@ class CompanyController extends Controller
                     },
                 ],
                 'role' => 'required|string',
-                'exp' => 'required',
+                'experience' => 'required',
                 'ctax_number' => 'nullable',
                 'location' => 'required',
                 'industry' => 'required',
@@ -76,16 +64,6 @@ class CompanyController extends Controller
             return response(['message' => 'Company created Successfully','status'=>'success','company' => $company], 200);
     }
     
-        
-
-        
-    
-    /**
-     * Display the specified resource.chlao isko route banale
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
     public function showCompany(Request $request)
     {
         
@@ -96,24 +74,7 @@ class CompanyController extends Controller
         return response(['getCompanies' =>$getCompanies,'status'=>'success'], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Company $company)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
+  
     public function updateCompany(Request $request, Company $company ,$id)
     {
         $company = Company::find($id);
@@ -126,12 +87,7 @@ class CompanyController extends Controller
         return response()->json(['message' => 'Company updated successfully']);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
+   
     public function deleteCompany(Company $company , $id)
     {
        //echo "delete product";

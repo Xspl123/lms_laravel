@@ -13,7 +13,7 @@ class Company extends Model
     }
     
     protected $fillable = [
-        'cname','company','role','exp','email', 'ctax_number', 'location', 'industry', 'cphone','cemployees_size','cfax','cdescription'
+        'cname','company','role','experience','email', 'ctax_number', 'location', 'industry', 'cphone','cemployees_size','cfax','cdescription'
         ];
 
 
