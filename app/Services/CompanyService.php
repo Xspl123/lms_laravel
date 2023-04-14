@@ -21,21 +21,16 @@
             $company->uuid = $uuid;
             $company->cname = $data['cname'] ?? null;
             $company->company = isset($data['company']) ? $data['company'] : null;
-            $company->cemail = $data['cemail'] ?? null;
+            $company->role = isset($data['role']) ? $data['role'] : null;
+            $company->exp = $data['exp'] ?? null;
+            $company->email = $data['email'] ?? null;
             $company->ctax_number = $data['ctax_number'] ?? null;
+            $company->location = $data['location'] ?? null;
             $company->cphone = $data['cphone'] ?? null;
-            //$company->lead_Owner = $lead_Owner;
-            //$company->created_by = $username;
-            $company->ccity = $data['ccity'] ?? null;
-            $company->cbilling_address = $data['cbilling_address'] ?? null;
-            $company->ccountry = $data['ccountry'] ?? null;
-            $company->cpostal_code = $data['cpostal_code'] ?? null;
+            $company->industry = $data['industry'] ?? null;
             $company->cemployees_size = $data['cemployees_size'] ?? null;
             $company->cfax = $data['cfax'] ?? null;
             $company->cdescription = $data['cdescription'] ?? null;
-            $company->domain_name = $data['domain_name'] ?? null;
-            $company->cis_active = $data['cis_active'] ?? null;
-            
             $company->save();
 
             Log::channel('create_leads')->info('A new company has been created. company data: '.$company);

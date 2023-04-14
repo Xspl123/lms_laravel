@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\UniqueDomain;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Role;
@@ -41,7 +42,17 @@ class CompanyController extends Controller
             $validatedData = $request->validate([
                 'cname' => 'required',
                 'company' => 'required',
-                'cemail' => 'required',
+                'email' => [
+                    'required',
+                    'email',
+                    function ($attribute, $value, $fail) {
+                        $domain = explode('@', $value)[1];
+                        $count = \DB::table('companies')->where('email', 'like', '%@'.$domain)->count();
+                        if ($count > 0) {
+                            $fail('This email domain is already in use.');
+                        }
+                    }
+                ],
                 'cphone'=>[
                     'required',
                     'string',
@@ -51,10 +62,14 @@ class CompanyController extends Controller
                         }
                     },
                 ],
-                'ccity' => 'required|string',
-                'ccountry' => 'required',
-                'domain_name' => 'required|unique:companies,domain_name',
-                'cis_active' => 'required'
+                'role' => 'required|string',
+                'exp' => 'required',
+                'ctax_number' => 'nullable',
+                'location' => 'required',
+                'industry' => 'required',
+                'cemployees_size' => 'nullable',
+                'cfax' => 'nullable',
+                'cdescription' => 'nullable',
             ]);
                
             $company = $this->companyService->insertData($validatedData);
