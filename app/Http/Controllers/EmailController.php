@@ -1,56 +1,59 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Mail\SendMail;
 use Illuminate\Http\Request;
-use App\Mail\SendEmail;
 use Illuminate\Support\Facades\Mail;
-use Swift_SmtpTransport;
-use Swift_Message;
-use Swift_Attachment;
-use Swift_Mailer;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Mail as Email;
 
 class EmailController extends Controller
 {
     public function sendEmail(Request $request)
     {
-        // Get email data from request
-        $to = $request->input('to');
-        $cc = $request->input('cc');
-        $bcc = $request->input('bcc');
-        $subject = $request->input('subject');
-        $body = $request->input('body');
-        $attachment = $request->file('attachment');
-    
-        // Create SMTP Transport object
-        $transport = (new Swift_SmtpTransport('smtp.gmail.com', 587, 'tls'))
-            ->setUsername('your-email@gmail.com')
-            ->setPassword('your-email-password');
-    
-        // Create Swift Mailer instance
-        $mailer = new Swift_Mailer($transport);
-    
-        // Create Swift Message instance
-        $message = new Swift_Message($subject);
-    
-        // Set From and To addresses
-        $message->setFrom(['your-email@gmail.com' => 'Your Name'])
-            ->setTo([$to])
-            ->setCc([$cc])
-            ->setBcc([$bcc]);
-    
-        // Set message body
-        $message->setBody($body);
-    
-        // Add attachment, if any
-        if ($attachment) {
-            $message->attach(Swift_Attachment::fromPath($attachment->path()));
-        }
-    
-        // Send the email
-        $mailer->send($message);
-    
-        return response()->json(['message' => 'Email sent successfully']);
+        $uuid = mt_rand(10000000, 99999999);
+        $owner_id = Auth::user()->id;
+        $sender_id = Auth::user()->id;
+
+        $mailData = [
+            'title' => 'xspl',
+            'uuid' => $uuid,
+            'p_id' => $request->pid,
+            'owner_id' => $owner_id,
+            'sender_id' => $sender_id,
+            'template_id' => $request->template_id,
+            'subject' => $request->subject,
+            'to' => $request->to,
+            'cc' => $request->bcc,
+            'bcc' => $request->bcc,
+            'body' => $request->body,
+            'sender_name' => $request->sender_name
+
+        ];
+            // $recipient = '';
+
+            // Mail::to($recipient)->send(new SendMail($mailData));
+
+            Mail::to('abhishek@vert-age.com')->send(new SendMail($mailData));
+            Mail::cc('sahadev@vert-age.com')->send(new SendMail($mailData));
+            Mail::bcc('abhkumar17@gmail.com')->send(new SendMail($mailData));
+        
+            $email = new Email();
+            $email->uuid = $uuid;
+            $email->owner_id = $owner_id;
+            $email->sender_id = $uuid;
+            $email->template_id = $request->template_id;
+            $email->subject = $request->subject;
+            $email->to = $request->to;
+            $email->cc = $request->cc;
+            $email->bcc = $request->bcc;
+            $email->body = $request->body;
+            $email->sender_name = $request->sender_name;
+            $email->save();
+
+        return response()->json([
+            'message' => 'Email has been sent to  successfully!'
+        ], 200);
     }
-    
+
 }

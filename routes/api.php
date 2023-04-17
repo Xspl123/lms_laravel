@@ -17,6 +17,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\EmailController;
 
 // Public Routes
     
@@ -119,7 +120,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/getMeetingsByDepartmentHierarchy', [MeetingController::class, 'getMeetingsByDepartmentHierarchy']);
     Route::get('/getMeetingsByStatus', [MeetingController::class, 'getMeetingsByStatus']);
      
-
+    //Mailling route
+      Route::post('/send-email', [EmailController::class, 'sendEmail']);
+     //Route::post('/send-email/{recipient}', [EmailController::class,'sendEmail']);
 
 
 });
