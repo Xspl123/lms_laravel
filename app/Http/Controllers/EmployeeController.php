@@ -133,85 +133,9 @@ class EmployeeController extends Controller
      */
     public function updateEmployee(Request $request, Employee $employee,$id)
     {
-           // Get the original record from the employees table
-           $originalData = Employee::find($id)->get();
-
-        // Update the $data array with the created_by and feedback values from the original record
-            $data['created_by'] = $originalData['created_by'];
-            $data['feedback'] = $originalData['feedback'];
-
-        // Add the updated_by and feedback values to the $data array
-            $data['updated_by'] = Auth::user()->id;
-            $data['feedback'] = 'employee_updated';
-
-        // Update the record in the employees table
-            $model = Employee::class;
-            CommonHelper::updateData($model, $data, $id);
-
-        // Log the update in the employee_history table
-            EmployeeHistory::create($data);
+         
     }
 
-    // public function updateEmployee(Request $request, $id)
-    // {
-    //     // $request->validate([
-    //     //     'full_name' => 'required|string|max:255',
-    //     //     'phone' => [
-    //     //         'required',
-    //     //         'string',
-    //     //         function ($attribute, $value, $fail) {
-    //     //             if (!preg_match('/^\d{10}$/', $value)) {
-    //     //                 $fail('The phone must be exactly 10 digits.');
-    //     //             }
-    //     //         },
-    //     //     ],
-    //     //     'email' => 'required|email|unique:employees,email,'.$id,
-    //     //     'job' => 'required',
-    //     //     'note' => 'nullable|string',
-    //     //     'uuid' => 'nullable',
-    //     //     'is_active'=> 'nullable',
-    //     //     'user_id' => 'nullable'
-    //     // ]);
-    
-    //     $employee = Employee::findOrFail($id);
-    
-    //     $previousData = $employee->toArray();
-    
-    //     $data = $request->only(['full_name', 'phone', 'email', 'job', 'note', 'uuid', 'client_id', 'is_active', 'user_id']);
-    
-    //     $employee->update($data);
-    
-    //     $updatedData = $employee->toArray();
-    
-    //     // Log the history entry
-    //     $history = new EmployeeHistory;
-        
-    //     $history->full_name = $data['full_name'];
-    //     $history->phone = $data['phone'];
-    //     $history->email = $data['email'];
-    //     $history->job = $data['job'];
-    //     $history->uuid = $data['uuid'] ?? '';
-    //     $history->client_id = $data['client_id'] ?? null;
-    //     $history->is_active = $data['is_active'] ?? true;
-    //     $history->user_id = $data['user_id'] ?? null;
-    //     $history->created_by = Auth::id();
-    //     $history->update_by = Auth::id();
-    //     $history->feedback = "Employee updated by ". $employee->full_name ." on " . now()->format('Y-m-d H:i:s');
-    //     $history->previous_data = json_encode($previousData);
-    //     $history->updated_data = json_encode($updatedData);
-    //     $history->save();
-    
-    //     return response()->json(['message' => 'Employee updated successfully'], 200);
-    
-    // }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Employee  $employee
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Employee $employee)
     {
         //
