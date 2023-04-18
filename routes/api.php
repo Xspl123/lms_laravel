@@ -105,6 +105,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/storeEmployee', [EmployeeController::class, 'storeEmployee']);
     Route::get('/empsearchdata', [EmployeeController::class, 'index']);
     Route::get('/getemployee', [EmployeeController::class, 'getemp']);
+    Route::put('/updateEmployee/{id}', [EmployeeController::class, 'updateEmployee']);
 
     //History Route 
     Route::get('/getHistory/{uuid}', [HistoryController::class, 'getHistory']);

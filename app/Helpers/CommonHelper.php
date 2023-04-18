@@ -31,5 +31,21 @@ class CommonHelper
         $record->save();
     }
 
+    public static function updateData($model, $data,$id)
+    {
+        if (isset($data['id'])) {
+            $record = $model::findOrFail($data['id']);
+            foreach ($data as $key => $value) {
+                $record->$key = $value;
+            }
+            $record->save();
+        } else {
+            $record = new $model();
+            foreach ($data as $key => $value) {
+                $record->$key = $value;
+            }
+            $record->save();
+        }
+    }
 
 }
