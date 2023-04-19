@@ -46,3 +46,17 @@ Route::get('/index', [ClientController::class, 'index']);
 Route::get('country', [CountryStateCityController::class, 'index']);
 Route::get('get-states', [CountryStateCityController::class, 'getState']);
 Route::post('get-cities', [CountryStateCityController::class, 'getCity']);
+
+
+
+Route::post('/send-mail', function (Request $request) {
+    $to = $request->input('to');
+    $cc = $request->input('cc');
+    $bcc = $request->input('bcc');
+    $subject = $request->input('subject');
+    $body = $request->input('body');
+
+    Mail::to($to)->cc($cc)->bcc($bcc)->send(new MailForm($subject, $body));
+
+    return redirect('/mail-form')->with('success', 'Mail sent successfully!');
+})->name('send-mail');

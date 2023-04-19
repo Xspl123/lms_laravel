@@ -7,6 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mail extends Model
 {
-    protected $table = 'mails';
+    protected $fillable = [
+        'uuid', // add uuid attribute to fillable property
+        'owner_id',
+        'sender_id',
+        'template_id',
+        'subject',
+        'to',
+        'cc',
+        'bcc',
+        'body',
+        'sender_name',
+        'mail_status',
+    ];
     use HasFactory;
 }

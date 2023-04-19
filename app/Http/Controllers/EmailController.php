@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Mail\SendMail;
+use App\Jobs\SendEmailJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
@@ -27,12 +28,11 @@ class EmailController extends Controller
             'cc' => $request->cc,
             'bcc' => $request->bcc,
             'body' => $request->body,
-            'sender_name' => $request->sender_name
+            'sender_name' => $request->sender_name,
+            'mail_status' => "PENDING",
 
         ];
-            Mail::to($mailData['to'])->cc($mailData['cc'])->bcc($mailData['bcc'])->send(new SendMail($mailData));
             
-        
             $email = new Email();
             $email->uuid = $uuid;
             $email->owner_id = $owner_id;
@@ -44,11 +44,29 @@ class EmailController extends Controller
             $email->bcc = $request->bcc;
             $email->body = $request->body;
             $email->sender_name = $request->sender_name;
+            $email->mail_status = "PENDING";
             $email->save();
 
-        return response()->json([
-            'message' => 'Email has been sent to  successfully!'
-        ], 200);
+            try{
+                // send the email
+                    Mail::to($mailData['to'])
+                        ->cc($mailData['cc'])
+                        ->bcc($mailData['bcc'])
+                        ->send(new SendMail($mailData));
+                
+                    // update the status to "success"
+                    $email->mail_status = 'SUCCESS';
+                    $email->update(['mail_status' => 'SUCCESS']);
+                    return response()->json(['message' => 'Email sent successfully.'], 200);
+
+               }  catch (\Exception $e){
+                    // update the status to "failed"
+                    $email->mail_status = 'FAILED';
+                    $email->save();
+                    return response()->json([
+                        'message' => 'Email sending failed.'
+                    ], 200);
+                }
     }
 
 }
