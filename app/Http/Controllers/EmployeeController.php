@@ -89,6 +89,7 @@ class EmployeeController extends Controller
             'uuid' => $data['uuid'],
             'user_id' => $data['user_id'],
             'created_by' => Auth::user()->id,
+            'update_by' => Auth::user()->id,
             'feedback' => 'Inserted',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
@@ -133,6 +134,37 @@ class EmployeeController extends Controller
      */
     public function updateEmployee(Request $request, Employee $employee,$id)
     {
+        $uuid = mt_rand(10000000, 99999999);
+        $user_id = Auth::user()->id;
+
+        $employee = Employee::findOrFail($id);
+
+        $data = $request->only(['full_name', 'phone', 'email','job', 'note','uuid','client_id','is_active','user_id']);
+
+        $data['uuid'] = $uuid;
+        $data['user_id'] = $user_id;
+
+        CommonHelper::updateWithHistoryLog($employee, $data);
+
+        // Log the insertion in the employee_history table
+
+        DB::table('employee_history')->insert([
+            'full_name' => $data['full_name'],
+            'phone' => $data['phone'],
+            'email' => $data['email'],
+            'job' => $data['job'],
+            'uuid' => $data['uuid'],
+            'user_id' => $data['user_id'],
+            'created_by' => Auth::user()->id,
+            'update_by' => Auth::user()->id,
+            'feedback' => 'updated',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+
+        return response()->json([
+            'message' => 'Employee updated successfully'
+        ]);
          
     }
 

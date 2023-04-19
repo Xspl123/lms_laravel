@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 use Illuminate\Support\Facades\DB;
+use App\Models\EmployeeHistory;
 
 class CommonHelper
 {
@@ -46,6 +47,21 @@ class CommonHelper
             }
             $record->save();
         }
+    }
+
+
+    public static function updateWithHistoryLog($model, $data)
+    {
+        $model->update($data);
+
+        $log = new EmployeeHistory([
+            'model_id' => $model->id,
+            'model_type' => get_class($model),
+            'action' => 'update',
+            'data' => json_encode($data),
+        ]);
+
+        $log->update();
     }
 
 }

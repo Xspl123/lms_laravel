@@ -24,19 +24,14 @@ class EmailController extends Controller
             'template_id' => $request->template_id,
             'subject' => $request->subject,
             'to' => $request->to,
-            'cc' => $request->bcc,
+            'cc' => $request->cc,
             'bcc' => $request->bcc,
             'body' => $request->body,
             'sender_name' => $request->sender_name
 
         ];
-            // $recipient = '';
-
-            // Mail::to($recipient)->send(new SendMail($mailData));
-
-            Mail::to('abhishek@vert-age.com')->send(new SendMail($mailData));
-            Mail::cc('sahadev@vert-age.com')->send(new SendMail($mailData));
-            Mail::bcc('abhkumar17@gmail.com')->send(new SendMail($mailData));
+            Mail::to($mailData['to'])->cc($mailData['cc'])->bcc($mailData['bcc'])->send(new SendMail($mailData));
+            
         
             $email = new Email();
             $email->uuid = $uuid;
