@@ -47,7 +47,7 @@ class EmailController extends Controller
             $email->mail_status = "PENDING";
             $email->save();
 
-            try{
+            
                 // send the email
                     Mail::to($mailData['to'])
                         ->cc($mailData['cc'])
@@ -59,14 +59,7 @@ class EmailController extends Controller
                     $email->update(['mail_status' => 'SUCCESS']);
                     return response()->json(['message' => 'Email sent successfully.'], 200);
 
-               }  catch (\Exception $e){
-                    // update the status to "failed"
-                    $email->mail_status = 'FAILED';
-                    $email->save();
-                    return response()->json([
-                        'message' => 'Email sending failed.'
-                    ], 200);
-                }
+              
     }
 
 }

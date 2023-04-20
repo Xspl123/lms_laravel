@@ -30,36 +30,14 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        $mailData = new MailData([
-            'title' => 'My Email Title',
-            'uuid' => $uuid,
-            'p_id' => $request->pid,
-            'owner_id' => $owner_id,
-            'sender_id' => $sender_id,
-            'template_id' => $request->template_id,
-            'subject' => $request->subject,
-            'to' => $request->to,
-            'cc' => $request->cc,
-            'bcc' => $request->bcc,
-            'body' => $request->body,
-            'sender_name' => $request->sender_name,
-            'mail_status' => Mail::PENDING,
-        ]);
-        
-        $mail = new Mail([
-            'uuid' => $uuid,
-            'owner_id' => $owner_id,
-            'sender_id' => $uuid,
-            'template_id' => $request->template_id,
-            'subject' => $request->subject,
-            'to' => $request->to,
-            'cc' => $request->cc,
-            'bcc' => $request->bcc,
-            'body' => $request->body,
-            'sender_name' => $request->sender_name,
-            'mail_status' => Mail::PENDING,
-        ]);
-        $mail->save();
+        Mail::to($this->email->to)
+            ->cc($this->email->cc)
+            ->bcc($this->email->bcc)
+            ->send(new SendMail($this->email->toArray()));
+
+        // update the status to 'success' after sending the email
+        $this->email->mail_status = 'success';
+        $this->email->save();
         
     }
 }

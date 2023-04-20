@@ -25,6 +25,7 @@ class CreateMailsTable extends Migration
             $table->string('bcc');
             $table->string('body');
             $table->string('sender_name');
+            $table->string('mail_status')->default('PENDING');
             $table->timestamps();
         });
     }
