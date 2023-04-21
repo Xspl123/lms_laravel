@@ -30,14 +30,22 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->email->to)
-            ->cc($this->email->cc)
-            ->bcc($this->email->bcc)
-            ->send(new SendMail($this->email->toArray()));
+        $email = $this->email;
+    
+    try {
+        Mail::to($email->to)
+            ->cc($email->cc)
+            ->bcc($email->bcc)
+            ->send(new SendMail($email->toArray()));
 
         // update the status to 'success' after sending the email
-        $this->email->mail_status = 'success';
-        $this->email->save();
+        $email->mail_status = 'success';
+    } catch (\Exception $e) {
+        // update the status to 'failed' if an exception occurred
+        $email->mail_status = 'failed';
+    }
+    
+    $email->save();
         
     }
 }

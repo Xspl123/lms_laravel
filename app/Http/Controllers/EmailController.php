@@ -48,16 +48,34 @@ class EmailController extends Controller
             $email->save();
 
             
-                // send the email
-                    Mail::to($mailData['to'])
-                        ->cc($mailData['cc'])
-                        ->bcc($mailData['bcc'])
-                        ->send(new SendMail($mailData));
-                
-                    // update the status to "success"
-                    $email->mail_status = 'SUCCESS';
-                    $email->update(['mail_status' => 'SUCCESS']);
-                    return response()->json(['message' => 'Email sent successfully.'], 200);
+            // save "PENDING" status to database
+            $email->mail_status = 'PENDING';
+            $email->save();
+
+            // send the email
+            Mail::to($mailData['to'])
+                ->cc($mailData['cc'])
+                ->bcc($mailData['bcc'])
+                ->send(new SendMail($mailData));
+
+            // check if email was sent successfully
+            if (Mail::failures()) {
+                // update the status to "failed"
+                $email->mail_status = 'FAILED';
+                $email->update(['mail_status' => 'FAILED']);
+                $response = response()->json(['message' => 'Email sending failed.'], 500);
+            } else {
+                // update the status to "success"
+                $email->mail_status = 'SUCCESS';
+                $email->update(['mail_status' => 'SUCCESS']);
+                $response = response()->json(['message' => 'Email sent successfully.'], 200);
+            }
+
+            return $response;
+
+
+            
+
 
               
     }
