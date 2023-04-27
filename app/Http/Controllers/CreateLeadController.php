@@ -38,7 +38,7 @@ class CreateLeadController extends Controller
 
     //show  leads
     public function userLead(){
-        
+
         $column = AllInOneController::tabledetails_col("all_fields_columns","fieldsName,Column_Name,Column_order");
         $data_list = AllInOneController::getTableData('create_leads','*');
         

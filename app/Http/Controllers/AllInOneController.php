@@ -29,7 +29,7 @@ class AllInOneController extends Controller
 
     public function singledata($table,$column,$scloumn,$dcloumn)
     {
-        $leads = DB::table($table)->select($column)->where($scloumn,$dcloumn)->orderBy('id', 'DESC')->get();
+        $leads = DB::table($table)->select($column)->where($scloumn,$dcloumn)->latest()->get();
         if (!$leads) {
             return response()->json([
                 'success' => false,

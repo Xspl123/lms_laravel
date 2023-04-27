@@ -20,7 +20,7 @@ class CreateCreateLeadsTable extends Migration
             $table->string('company')->nullable();
             $table->string('email');
             $table->string('lead_Source')->nullable();
-            $table->string('lead_Owner');
+            $table->string('Owner');
             $table->string('created_by')->nullable();
             $table->string('modified_by')->nullable();
             $table->string('fullName');;

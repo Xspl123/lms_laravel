@@ -22,7 +22,7 @@ class CreateLead extends Model
     }
 
     protected $fillable = [
-        'lead_Name', 'email', 'fullName','lead_Owner','phone','mobile','lead_status','companies_id','user_id','role_id'
+        'lead_Name', 'email', 'fullName','Owner','phone','mobile','lead_status','companies_id','user_id','role_id'
         ];
     use HasFactory;
 }

@@ -15,7 +15,7 @@ class CreateDealsTable extends Migration
     {
         Schema::create('deals', function (Blueprint $table) {
             $table->id();
-            $table->string('dealOwner');
+            $table->string('Owner');
             $table->string('dealName');
             $table->string('accountName')->nullable();
             $table->string('type');

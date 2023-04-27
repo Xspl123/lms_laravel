@@ -26,8 +26,8 @@ class RoleController extends Controller
         $compId = Company::latest()->value('id');
         //print_r($compId);exit;
         $rules = [
-            'role_name' => 'required|unique:roles,role_name',
-            //'company_id' => 'required|unique:roles,company_id',
+            'role_name' => 'required',
+            'company_id' => 'required',
         ];
           
         $validator = Validator::make($request->all(), $rules);

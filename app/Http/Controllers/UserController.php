@@ -93,7 +93,9 @@ class UserController extends Controller
     }
 
     public function logged_user(){
-        $loggeduser = auth()->user();
+        $company_id = auth()->user()->company_id;
+        $loggeduser = DB::table('users')->select('id','uname','email','uphone','urole')->where('company_id', $company_id)->get();
+
         return response([
             'loggeduser'=>$loggeduser,
             'message' => 'Logged User Data',
@@ -119,12 +121,23 @@ class UserController extends Controller
     public function userList()
     {
         
-        $users = TableHelper::getTableData('users', ['id','uname','email','urole']);
-        
-        return response([
-            'userlist'=>$users,
-            'status'=>'success'
-        ], 200);
+        if (auth()->check()) {
+            $company_id = auth()->user()->company_id;
+            $users = DB::table('users')
+                ->select('id','uname', 'email', 'uphone', 'urole')
+                ->where('company_id', $company_id)
+                ->get();
+            return response([
+                'userlist'=>$users,
+                'status'=>'success'
+            ], 200);
+        } else {
+            return response([
+                'message' => 'User not authenticated',
+                'status' => 'error'
+            ], 401);
+        }
+
     }
 
     public function importView(Request $request){

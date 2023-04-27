@@ -64,4 +64,24 @@ class CommonHelper
         $log->update();
     }
 
+
+    public static function update($data)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Your update logic here
+            $result = DB::table('clients')
+                         ->where('id', $data['id'])
+                         ->update(['column_name' => $data['new_value']]);
+            dd($result); // Debugging statement to print out the result of the update query
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollback();
+            return false;
+        }
+    }
+
 }

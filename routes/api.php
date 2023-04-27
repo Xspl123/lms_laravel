@@ -18,6 +18,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\IndustryController;
 
 // Public Routes
     
@@ -25,7 +26,7 @@ use App\Http\Controllers\EmailController;
     Route::post('/send-reset-password-email', [PasswordResetController::class, 'send_reset_password_email']);
     Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset']);
     Route::get('/getcity/{id}', [Contact::class, 'getcity']);
-    Route::get('/userList', [UserController::class, 'userList']);
+   
     Route::post('/addCompany', [CompanyController::class, 'addCompany']);
     Route::get('/roles', [RoleController::class,'index']);
     Route::post('/roles', [RoleController::class,'store']);
@@ -39,7 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //user logged and logout route
     Route::post('/logout', [UserController::class, 'logout']);
     Route::get('/loggeduser', [UserController::class, 'logged_user']);
-
+    Route::get('/userList', [UserController::class, 'userList']);
     //lead route
     Route::post('/import-leads',[ExcelController::class,'fileImport']);
     Route::get('/export-leads',[ExcelController::class,'fileExport']);
@@ -124,6 +125,11 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //Mailling route
       Route::post('/send-email', [EmailController::class, 'sendEmail']);
      //Route::post('/send-email/{recipient}', [EmailController::class,'sendEmail']);
+
+    //Industry Route
+    Route::post('/create-industry', [IndustryController::class,'createIndustry']);
+    Route::get('/show-industry', [IndustryController::class,'showIndustry']);
+
 
 
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Client;
 use App\Helpers\TableHelper;
+use App\Helpers\ApplicationUpdater;
 use App\Services\ClientService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -69,16 +70,13 @@ class ClientController extends Controller
     }
 
    
-    public function updateClient(Request $request, $id)
+    public function updateClient(Request $request,$id)
     {
-        $client = Client::find($id);
-        if (!$client) {
-            return response()->json(['message' => 'client not found']);
-        }
-
-        $client->update($request->all());
+        $client = Client::findOrFail($id);
         
-        return response()->json(['message' => 'client updated successfully','client' => $client]);
+        $updatedClient = ApplicationUpdater::update($client, $request->all());
+
+        return response()->json(['client' => $updatedClient], 200);
     }
 
     
