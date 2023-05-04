@@ -30,7 +30,7 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        $email = $this->email;
+        $email = $this->mailData;
     
     try {
         Mail::to($email->to)
@@ -49,3 +49,4 @@ class SendEmailJob implements ShouldQueue
         
     }
 }
+

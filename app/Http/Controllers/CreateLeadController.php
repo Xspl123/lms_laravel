@@ -15,9 +15,11 @@ use App\Helpers\ApiHelperSearchData;
 use Illuminate\Support\Facades\Log;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use App\Http\Requests\CreateLeadRequest;
 
 class CreateLeadController extends Controller
 { 
+    
     public function __construct(CreateLeadService $createLeadService)
     {
         $this->createLeadService = $createLeadService;
@@ -40,35 +42,19 @@ class CreateLeadController extends Controller
     public function userLead(){
 
         $column = AllInOneController::tabledetails_col("all_fields_columns","fieldsName,Column_Name,Column_order");
-        $data_list = AllInOneController::getTableData('create_leads','*');
+        //$data_list = AllInOneController::getTableData('create_leads','*');
         
-        return response([
-            'column'=>$column,
-            'data_list' => $data_list,
-            'status'=>'success'
-        ], 200);
+        $leads = $this->createLeadService->getLeads();
+        
+        return response(['column'=>$column,'leads' => $leads, 'status'=>'success'], 200);
     }
     //create  leads
-    public function CreateUserLead(Request $request ,CreateLeadService $createLeadService){
-        
-        $validatedData = $request->validate([
-            'lead_Name' => 'required',
-            'email' => 'required|email|unique:create_leads,email',
-            'fullName' => 'required',
-            'phone'=>[
-                'required',
-                'string',
-                function ($attribute, $value, $fail) {
-                    if (!preg_match('/^\d{10}$/', $value)) {
-                        $fail('The phone must be exactly 10 digits.');
-                    }
-                },
-            ],
-            'lead_status' => 'required',
-        ]);
-           
-        $leads = $this->createLeadService->insertData($validatedData);
-        return response(['message' => 'Lead created Successfully','status'=>'success','leads' => $leads], 200);
+    public function CreateUserLead(CreateLeadRequest $request ,CreateLeadService $createLeadService)
+    {   
+        $data = $request->validated();
+        $lead = $createLeadService->insertData($data);
+        $createLeadService->createLeadHistory($lead, 'Lead Created', 'Add');
+        return response()->json(['message' => 'Lead created successfully','data' => $lead,]);
     }
 
 

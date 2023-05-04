@@ -1,20 +1,20 @@
 <?php
     namespace App\Services;
-    use App\Models\User;
-    use Illuminate\Support\Facades\Auth;
-    use Illuminate\Support\Facades\DB;
-    use App\Models\Task;
     use App\Models\History;
+    use App\Models\Task;
+    use Illuminate\Support\Arr;
+    use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Log;
-    class TaskService {
-
-        public function insertData($data) { 
-
-            $TaskOwner = Auth::user()->uname;
+    
+    class TaskService
+    {
+        public function createTask(array $data): Task
+        {
+            $owner = Auth::user()->uname;
             $userId = Auth::id();
             $task = new Task;
             $uuid = mt_rand(10000000, 99999999);
-            $task->TaskOwner = $userId;
+            $task->Owner = $userId;
             $task->Subject = $data['Subject'] ?? null;
             $task->DueDate = isset($data['DueDate']) ? $data['DueDate'] : null;
             $task->Status = $data['Status'] ?? null;
@@ -29,13 +29,18 @@
 
             Log::channel('create_task')->info('Task has been created. task data: '.$task);
             
+            return $task;
+        }
+    
+        public function createTaskHistory($task, $feedback, $status)
+        {
             $history = new History;
-            $history->uuid = $uuid;
+            $history->uuid = $task->uuid;
             $history->process_name  = 'Task';
-            $history->created_by = $TaskOwner;
-            $history->feedback = 'Task Created';
-            $history->status = 'Add';
-            $history->p_id = isset($data['p_id']) ? $data['p_id'] : null;
+            $history->created_by = $task->Owner;
+            $history->feedback = $feedback;
+            $history->status = $status;
+            $history->p_id = isset($task->p_id) ? $task->p_id : null;
 
             $history->save();
         }

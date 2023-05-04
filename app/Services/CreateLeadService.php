@@ -6,27 +6,22 @@ use App\Models\CreateLead;
 use App\Models\History;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 
 class CreateLeadService
 {
-    public function insertData($data)
+    public function insertData(array $data):CreateLead
     {
-        $lead_Owner = Auth::user()->uname;
-        $userId = Auth::id();
-        $uuid = mt_rand(10000000, 99999999);
-        $username = Auth::user()->uname;
-        $roleId = auth()->user()->role_id;
-
         $leads = new CreateLead;
-        $leads->uuid = $uuid;
+        $leads->uuid = $uuid = mt_rand(10000000, 99999999);
         $leads->lead_Name = $data['lead_Name'] ?? null;
         $leads->company = isset($data['company']) ? $data['company'] : null;
         $leads->email = $data['email'] ?? null;
         $leads->fullName = $data['fullName'] ?? null;
         $leads->lead_Source = $data['lead_Source'] ?? null;
-        $leads->Owner = $lead_Owner;
-        $leads->created_by = $userId;
+        $leads->Owner = Auth::user()->uname;
+        $leads->created_by = auth()->user()->id;
         $leads->fax = $data['fax'] ?? null;
         $leads->phone = $data['phone'] ?? null;
         $leads->mobile = $data['mobile'] ?? null;
@@ -43,27 +38,50 @@ class CreateLeadService
         $leads->state = $data['state'] ?? null;
         $leads->country = $data['country'] ?? null;
         $leads->discription = $data['discription'] ?? null;
-        $leads->role_id = $roleId;
-        $leads->user_id = $userId;
+        $leads->role_id = auth()->user()->role_id;
+        $leads->user_id = auth()->user()->id;
         $leads->save();
-
-    
         Log::channel('create_leads')->info('A new lead has been created. lead data: '.$leads);
-
-        $history = new History;
-        $history->uuid = $uuid;
-        $history->process_name  = 'leads';
-        $history->created_by = $username;
-        $history->feedback = 'Lead Created';
-        $history->status = 'Add';
-        $history->save();
-
         return $leads;
-
-        return $history;
-
-
+    
     }
+
+        public function createLeadHistory($leads, $feedback, $status)
+        {
+            $history = new History;
+            $history->uuid = $leads->uuid;
+            $history->process_name  = 'Lead';
+            $history->created_by = $leads->Owner;
+            $history->feedback = $feedback;
+            $history->status = $status;
+            $history->save();
+            $history->save();
+        }
+
+
+        public function getLeads()
+        {
+            if (auth()->user()->role_id == 18) {
+                $tableName = 'create_leads';
+                $columns = ['*'];
+            } else {
+                $tableName = 'create_leads';
+                $columns = ['*'];
+                $userId = auth()->user()->id;
+                $whereClause = ['user_id', '=', $userId];
+            }
+
+            $query = DB::table($tableName)->select($columns)->latest();
+
+            if (isset($whereClause)) {
+                $query->where($whereClause[0], $whereClause[1], $whereClause[2]);
+            }
+
+            $data = $query->paginate(10);
+
+            return $data;
+        }
+
 }
 
 

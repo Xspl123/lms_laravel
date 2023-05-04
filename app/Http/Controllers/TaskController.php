@@ -11,15 +11,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\CreateTaskRequest;
+
+use Illuminate\Http\JsonResponse;
 
 class TaskController extends Controller
 {
     
 
+    private $taskService;
+
     public function __construct(TaskService $taskService)
     {
         $this->taskService = $taskService;
     }
+
 
     public function showSingleTask()
     {
@@ -33,22 +39,18 @@ class TaskController extends Controller
     }
 
     
-    public function createTask(Request $request,TaskService $taskService)
+    public function createTask(CreateTaskRequest $request, TaskService $taskService)
     {
-        $validatedData = $request->validate([
-            'Subject' => 'required',
-            'DueDate' => 'required',
-            'Status'=> 'required',
-            'Priority' => 'required',
-            'Reminder' => 'required',
-            'Repeat' => 'required',
-            'Description' => 'required',
-            'p_id'=> 'nullable'
-             
+        $data = $request->validated();
+
+        $task = $taskService->createTask($data);
+    
+        $taskService->createTaskHistory($task, 'Task Created', 'Add');
+
+        return response()->json([
+            'message' => 'Task created successfully',
+            'data' => $task,
         ]);
-        
-        $task = $this->taskService->insertData($validatedData);
-        return response(['message' => 'Task created Successfully','status'=>'success','task' => $task], 200);
     }
 
   
