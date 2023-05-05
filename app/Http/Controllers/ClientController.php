@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Client;
+use App\Http\Requests\CreateClientRequest;
 use App\Helpers\TableHelper;
 use App\Helpers\ApplicationUpdater;
 use App\Services\ClientService;
@@ -31,22 +32,12 @@ class ClientController extends Controller
     }
 
     
-    public function addClient(Request $request, ClientService $clientService)
+    public function addClient(CreateClientRequest $request, ClientService $clientService)
     {
-        $validatedData = $request->validate([
-            'clfull_name' => 'required',
-            'clphone' => 'required',
-            'clemail' => 'required|email|unique:clients,clemail',
-            'clsection' => 'required',
-            'clbudget' => 'required',
-            'cllocation' => 'required',
-            'clzip' => 'required',
-            'clcity' => 'required',
-            'clcountry' => 'required'
-        ]);
-          
-        // Insert the data using the clientService class
-        $client = $this->clientService->insertData($validatedData);
+        $data = $request->validated();
+        
+        $client = $this->clientService->insertData($data);
+        
         return response()->json(['message' => 'Client Added successfully','client' => $client], 201);
     }
 

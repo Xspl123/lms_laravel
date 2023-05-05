@@ -41,7 +41,6 @@
             $history->feedback = $feedback;
             $history->status = $status;
             $history->p_id = isset($task->p_id) ? $task->p_id : null;
-
             $history->save();
         }
 

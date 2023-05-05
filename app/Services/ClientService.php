@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ClientService
 {
-    public function insertData($data)
+    public function insertData(array $data):Client
     {
         $userId = Auth::User()->id; 
         $client = new Client();
@@ -23,6 +23,7 @@ class ClientService
         $client->clcountry = $data['clcountry'];
         $client->user_id = $userId;
         $client->save();
+
         return $client;
     }
 

@@ -3,24 +3,23 @@
 namespace App\Jobs;
 
 use App\Mail\SendMail;
-use App\Models\Mail as Email;
+use App\Models\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Mail as MailFacade;
 
 class SendEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $mailData;
+    protected $mail;
 
-   
-    public function __construct(MailData $mailData)
+    public function __construct(Mail $mail)
     {
-        $this->mailData = $mailData;
+        $this->mail = $mail;
     }
 
     /**
@@ -30,23 +29,17 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        $email = $this->mailData;
-    
-    try {
-        Mail::to($email->to)
-            ->cc($email->cc)
-            ->bcc($email->bcc)
-            ->send(new SendMail($email->toArray()));
+        $email = $this->mail;
 
-        // update the status to 'success' after sending the email
-        $email->mail_status = 'success';
-    } catch (\Exception $e) {
-        // update the status to 'failed' if an exception occurred
-        $email->mail_status = 'failed';
-    }
-    
-    $email->save();
         
+            MailFacade::to($email->to)
+                ->cc($email->cc)
+                ->bcc($email->bcc)
+                ->send(new SendMail($email->toArray()));
+
+            // update the status to 'success' after sending the email
+            $email->mail_status = 'success';
+       
+        $email->save();
     }
 }
-

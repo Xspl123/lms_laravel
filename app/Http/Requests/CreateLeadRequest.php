@@ -14,17 +14,19 @@ class CreateLeadRequest extends FormRequest
     public function authorize()
     {
         // You can set authorization logic here, e.g. if the user is allowed to create a task
-        if ($this->user()->role_id == 18) {
-            return true;
-        }
+        // if ($this->user()->role_id == 18) {
+        //     return true;
+        // }
 
-        throw new \Illuminate\Http\Exceptions\HttpResponseException(response()->json([
-            'message' => 'This action is unauthorized. you have not permissiable user'
-        ], 403));
+        // throw new \Illuminate\Http\Exceptions\HttpResponseException(response()->json([
+        //     'message' => 'This action is unauthorized. you have not permissiable user'
+        // ], 403));
     
-        $lead = CreateLead::find($this->route('lead'));
+        // $lead = CreateLead::find($this->route('lead'));
     
-        return $lead && $lead->user_id == $this->user()->id;
+        // return $lead && $lead->user_id == $this->user()->id;
+
+        return true;
         
     }
 
