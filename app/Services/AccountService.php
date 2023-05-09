@@ -14,7 +14,7 @@ class AccountService {
     {
         $userId = Auth::User()->id; 
         $account = new Account();
-        $account->AccountOwner = $data['AccountOwner'];
+        $account->Owner = $data['AccountOwner'];
         $account->AccountName = $data['AccountName'];
         $account->AccountSite = $data['AccountSite'];
         $account->ParentAccount = $data['ParentAccount'];

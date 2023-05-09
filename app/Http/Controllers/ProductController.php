@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\CreateProductRequest;
 
 class ProductController extends Controller
 {
@@ -28,31 +29,12 @@ class ProductController extends Controller
     }
 
     
-    public function createProduct(Request $request,ProductService $productService)
+    public function createProduct(CreateProductRequest $request,ProductService $productService)
     {
-        $validatedData = $request->validate([
-            'productName' => 'required',
-            'productCode' => 'required',
-            'vendorName' => 'nullable',
-            'productActive' => 'nullable',
-            'manufacturer' => 'nullable',
-            'productCategory' => 'nullable',
-            'salesStartDate' => 'nullable',
-            'salesEndDate' => 'nullable',
-            'supportStartDate' => 'nullable',
-            'unitPrice' => 'nullable',
-            'commissionRate' => 'nullable',
-            'usageUnit' => 'nullable',
-            'qtyOrdered' => 'nullable',
-            'quantityinStock' => 'nullable',
-            'reorderLevel' => 'nullable',
-            'handler' => 'nullable',
-            'quantityinDemand'=> 'nullable',
-            'description' => 'nullable',
-        ]);
+        $data = $request->validated();
         
-        $result = $this->productService->addProduct($validatedData);
-    
+        $result = $this->productService->addProduct($data);
+        $productService->createHistory($result, 'Product Created', 'Add');
         return response()->json(['success' => true, 'message' => 'Product added successfully']);
         
     }

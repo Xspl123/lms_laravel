@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Deal extends Model
 {
 
-    protected $fillable = ['dealOwner', 'dealName', 'accountName','type','amount','leadOwner',
+    protected $fillable = ['Owner', 'dealName', 'accountName','type','amount',
             'closingDate', 'stage','probability','expectedRevenue','campaignSource','description','user_id'
 
         ];

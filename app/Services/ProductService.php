@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use App\Models\Product;
+use App\Models\History;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,8 @@ class ProductService{
     public function addProduct($data){
         
         $product = new Product();
-        $product->productOwner = Auth::User()->uname;
+        $product->uuid = $uuid = mt_rand(10000000, 99999999); // changed $meetings to $meeting and removed duplicate assignment of $uuid
+        $product->Owner = Auth::User()->uname;
         $product->productName = $data['productName'];
         $product->productCode = $data['productCode'];
         $product->vendorName = $data['vendorName'];
@@ -42,12 +44,22 @@ class ProductService{
         $product->description = $data['description'];
         $product->user_id = Auth::User()->id;
         $product->save();
-        
         Log::channel('add_product')->info('A new product has been created. product data: '.$product);
-
         return $product;
 
     }
+
+    public function createHistory($product, $feedback, $status)
+        {
+            $history = new History;
+            $history->uuid = $product->uuid;
+            $history->process_name  = 'Product';
+            $history->created_by = $product->Owner;
+            $history->feedback = $feedback;
+            $history->status = $status;
+            $history->save();
+            $history->save();
+        }
 
     public function updateProduct($id, $data){
         $product = Product::find($id);

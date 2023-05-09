@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\CreateMeetingRequest;
 
 class MeetingController extends Controller
 {
@@ -20,18 +21,11 @@ class MeetingController extends Controller
     }
 
  
-    public function createMeeting(Request $request, MeetingService $meetingService)
+    public function createMeeting(CreateMeetingRequest $request, MeetingService $meetingService)
     {
-        $validatedData = $request->validate([
-            'title' => 'required',
-            'to' => 'required',
-            'related'=> 'required',
-            'contactName'=> 'required',
-            'contactNumber'=> 'required',
-            
-        ]);
-           
-        $meeting = $this->meetingService->insertData($validatedData);
+        $data = $request->validated();
+        $meeting = $this->meetingService->insertData($data);
+        $meetingService->createHistory($meeting, 'Meeting Created', 'Add');
         return response(['message' => 'Meeting has been created Successfully','status'=>'success','meeting' => $meeting], 200);
 
     }

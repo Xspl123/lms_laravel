@@ -68,6 +68,12 @@ return [
             'path' => storage_path('logs/create_task.log'),
             'level' => 'info',
         ],
+        
+        'create_deal' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/create_deal.log'),
+            'level' => 'info',
+        ],
 
         'create_leads' => [
             'driver' => 'single',
@@ -110,9 +116,15 @@ return [
             'bubble' => true,
         ],
 
-        ' companies' => [
+        'create_company' => [
             'driver' => 'single',
-            'path' => storage_path('logs/ companies.log'),
+            'path' => storage_path('logs/ create_company.log'),
+            'level' => 'info',
+        ],
+
+        'create_meeting' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/ create_meeting.log'),
             'level' => 'info',
         ],
 

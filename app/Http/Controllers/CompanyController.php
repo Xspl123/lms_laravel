@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\CreateCompanyRequest;
 
 class CompanyController extends Controller
 {
@@ -25,43 +26,11 @@ class CompanyController extends Controller
     }
 
 
-    public function addCompany(Request $request,CompanyService $companyService)
+    public function addCompany(CreateCompanyRequest $request,CompanyService $companyService)
     {
-            $validatedData = $request->validate([
-                'cname' => 'required',
-                'company' => 'required',
-                'email' => [
-                    'required',
-                    'email',
-                    function ($attribute, $value, $fail) {
-                        $domain = explode('@', $value)[1];
-                        $count = \DB::table('companies')->where('email', 'like', '%@'.$domain)->count();
-                        if ($count > 0) {
-                            $fail('This email domain is already in use.');
-                        }
-                    }
-                ],
-                'cphone'=>[
-                    'required',
-                    'string',
-                    function ($attribute, $value, $fail) {
-                        if (!preg_match('/^\d{10}$/', $value)) {
-                            $fail('The phone must be exactly 10 digits.');
-                        }
-                    },
-                ],
-                'role' => 'required|string',
-                'experience' => 'required',
-                'ctax_number' => 'nullable',
-                'location' => 'required',
-                'industry' => 'required',
-                'cemployees_size' => 'nullable',
-                'cfax' => 'nullable',
-                'cdescription' => 'nullable',
-            ]);
-               
-            $company = $this->companyService->insertData($validatedData);
-            return response(['message' => 'Company created Successfully','status'=>'success','company' => $company], 200);
+        $data = $request->validated();  
+        $company = $this->companyService->insertData($data);
+        return response(['message' => 'Company created Successfully','status'=>'success','company' => $company], 200);     
     }
     
     public function showCompany(Request $request)

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\CreateDealRequest;
 
 class DealController extends Controller
 {
@@ -19,21 +20,11 @@ class DealController extends Controller
     }
 
   
-    public function storeDeal(Request $request, DealService $dealService)
+    public function storeDeal(CreateDealRequest $request, DealService $dealService)
     {
-        $validatedData = $request->validate([
-            'dealName' => 'required',
-            'accountName' => 'required',
-            'type' => 'nullable',
-            'amount' => 'required',
-            'closingDate' => 'required',
-            'stage' => 'required',
-            'probability' => 'required',
-            'expectedRevenue' => 'required',
-            'campaignSource' => 'required',
-            'description' => 'nullable',
-        ]);
-        $deals = $this->dealService->addDeal($validatedData);
+        $data = $request->validated();
+        $deals = $this->dealService->addDeal($data);
+        $dealService->createHistory($deals, 'Deal Created', 'Add');
 
         return response()->json([
             'deals' => $deals,
@@ -53,13 +44,11 @@ class DealController extends Controller
     public function showDealList(Deal $deal)
     {
        // print_r($deal);exit;
-        $userId = Auth::id();
-        $deals = Deal::join('users', 'deals.user_id', '=', 'users.id')
-                   ->select('deals.*')
-                   ->where('users.id', $userId)
-                   ->limit(10)
-                   ->orderBy('id', 'desc')
-                   ->get();
+       $userId = auth()->id();
+       $deals = Deal::where('user_id', $userId)
+                      ->orderBy('id', 'desc')
+                      ->take(10)
+                      ->get();
                    
         return response([
             'deals'=>$deals,
