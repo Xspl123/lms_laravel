@@ -62,25 +62,17 @@ class AccountService {
     }
         public function getdata()
             {
-                if (auth()->user()->role_id == 18) {
+                if (auth()->user()->role_id == 19) {
                     $tableName = 'accounts';
-                    $columns = ['id','Owner','AccountName','phone'];
+                    $columns = ['id', 'Owner', 'AccountName', 'phone'];
+                    $query = DB::table($tableName)->select($columns)->latest()->paginate(10);
                 } else {
-                    $tableName = 'accounts';
-                    $columns = ['id','Owner','AccountName','phone'];
-                    $userId = auth()->user()->id;
-                    $whereClause = ['id', '=', $userId];
+                    $errorMessage = "You are not authorized to access this data.";
+                    return response()->json(['error' => $errorMessage], 403);
                 }
-
-                $query = DB::table($tableName)->select($columns)->latest();
-
-                if (isset($whereClause)) {
-                    $query->where($whereClause[0], $whereClause[1], $whereClause[2]);
-                }
-
-                $data = $query->paginate(10);
-
-                return $data;
+                
+                return $query;
+                
             }
 
 }
