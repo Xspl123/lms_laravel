@@ -62,7 +62,9 @@ class AccountService {
     }
         public function getdata()
             {
-                if (auth()->user()->role_id == 19) {
+                $userRole = auth()->user()->role_id;
+                $authorizedRole = 19;
+                if ($userRole == $authorizedRole) {
                     $tableName = 'accounts';
                     $columns = ['id', 'Owner', 'AccountName', 'phone'];
                     $query = DB::table($tableName)->select($columns)->latest()->paginate(10);
@@ -70,9 +72,9 @@ class AccountService {
                     $errorMessage = "You are not authorized to access this data.";
                     return response()->json(['error' => $errorMessage], 403);
                 }
-                
+
                 return $query;
-                
+
             }
 
 }

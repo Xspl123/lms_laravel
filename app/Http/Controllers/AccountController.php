@@ -31,12 +31,12 @@ class AccountController extends Controller
     }
 
    
-    public function showAccount(Account $account)
-    {
-        $account = $this->accountService->getdata();
-        return response(['account' => $account], 200);
+        public function showAccount(Account $account)
+        {
+            $account = $this->accountService->getdata();
+            return response(['account' => $account], 200);
 
-    }
+        }
 
     
    
