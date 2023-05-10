@@ -35,16 +35,11 @@ class RoleController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
-            
             $role = new Role;
-
             $role->p_id = $request->p_id;
             $role->company_id = $compId;
             $role->role_name = $request->role_name;
-
             $role->save();
-
             return response()->json(['message' => 'Role Added successfully','role' => $role], 201);
 
     }

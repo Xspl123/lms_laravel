@@ -73,45 +73,37 @@ class CreateLeadController extends Controller
 
     public function updateLead(Request $request, $uuid)
     {
-        $username = Auth::user()->uname;
         $updateLead = CreateLead::where('uuid', $uuid)->first();
-       
         if (!$updateLead) {
             return response()->json(['message' => 'Lead not found'], 404);
         }
 
         $originalData = clone $updateLead;
-     
+
         $updateLead->update($request->all());
 
         $changes = $updateLead->getChanges();
-         
-         $coloumname='';
-         $after_data='';
-         $beforedate='';
-         $coloumnamekey= array_key_first($changes);
-         
-        foreach($changes as $key=>$value) {
-            if($key == $coloumnamekey) {
-                $coloumname=$value;
-                $coloumname=$key;
-                $after_data=$originalData[$key];
-                $after_data ? $after_data : $after_data='Null Values'; 
-                $beforedate= $value;
-                $feadback= $coloumname.' was updated from '.$after_data.'  to '.$beforedate;
-                $history = new History;
-                $history->uuid = $uuid;
-                $history->process_name  = 'leads';
-                $history->created_by = $username;
-                $history->feedback = $feadback;
-                $history->status = 'Updated';
-                $history->save();
-                Log::channel('update_leads')->info('lead has been updated. lead data: '.$feadback);
-                return response()->json(['message' => 'Lead has been updated'], 200);
-            }
-             
+
+        if (empty($changes)) {
+            return response()->json(['message' => 'No changes detected'], 400);
         }
-         return response()->json(['message' => ' Lead has been not updated'], 200);
+        $column = key($changes);
+        $before = $originalData->$column;
+        $after = $changes[$column];
+        $feedback = "$column was updated from $before to $after";
+
+        $history = new History;
+        $history->uuid = $uuid;
+        $history->process_name = 'leads';
+        $history->created_by = Auth::user()->uname;
+        $history->feedback = $feedback;
+        $history->status = 'Updated';
+        
+        $history->save();
+        Log::channel('update_leads')->info("Lead has been updated. $feedback");
+
+        return response()->json(['message' => 'Lead has been updated'], 200);
+
     }
 
     public function deleteAllLeads()

@@ -64,7 +64,6 @@ class CommonHelper
         $log->update();
     }
 
-
     public static function update($data)
     {
         DB::beginTransaction();

@@ -93,7 +93,7 @@ class EmployeeController extends Controller
      * @return \Illuminate\Http\Response
      */
     
-    public function updateEmployee(Request $request, Employee $employee,$id)
+    public function updateEmployee(CreateEmployeeRequest $request, Employee $employee,$id)
     {
         $uuid = mt_rand(10000000, 99999999);
         $user_id = Auth::user()->id;

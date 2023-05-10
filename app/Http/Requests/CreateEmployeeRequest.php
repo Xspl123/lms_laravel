@@ -56,7 +56,7 @@ class CreateEmployeeRequest extends FormRequest
     public function messages()
     {
         return [
-            'phone.regex' => 'The phone number must be exactly 10 digits.',
+            'phone.regex' => 'The Phone number must be exactly 10 digits.',
         ];
     }
 }

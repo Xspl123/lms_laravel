@@ -122,6 +122,12 @@ return [
             'level' => 'info',
         ],
 
+        'create_account' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/ create_account.log'),
+            'level' => 'info',
+        ],
+
         'create_meeting' => [
             'driver' => 'single',
             'path' => storage_path('logs/ create_meeting.log'),

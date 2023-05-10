@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Account extends Model
 {
     protected $fillable = [
-
+        'Owner',
         'AccountOwner',
         'AccountName',
         'AccountSite',
@@ -17,12 +17,12 @@ class Account extends Model
         'AccountType',
         'Industry',
         'AnnualRevenue',
-        'Rating',
-        'Phone',
+        // 'Rating',
+        'phone',
         'Fax',
         'Website',
         'TickerSymbol',
-        'Ownership',
+       // 'Ownership',
         'Employees',
         'SICCode',
         'BillingStreet',

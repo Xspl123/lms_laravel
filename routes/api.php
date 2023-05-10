@@ -1,24 +1,25 @@
 <?php
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\PasswordResetController;
-use App\Http\Controllers\CreateLeadController;
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\ClientController;
-use App\Http\Controllers\Contact;
-use App\Http\Controllers\RolePermissionController;
-use App\Http\Controllers\DealController;
-use App\Http\Controllers\TaskController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\AllFieldsColumnController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\HistoryController;
-use App\Http\Controllers\ExcelController;
-use App\Http\Controllers\MeetingController;
-use App\Http\Controllers\EmailController;
-use App\Http\Controllers\IndustryController;
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Route;
+    use App\Http\Controllers\UserController;
+    use App\Http\Controllers\PasswordResetController;
+    use App\Http\Controllers\CreateLeadController;
+    use App\Http\Controllers\CompanyController;
+    use App\Http\Controllers\ClientController;
+    use App\Http\Controllers\Contact;
+    use App\Http\Controllers\RolePermissionController;
+    use App\Http\Controllers\DealController;
+    use App\Http\Controllers\TaskController;
+    use App\Http\Controllers\ProductController;
+    use App\Http\Controllers\AllFieldsColumnController;
+    use App\Http\Controllers\RoleController;
+    use App\Http\Controllers\EmployeeController;
+    use App\Http\Controllers\HistoryController;
+    use App\Http\Controllers\ExcelController;
+    use App\Http\Controllers\MeetingController;
+    use App\Http\Controllers\EmailController;
+    use App\Http\Controllers\IndustryController;
+    use App\Http\Controllers\AccountController;
 
 // Public Routes
     
@@ -130,6 +131,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/create-industry', [IndustryController::class,'createIndustry']);
     Route::get('/show-industry', [IndustryController::class,'showIndustry']);
 
-
-
+    // Account route
+    Route::post('/create-account', [AccountController::class,'createAccount']);
+    Route::put('/updateAccount/{uuid}', [AccountController::class, 'updateAccount']);
+    Route::get('/show-account-deatils', [AccountController::class, 'showAccount']);
 });
