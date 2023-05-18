@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class AccountService {
    
@@ -60,21 +61,71 @@ class AccountService {
         $history->save();
         $history->save();
     }
-        public function getdata()
-            {
-                $userRole = auth()->user()->role_id;
-                $authorizedRole = 19;
-                if ($userRole == $authorizedRole) {
-                    $tableName = 'accounts';
-                    $columns = ['id', 'Owner', 'AccountName', 'phone'];
-                    $query = DB::table($tableName)->select($columns)->latest()->paginate(10);
-                } else {
-                    $errorMessage = "You are not authorized to access this data.";
-                    return response()->json(['error' => $errorMessage], 403);
-                }
+    public function getdata($authorizedRoleId)
+    {
+        $userRole = auth()->user()->role_id;
+        //print_r($userRole);exit;
+        $tableName = 'accounts';
+        $columns = ['id', 'Owner', 'AccountName', 'phone'];
 
-                return $query;
+        if ($userRole == $authorizedRoleId) {
+            $query = DB::table($tableName)
+                    ->where('Owner', auth()->user()->id)
+                    ->select($columns)
+                    ->latest()
+                    ->paginate(10);
+        } else {
+            $errorMessage = "You are not authorized to access this data.";
+            return response()->json(['message' => $errorMessage], 403);
+        }
 
-            }
+        return $query;
+    }
+
+    public function updateAccount(Request $request, $uuid)
+    {
+        $account = Account::where('uuid', $uuid)->first();
+        if (!$account) {
+            return response()->json(['message' => 'Account not found'], 404);
+        }
+
+        $originalData = clone $account;
+
+        $account->update($request->all());
+
+        $changes = $account->getChanges();
+
+        if (empty($changes)) {
+            return response()->json(['message' => 'No changes detected'], 400);
+        }
+        $column = key($changes);
+        $before = $originalData->$column;
+        $after = $changes[$column];
+        $feedback = "$column was updated from $before to $after";
+
+        $history = new History;
+        $history->uuid = $uuid;
+        $history->process_name = 'Account';
+        $history->created_by = Auth::user()->uname;
+        $history->feedback = $feedback;
+        $history->status = 'Updated';
+        
+        $history->save();
+    
+        return response()->json(['message' => 'Account has been updated'], 200);
+    }
+
+    public function destroyAccount($id)
+    {
+        $account = Account::find($id);
+
+        if (!$account) {
+            return response()->json(['message' => 'Account not found'], 404);
+        }
+
+        $account->delete();
+
+        return response()->json(['message' => 'Account deleted'], 200);
+    }
 
 }

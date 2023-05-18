@@ -29,54 +29,26 @@ class AccountController extends Controller
         $accountService->createHistory($account, 'Account Created', 'Add');
         return response(['message' => 'Account created Successfully','status'=>'success','account' => $account], 200);
     }
-
-   
-        public function showAccount(Account $account)
-        {
-            $account = $this->accountService->getdata();
-            return response(['account' => $account], 200);
-
-        }
-
-    
-   
-    public function updateAccount(Request $request, $uuid)
+ 
+    public function showAccount(Account $account)
     {
-        $account = Account::where('uuid', $uuid)->first();
-        if (!$account) {
-            return response()->json(['message' => 'Account not found'], 404);
+        $account = $this->accountService->getdata(22);
+        if (isset($account->message)) {
+            // Display the error message to the user
+            echo $account->message;
+        } else {
+            // Display the data to the user
+            return response(['account' => $account], 200);
         }
-
-        $originalData = clone $account;
-
-        $account->update($request->all());
-
-        $changes = $account->getChanges();
-
-        if (empty($changes)) {
-            return response()->json(['message' => 'No changes detected'], 400);
-        }
-        $column = key($changes);
-        $before = $originalData->$column;
-        $after = $changes[$column];
-        $feedback = "$column was updated from $before to $after";
-
-        $history = new History;
-        $history->uuid = $uuid;
-        $history->process_name = 'Account';
-        $history->created_by = Auth::user()->uname;
-        $history->feedback = $feedback;
-        $history->status = 'Updated';
-        
-        $history->save();
-    
-        return response()->json(['message' => 'Account has been updated'], 200);
-
     }
 
-    
-    public function destroy(Account $account)
+    public function updateAccount(Request $request, $uuid)
     {
-        //
+        return $this->accountService->updateAccount($request, $uuid);
+    }
+
+    public function deleteAccount($id)
+    {
+        return $this->accountService->destroyAccount($id);
     }
 }

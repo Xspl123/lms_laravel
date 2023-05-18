@@ -19,6 +19,7 @@ use App\Http\Requests\CreateLeadRequest;
 
 class CreateLeadController extends Controller
 { 
+    private $createLeadService;
     
     public function __construct(CreateLeadService $createLeadService)
     {
@@ -42,11 +43,20 @@ class CreateLeadController extends Controller
     public function userLead(){
 
         $column = AllInOneController::tabledetails_col("all_fields_columns","fieldsName,Column_Name,Column_order");
-        //$data_list = AllInOneController::getTableData('create_leads','*');
-        
-        $leads = $this->createLeadService->getLeads();
-        
-        return response(['column'=>$column,'leads' => $leads, 'status'=>'success'], 200);
+        $data_list = AllInOneController::getTableData('create_leads','*');
+        return response(['column'=>$column,'leads' => $data_list, 'status'=>'success'], 200);
+    }
+    //show leadWithUserRole
+    public function leadWithUserRole(){
+        $leads = $this->createLeadService->getdata(18);
+        if (isset($account->message)) {
+            // Display the error message to the user
+            echo $leads->message;
+        } else {
+            // Display the data to the user
+            return response(['leads' => $leads], 200);
+        }
+ 
     }
     //create  leads
     public function CreateUserLead(CreateLeadRequest $request ,CreateLeadService $createLeadService)
@@ -73,44 +83,14 @@ class CreateLeadController extends Controller
 
     public function updateLead(Request $request, $uuid)
     {
-        $updateLead = CreateLead::where('uuid', $uuid)->first();
-        if (!$updateLead) {
-            return response()->json(['message' => 'Lead not found'], 404);
-        }
-
-        $originalData = clone $updateLead;
-
-        $updateLead->update($request->all());
-
-        $changes = $updateLead->getChanges();
-
-        if (empty($changes)) {
-            return response()->json(['message' => 'No changes detected'], 400);
-        }
-        $column = key($changes);
-        $before = $originalData->$column;
-        $after = $changes[$column];
-        $feedback = "$column was updated from $before to $after";
-
-        $history = new History;
-        $history->uuid = $uuid;
-        $history->process_name = 'leads';
-        $history->created_by = Auth::user()->uname;
-        $history->feedback = $feedback;
-        $history->status = 'Updated';
-        
-        $history->save();
-        Log::channel('update_leads')->info("Lead has been updated. $feedback");
-
-        return response()->json(['message' => 'Lead has been updated'], 200);
-
+        return $this->createLeadService->updateLead($request, $uuid);
     }
 
     public function deleteAllLeads()
     {
-        $task = CreateLead::truncate();
+        $leads = CreateLead::truncate();
 
-        return response()->json(['message' => 'All tasks deleted successfull'], 200);
+        return response()->json(['message' => 'All Lead deleted successfull'], 200);
 
     }
 

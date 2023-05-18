@@ -53,6 +53,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::delete('/deleteAllLeads', [CreateLeadController::class, 'deleteAllLeads']);
     Route::get('/searchlead', [CreateLeadController::class, 'searchlead']);
     Route::get('/paginateData', [CreateLeadController::class, 'paginateData']);
+    Route::get('/leadWithUserRole',[CreateLeadController::class,'leadWithUserRole']);
     
     //change password route
     Route::post('/changepassword', [UserController::class, 'change_password']);
@@ -135,4 +136,5 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/create-account', [AccountController::class,'createAccount']);
     Route::put('/updateAccount/{uuid}', [AccountController::class, 'updateAccount']);
     Route::get('/show-account-deatils', [AccountController::class, 'showAccount']);
+    Route::delete('/delete-account/{id}', [AccountController::class, 'deleteAccount']);
 });
