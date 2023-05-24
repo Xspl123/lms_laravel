@@ -1,12 +1,41 @@
 <?php
 
 namespace App\Models;
-
+use Predis\Client;
+use Predis\Connection\ConnectionException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CreateLead extends Model
 {
+
+    protected static function booted()
+    {
+        parent::booted();
+
+        static::created(function ($createLead) {
+            $redisKey = 'createleads:' . $createLead->id;
+
+            try {
+                $redis = new Client();
+                $redis->hmset($redisKey, [
+                    'lead_Name' => $createLead->lead_Name,
+                    'email' => $createLead->email,
+                    'fullName' => $createLead->fullName,
+                    'Owner' => $createLead->Owner,
+                    'phone' => $createLead->phone,
+                    'mobile' => $createLead->mobile,
+                    'lead_status' => $createLead->lead_status,
+                    'companies_id' => $createLead->companies_id,
+                    'user_id' => $createLead->user_id,
+                    'role_id' => $createLead->role_id,
+                    'uuid' => $createLead->uuid,
+                ]);
+            } catch (ConnectionException $exception) {
+                // Handle connection exception if needed
+            }
+        });
+    }
     public function company()
     {
         return $this->belongsTo(Company::class);

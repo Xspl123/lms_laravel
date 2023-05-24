@@ -123,14 +123,13 @@ return [
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
-            'database' => 0,
-        ],
-        'cache' => [
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
-            'port' => env('REDIS_PORT', 6379),
-            'database' => 1,
+            'database' => env('REDIS_DB', 0),
+            'prefix' => 'your_prefix_',
+            'read_write_timeout' => 10, // Adjust the timeout value as needed
+            'retry_limit' => 3, // Adjust the number of retries as needed
+            'persistent' => true,
         ],
     ],
+    
 
 ];

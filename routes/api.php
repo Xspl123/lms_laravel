@@ -54,7 +54,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/searchlead', [CreateLeadController::class, 'searchlead']);
     Route::get('/paginateData', [CreateLeadController::class, 'paginateData']);
     Route::get('/leadWithUserRole',[CreateLeadController::class,'leadWithUserRole']);
-    
+    Route::get('/leads/{leadId}', [CreateLeadController::class,'show']);
+    Route::get('/getLeadCount', [CreateLeadController::class,'getLeadCount']);
+
     //change password route
     Route::post('/changepassword', [UserController::class, 'change_password']);
     //company route

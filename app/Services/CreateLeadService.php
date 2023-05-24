@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Services;
-
+use Predis\Client;
+use Predis\Connection\ConnectionException;
 use App\Models\CreateLead;
 use App\Models\History;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,7 @@ use Illuminate\Http\Request;
 
 class CreateLeadService
 {
-    public function insertData(array $data):CreateLead
+    public function insertData(array $data): CreateLead
     {
         $leads = new CreateLead;
         $leads->uuid = $uuid = mt_rand(10000000, 99999999);
@@ -42,9 +43,31 @@ class CreateLeadService
         $leads->role_id = auth()->user()->role_id;
         $leads->user_id = auth()->user()->id;
         $leads->save();
-        Log::channel('create_leads')->info('A new lead has been created. lead data: '.$leads);
-        return $leads;
     
+        try {
+            $redis = new Client();
+            $redisKey = 'createleads:' . $leads->uuid;
+            $redis->hmset($redisKey, [
+                'lead_Name' => $leads->lead_Name,
+                'email' => $leads->email,
+                'fullName' => $leads->fullName,
+                'Owner' => $leads->Owner,
+                'phone' => $leads->phone,
+                'mobile' => $leads->mobile,
+                'lead_status' => $leads->lead_status,
+                'companies_id' => $leads->companies_id,
+                'user_id' => $leads->user_id,
+                'role_id' => $leads->role_id,
+                'uuid' => $leads->uuid,
+            ]);
+        } catch (ConnectionException $exception) {
+            // Handle connection exception if needed
+
+        }
+    
+        Log::channel('create_leads')->info('A new lead has been created. lead data: ' . $leads);
+    
+        return $leads;
     }
 
         public function createLeadHistory($leads, $feedback, $status)
@@ -58,7 +81,17 @@ class CreateLeadService
             $history->save();
             
         }
-
+        public function getLeadData($leadId)
+        {
+            $redis = new Client();
+            $redisKey = 'createleads:' . $leadId;
+            $leadData = $redis->hmget($redisKey, ['fullName', 'phone']);
+    
+            return [
+                'fullName' => $leadData[0] ?? null,
+                'phone' => $leadData[1] ?? null,
+            ];
+        }
 
         public function getdata($authorizedRoleId)
         {
@@ -112,10 +145,19 @@ class CreateLeadService
             Log::channel('update_leads')->info("Lead has been updated. $feedback");
         
             return response()->json(['message' => 'Lead has been updated'], 200);
-        }    
+        } 
+        
 
-}
+        public function getLeadCount($leadStatuses)
+        {
+            $leadCounts = CreateLead::whereIn('lead_status', $leadStatuses)
+            ->groupBy('lead_status')
+            ->selectRaw('lead_status, count(*) as count')
+            ->get()
+            ->pluck('count', 'lead_status');
+            return $leadCounts;
+        }
 
-
+    }
 
 

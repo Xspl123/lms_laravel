@@ -5,6 +5,7 @@ use App\Models\CreateLead;
 use App\Models\AllFieldsColumn;
 use App\Models\History;
 use App\Models\User;
+use Predis\Client;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Services\CreateLeadService;
@@ -24,6 +25,17 @@ class CreateLeadController extends Controller
     public function __construct(CreateLeadService $createLeadService)
     {
         $this->createLeadService = $createLeadService;
+    }
+
+    public function show($leadId)
+    {
+        $leadData = $this->createLeadService->getLeadData($leadId);
+
+        if (empty($leadData)) {
+            return response()->json(['error' => 'Lead not found'], 404);
+        }
+
+        return response()->json($leadData);
     }
 
 
@@ -120,7 +132,13 @@ class CreateLeadController extends Controller
         })->get();
     }
 
-    
-   
+
+    public function getLeadCount()
+    {
+        $leadStatuses = ['Pre-Qualified', 'Not-Qualified', 'Junk Lead', 'Not Contacted', 'Lost Lead','active','Follow up','open','Attempted to Contact','Contact in Future','inactive'];
+        $leadCount = $this->createLeadService->getLeadCount($leadStatuses);
+
+        return response()->json(['status_wise_lead_count' => $leadCount]);
+    }
 
 }
