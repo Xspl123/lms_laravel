@@ -20,6 +20,8 @@
     use App\Http\Controllers\EmailController;
     use App\Http\Controllers\IndustryController;
     use App\Http\Controllers\AccountController;
+    use App\Http\Controllers\Auth\ForgotPasswordController;
+    use App\Http\Controllers\Auth\ResetPasswordController;
 
 // Public Routes
     
@@ -27,7 +29,9 @@
     Route::post('/send-reset-password-email', [PasswordResetController::class, 'send_reset_password_email']);
     Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset']);
     Route::get('/getcity/{id}', [Contact::class, 'getcity']);
-   
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+
     Route::post('/addCompany', [CompanyController::class, 'addCompany']);
     Route::get('/roles', [RoleController::class,'index']);
     Route::post('/roles', [RoleController::class,'store']);
@@ -42,6 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/logout', [UserController::class, 'logout']);
     Route::get('/loggeduser', [UserController::class, 'logged_user']);
     Route::get('/userList', [UserController::class, 'userList']);
+    Route::post('/change_password', 'App\Http\Controllers\UserController@change_password');
     //lead route
     Route::post('/import-leads',[ExcelController::class,'fileImport']);
     Route::get('/export-leads',[ExcelController::class,'fileExport']);

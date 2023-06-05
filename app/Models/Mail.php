@@ -19,6 +19,9 @@ class Mail extends Model
         'body',
         'sender_name',
         'mail_status',
+        'email',
+        'company_id',
+        'message'
     ];
     use HasFactory;
 }

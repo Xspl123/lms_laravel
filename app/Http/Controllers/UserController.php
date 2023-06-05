@@ -104,23 +104,33 @@ class UserController extends Controller
 
     }
     
-    public function change_password(Request $request){
-       // echo "changepassword"; die;
+    public function change_password(Request $request)
+    {
         $request->validate([
             'password' => 'required|confirmed',
         ]);
+        
         $loggeduser = auth()->user();
+        
+        if (!$loggeduser) {
+            return response([
+                'message' => 'User not found',
+                'status' => 'error'
+            ], 404);
+        }
+        
         $loggeduser->password = Hash::make($request->password);
         $loggeduser->save();
+        
         return response([
             'message' => 'Password Changed Successfully',
-            'status'=>'success'
+            'status' => 'success'
         ], 200);
     }
 
+
     public function userList()
-    {
-        
+    {   
         if (auth()->check()) {
             $company_id = auth()->user()->company_id;
             $users = DB::table('users')
