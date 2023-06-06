@@ -12,7 +12,7 @@ class AllInOneController extends Controller
 {
     public function tabledetails($tabel){
        
-        $user = DB::table($tabel)->select('*')
+        $user = DB::table($tabel)->select('MAIL_DRIVER','MAIL_HOST','MAIL_FROM_ADDRESS','MAIL_FROM_NAME','MAIL_USERNAME')
         ->orderBy('id','ASC')
         ->get();
         return $user;

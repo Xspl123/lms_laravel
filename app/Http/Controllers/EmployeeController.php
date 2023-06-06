@@ -68,11 +68,7 @@ class EmployeeController extends Controller
             $data['created_at'] = Carbon::now();
             $data['updated_at'] = Carbon::now();
             DB::table('employee_history')->insert($data);
-        return response(['data' =>$data,'status'=>'success'], 200);
-                
-                
-             
-            
+        return response(['data' =>$data,'status'=>'success'], 201);      
     }
 
     /**

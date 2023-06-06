@@ -22,6 +22,8 @@
     use App\Http\Controllers\AccountController;
     use App\Http\Controllers\Auth\ForgotPasswordController;
     use App\Http\Controllers\Auth\ResetPasswordController;
+    use App\Http\Controllers\EmailConfirmationController;
+    use App\Http\Controllers\LicenceController;
 
 // Public Routes
     
@@ -144,4 +146,18 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::put('/updateAccount/{uuid}', [AccountController::class, 'updateAccount']);
     Route::get('/show-account-deatils', [AccountController::class, 'showAccount']);
     Route::delete('/delete-account/{id}', [AccountController::class, 'deleteAccount']);
+
+    //Email confirmation route
+    Route::get('/getEmailConfirmationDetails', [EmailConfirmationController::class,'getEmailConfirmationDetails']);
+    Route::post('/send-email-confirmation', [EmailConfirmationController::class,'sendEmailConfirmation']);
+
+    //Liences route
+    Route::post('/createLience', [LicenceController::class, 'createLience']);
+    Route::get('/showLiences', [LicenceController::class,'showLiences']);
+    Route::delete('/deleteLience/{id}', [LicenceController::class, 'deleteLience']);
+    Route::put('/updateLience/{id}', [LicenceController::class, 'updateLience']);
+    Route::get('/getLiencesHierarchy', [LicenceController::class, 'getLiencesHierarchy']);
+    Route::get('/getLiencesByStatus', [LicenceController::class, 'getLiencesByStatus']);
+    Route::get('/getLiencesByDepartment', [LicenceController::class, 'getLiencesByDepartment']);
+    Route::get('/getLiencesByDepartmentHierarchy', [LicenceController::class, 'getLiencesByDepartmentHierarchy']);
 });
