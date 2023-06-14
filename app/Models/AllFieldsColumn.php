@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class AllFieldsColumn extends Model
 {
     protected $fillable = [
-        'processName', 'fieldsName'
+        'processName', 'fieldsName','Column_Name'
         ];
     use HasFactory;
 }

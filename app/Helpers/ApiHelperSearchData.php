@@ -4,12 +4,29 @@ namespace App\Helpers;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+
 class ApiHelperSearchData
 {
-    function search($table, $column, $searchTerm)
+    public static function search($table, $searchTerm)
     {
-        return DB::table($table)
-            ->where($column, 'LIKE', '%' . $searchTerm . '%')
-            ->get();
+        $loggedInUserId = Auth::id();
+
+        if ($loggedInUserId) 
+        {
+            $columns = Schema::getColumnListing($table);
+
+            return DB::table($table)
+                ->where('user_id', $loggedInUserId)
+                ->where(function ($query) use ($columns, $searchTerm) {
+                    foreach ($columns as $column) {
+                        $query->orWhere($column, 'LIKE', '%' . $searchTerm . '%');
+                    }
+                })
+                ->first();
+        }
+        // Return null if the user is not logged in
+        return null;
     }
 }

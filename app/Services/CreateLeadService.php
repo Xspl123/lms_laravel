@@ -31,15 +31,18 @@ class CreateLeadService
         $leads->lead_status = $data['lead_status'] ?? null;
         $leads->industry = $data['industry'] ?? null;
         $leads->rating = $data['rating'] ?? null;
+        $leads->noOfEmployees = $data['noOfEmployees'] ?? null;
         $leads->annualRevenue = $data['annualRevenue'] ?? null;
         $leads->skypeID = $data['skypeID'] ?? null;
         $leads->secondaryEmail = $data['secondaryEmail'] ?? null;
         $leads->twitter = $data['twitter'] ?? null;
+        $leads->city = $data['city'] ?? null;
         $leads->street = $data['street'] ?? null;
         $leads->pinCode = $data['pinCode'] ?? null;
         $leads->state = $data['state'] ?? null;
         $leads->country = $data['country'] ?? null;
         $leads->discription = $data['discription'] ?? null;
+        $leads->title = $data['title'] ?? null;
         $leads->role_id = auth()->user()->role_id;
         $leads->user_id = auth()->user()->id;
         $leads->save();
@@ -116,7 +119,9 @@ class CreateLeadService
 
         public function updateLead(Request $request, $uuid)
         {
+           
             $leads = CreateLead::where('uuid', $uuid)->first();
+            //print_r($leads);exit;
             if (!$leads) {
                 return response()->json(['message' => 'Lead not found'], 404);
             }
@@ -124,7 +129,7 @@ class CreateLeadService
             $originalData = clone $leads;
     
             $leads->update($request->all());
-    
+            //print_r($leads);exit;
             $changes = $leads->getChanges();
     
             if (empty($changes)) {
@@ -150,12 +155,47 @@ class CreateLeadService
 
         public function getLeadCount($leadStatuses)
         {
-            $leadCounts = CreateLead::whereIn('lead_status', $leadStatuses)
-            ->groupBy('lead_status')
-            ->selectRaw('lead_status, count(*) as count')
-            ->get()
-            ->pluck('count', 'lead_status');
+            // Check if the user is logged in
+            if (!Auth::check()) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+
+            $user = Auth::user();
+
+            $leadCounts = CreateLead::where('user_id', $user->id)
+                ->whereIn('lead_status', $leadStatuses)
+                ->groupBy('lead_status')
+                ->selectRaw('lead_status, count(*) as count')
+                ->get()
+                ->pluck('count', 'lead_status');
+
             return $leadCounts;
+        }
+
+        public function deleteLead($id)
+        {
+            // Check if the user is authenticated
+                if (!Auth::check()) {
+                    return response()->json(['message' => 'Unauthorized'], 401);
+                }
+
+                // Retrieve the lead
+                $lead = CreateLead::find($id);
+
+                if (!$lead) {
+                    return response()->json(['message' => 'Lead not found'], 404);
+                }
+
+                // Check if the authenticated user owns the lead
+                if ($lead->user_id !== Auth::user()->id) {
+                    return response()->json(['message' => 'Unauthorized'], 401);
+                }
+
+                // Delete the lead
+                $lead->delete();
+
+            return response()->json(['message' => 'Lead deleted'], 200);
+            
         }
 
     }

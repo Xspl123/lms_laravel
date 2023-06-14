@@ -69,8 +69,8 @@ class AllInOneController extends Controller
     }
 
     
-    public function getTableData($tableName, $columns = ['*'])
-    {
+    //public function getTableData($tableName, $columns = ['*'])
+    //{
 
     //     $roleId = auth()->user()->role_id;
     //     $company_id = auth()->user()->company_id;
@@ -97,16 +97,37 @@ class AllInOneController extends Controller
     //     }
     //     print_r ($item);exit;
 
-        $data = DB::table($tableName)->select($columns)->latest()->paginate(10);
-        return $data;
+        // $data = DB::table($tableName)->select($columns)->latest()->paginate(10);
+        // return $data;
     
     
     //if the loop completes without finding the id, it is not present in the $data collection
    // $data = DB::table($tableName)->select($columns)->whereIn('lead_Owner',$data)->latest()->paginate(10);
 
         
+    //}
+
+    public static function getTableData($tableName, $columns = ['*'], $conditions = [], $perPage = 10)
+    {
+        // Check if the user is logged in
+        if (!Auth::check()) {
+            return [];
+        }
+
+        $user = Auth::user();
+
+        // Add the condition to fetch data only for the logged-in user
+        $conditions['user_id'] = $user->id;
+
+        // Fetch paginated data based on the modified conditions
+        $data = DB::table($tableName)
+            ->select($columns)
+            ->where($conditions)
+            ->latest()
+            ->paginate($perPage);
+
+        return $data;
     }
-
-
-
 }
+
+

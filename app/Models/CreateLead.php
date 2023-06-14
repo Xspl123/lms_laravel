@@ -50,8 +50,9 @@ class CreateLead extends Model
         return $this->belongsTo(Role::class, 'role_id');
     }
 
-    protected $fillable = [
-        'lead_Name', 'email', 'fullName','Owner','phone','mobile','lead_status','companies_id','user_id','role_id','uuid'
+     protected $fillable = [
+         'lead_Name', 'company',  'email', 'lead_Source', 'fullName', 'fax','Owner','phone','mobile','lead_status','companies_id','user_id','role_id','uuid','website','industry','rating','noOfEmployees','annualRevenue','skypeID','secondaryEmail','twitter','city','street','pinCode','state','country','discription','title'
         ];
+    
     use HasFactory;
 }

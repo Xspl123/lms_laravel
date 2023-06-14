@@ -56,10 +56,14 @@ class CreateLeadController extends Controller
 
         $column = AllInOneController::tabledetails_col("all_fields_columns","fieldsName,Column_Name,Column_order");
         $data_list = AllInOneController::getTableData('create_leads','*');
-        return response(['column'=>$column,'leads' => $data_list, 'status'=>'success'], 200);
+        return response(['column'=>$column,'data_list' => $data_list, 'status'=>'success'], 200);
+
     }
+    
     //show leadWithUserRole
     public function leadWithUserRole(){
+        //$user = Auth::user();
+        //print_r($user); exit;
         $leads = $this->createLeadService->getdata(18);
         if (isset($account->message)) {
             // Display the error message to the user
@@ -79,47 +83,61 @@ class CreateLeadController extends Controller
         return response()->json(['message' => 'Lead created successfully','data' => $lead,]);
     }
 
+    //delete lead  behaf of id.
 
     public function destroyLead($id)
     {
-        $leads = CreateLead::find($id);
-
-        if (!$leads) {
-            return response()->json(['message' => 'Lead not found'], 404);
-        }
-
-        $leads->delete();
-
-        return response()->json(['message' => 'Lead deleted'], 200);
+        return $this->createLeadService->deleteLead($id);
     }
 
+    //update lead  behaf of uuid.
     public function updateLead(Request $request, $uuid)
     {
+        
         return $this->createLeadService->updateLead($request, $uuid);
+
     }
 
     public function deleteAllLeads()
     {
-        $leads = CreateLead::truncate();
+        // Check if the user is logged in
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
 
-        return response()->json(['message' => 'All Lead deleted successfull'], 200);
+        $user = Auth::user();
 
+        // Delete only the leads belonging to the authenticated user
+        CreateLead::where('user_id', $user->id)->delete();
+
+        return response()->json(['message' => 'Your leads deleted successfully'], 200);
     }
 
-    public function searchlead(Request $request)
+    public function searchLead(Request $request)
     {
         $searchTerm = $request->input('search_term');
-        $searchlead = ApiHelperSearchData::search('create_leads', 'id', $searchTerm);
+        $searchResult = ApiHelperSearchData::search('create_leads', $searchTerm);
 
-        // Do something with the search results, such as returning them as a response
-        return response()->json(['message' => 'Searching Lead', 'searchlead' => $searchlead], 200);    }
+        if ($searchResult) {
+            // Row found, do something with the data
+            return response()->json(['message' => 'Lead found', 'lead' => $searchResult], 200);
+        } else {
+            // Row not found
+            return response()->json(['message' => 'Lead not found'], 404);
+        }
+    }
+
+
+
+
+    
 
     public function paginateData()
-    { 
+    {   
         echo "paginateData";
     }
 
-
+    //count lead  status wise 
     public function getLeadCount()
     {
         $leadStatuses = ['Pre-Qualified', 'Not-Qualified', 'Junk Lead', 'Not Contacted', 'Lost Lead','active','Follow up','open','Attempted to Contact','Contact in Future','inactive'];

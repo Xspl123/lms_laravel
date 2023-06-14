@@ -58,15 +58,18 @@ class CreateLeadRequest extends FormRequest
             'website' => 'nullable',
             'industry' => 'nullable',
             'rating' => 'nullable',
+            'noOfEmployees' => 'nullable',
             'annualRevenue' => 'nullable',
             'skypeID' => 'nullable',
             'secondaryEmail' => 'nullable',
             'twitter' => 'nullable',
+            'city'=>'nullable',
             'street' => 'nullable',
             'pinCode' => 'nullable',
             'state' => 'nullable',
             'country' => 'nullable',
             'discription' => 'nullable',
+            'title' => 'nullable'
         ];
     }
 }

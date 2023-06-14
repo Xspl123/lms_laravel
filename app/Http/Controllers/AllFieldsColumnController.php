@@ -52,6 +52,7 @@ class AllFieldsColumnController extends Controller
         $rules = [
             'processName' => 'required',
             'fieldsName' => 'required',
+            'Column_Name' => 'required',
            
         ];
           
@@ -64,7 +65,7 @@ class AllFieldsColumnController extends Controller
 
             $allFieldsColumn->processName = $request->processName;
             $allFieldsColumn->fieldsName = $request->fieldsName;
-
+            $allFieldsColumn->Column_Name = $request->Column_Name;
             $allFieldsColumn->save();
 
             return response()->json(['message' => 'AllFieldsColumn Added successfully','allFieldsColumn' => $allFieldsColumn], 201);

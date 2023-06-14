@@ -58,7 +58,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::delete('/destroyLead/{id}', [CreateLeadController::class, 'destroyLead']);
     Route::put('/updateLead/{uuid}', [CreateLeadController::class, 'updateLead']);
     Route::delete('/deleteAllLeads', [CreateLeadController::class, 'deleteAllLeads']);
-    Route::get('/searchlead', [CreateLeadController::class, 'searchlead']);
+    // Route::get('/searchlead', [CreateLeadController::class, 'searchlead']);
+    Route::get('/search_leads/search', [CreateLeadController::class, 'searchlead']);
     Route::get('/paginateData', [CreateLeadController::class, 'paginateData']);
     Route::get('/leadWithUserRole',[CreateLeadController::class,'leadWithUserRole']);
     Route::get('/leads/{leadId}', [CreateLeadController::class,'show']);
