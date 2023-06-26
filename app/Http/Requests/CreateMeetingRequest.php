@@ -38,7 +38,8 @@ class CreateMeetingRequest extends FormRequest
     public function rules()
     {
         return [
-            'uuid','nullable',
+            'p_id' => 'required',
+            'uuid' => 'nullable',
             'title' => 'required',
             'location'=> 'nullable',
             'allday'=> 'nullable',
@@ -47,12 +48,13 @@ class CreateMeetingRequest extends FormRequest
             'host'=> 'nullable',
             'participants'=> 'nullable',
             'related'=> 'required',
-            'contactName'=> 'required',
-            'contactNumber'=> 'required',
+            'contactName'=> 'nullable',
+            'contactNumber'=> 'nullable',
             'repeat'=> 'nullable',
             'participantsRemainder'=> 'nullable',
             'description'=> 'nullable',
-            'reminder'=> 'nullable'
+            'reminder'=> 'nullable',
+            'created_by' => 'nullable'
         ];
     }
 }

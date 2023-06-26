@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Meeting extends Model
 {
     protected  $fillable = [
-        'title','location','allday','from','to','host','participants','related','contactName','contactNumber','repeat','participantsRemainder','description','reminder'
+       'p_id', 'title','location','allday','from','to','host','participants','related','contactName','contactNumber','repeat','participantsRemainder','description','reminder','created_by'
     ];
     use HasFactory;
 }

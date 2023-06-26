@@ -25,7 +25,9 @@ class MeetingController extends Controller
     {
         $data = $request->validated();
         $meeting = $this->meetingService->insertData($data);
-        $meetingService->createHistory($meeting, 'Meeting Created', 'Add');
+         $p_id=$data['p_id'];
+         
+        $meetingService->createHistory($meeting, 'Meeting Created', 'Add',$p_id);
         return response(['message' => 'Meeting has been created Successfully','status'=>'success','meeting' => $meeting], 200);
 
     }
@@ -33,6 +35,13 @@ class MeetingController extends Controller
     public function showMeetings(Request $request)
     {
         $meetings = TableHelper::getTableData('meetings', ['*']);
+
+        foreach ($meetings as $key => $value) {
+            $p_id = $value->p_id;
+            $relatedData = AllInOneController::singledata('create_leads', ['lead_Name', 'phone','email'], 'uuid', $p_id);
+            $meetings[$key]->related = $relatedData;
+        }
+
         return response(['meetings' =>$meetings,'status'=>'success'], 200);
     }
 
@@ -51,27 +60,20 @@ class MeetingController extends Controller
 
    
 
-    public function updateMeetings(Request $request, Meeting $meeting,$id)
+    public function updateMeetings(Request $request, $uuid)
     {
-        $meeting = Meeting::find($id);
-        if (!$meeting) {
-            return response()->json(['message' => 'Meeting not found']);
-        }
-
-        $meeting->update($request->all());
-        
-        return response()->json(['message' => 'Meeting updated successfully']);
+        return $this->meetingService->updateAccount($request, $uuid);
     }
 
    
-    public function deleteMeetings(Meeting $meeting,$id)
+    public function deleteMeetings(Request $request, $id)
     {
-       $meeting = Meeting::find($id);
-    
-       if (!$meeting) {
-        return response()->json(['message' => 'Meeting not found'], 404);
-       }
-       $meeting->delete();
-       return response()->json (['message' => 'Meeting deleted successfully']);
+        $result = TableHelper::deleteIfOwner(new Meeting(), $id);
+        
+        if ($result) {
+            return response()->json(['message' => 'Meeting deleted successfully']);
+        } else {
+            return response()->json(['message' => 'Unauthorized or meeting not found'], 403);
+        }
     }
 }

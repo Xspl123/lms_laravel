@@ -38,12 +38,26 @@ class DatabaseBackUp extends Command
     public function handle()
     {
         $filename = "backup-" . Carbon::now()->format('Y-m-d') . ".gz";
-  
+    
         $command = "mysqldump --user=" . env('DB_USERNAME') ." --password=" . env('DB_PASSWORD') . " --host=" . env('DB_HOST') . " " . env('DB_DATABASE') . "  | gzip > " . storage_path() . "/app/backup/" . $filename;
-  
+    
         $returnVar = NULL;
         $output  = NULL;
-  
+    
         exec($command, $output, $returnVar);
+    
+        // Delete backups older than a week
+        $weekAgo = Carbon::now()->subWeek();
+        $oldBackups = glob(storage_path() . '/app/backup/backup-*.gz');
+    
+        foreach ($oldBackups as $backup) {
+            $fileCreationTime = filemtime($backup);
+            $backupDate = Carbon::createFromTimestamp($fileCreationTime);
+    
+            if ($backupDate->lt($weekAgo)) {
+                unlink($backup);
+            }
+        }
     }
+    
 }

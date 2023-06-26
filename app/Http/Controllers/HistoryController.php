@@ -17,12 +17,11 @@ class HistoryController extends Controller
     public function getHistory($uuid)
     {
        // $getHistory = TableHelper::getTableData('histories', ['*','uuid',$uuid]);
-          $getHistory = AllInOneController::singledataOR('histories','*','uuid',$uuid);
-        return response([
-            'data_list'=>$getHistory,
-            'status'=>'success'
-        ], 200);
-
+          $getHistory = AllInOneController::singledataOR('histories','*','uuid',$uuid,'p_id',$uuid);
+            return response([
+                'data_list'=>$getHistory,
+                'status'=>'success'
+            ], 200);
     }
 
     /**

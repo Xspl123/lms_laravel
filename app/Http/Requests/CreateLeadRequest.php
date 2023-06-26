@@ -38,6 +38,7 @@ class CreateLeadRequest extends FormRequest
     public function rules()
     {
         return [
+           'p_id'=> 'nullable',
            'lead_Name' => 'required',
             'email' => 'required|email|unique:create_leads,email',
             'fullName' => 'required',
@@ -69,7 +70,8 @@ class CreateLeadRequest extends FormRequest
             'state' => 'nullable',
             'country' => 'nullable',
             'discription' => 'nullable',
-            'title' => 'nullable'
+            'title' => 'nullable',
+            'related_activities' => 'nullable'
         ];
     }
 }

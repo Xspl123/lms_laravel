@@ -18,7 +18,8 @@
         "predis/predis": "^2.1",
         "spatie/laravel-backup": "^6.16",
         "spatie/laravel-permission": "^5.9",
-        "swiftmailer/swiftmailer": "^6.3"
+        "swiftmailer/swiftmailer": "^6.3",
+        "overtrue/laravel-sms": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -68,6 +69,6 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

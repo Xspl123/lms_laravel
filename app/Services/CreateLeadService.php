@@ -17,6 +17,7 @@ class CreateLeadService
     {
         $leads = new CreateLead;
         $leads->uuid = $uuid = mt_rand(10000000, 99999999);
+        $leads->related_activities = $data['related_activities'] ?? null;
         $leads->lead_Name = $data['lead_Name'] ?? null;
         $leads->company = isset($data['company']) ? $data['company'] : null;
         $leads->email = $data['email'] ?? null;
@@ -45,6 +46,7 @@ class CreateLeadService
         $leads->title = $data['title'] ?? null;
         $leads->role_id = auth()->user()->role_id;
         $leads->user_id = auth()->user()->id;
+        $leads->owner_id = auth()->user()->id;
         $leads->save();
     
         try {

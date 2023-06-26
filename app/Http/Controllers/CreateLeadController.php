@@ -7,6 +7,7 @@ use App\Models\History;
 use App\Models\User;
 use Predis\Client;
 use App\Models\Role;
+use App\Helpers\TableHelper;
 use Illuminate\Http\Request;
 use App\Services\CreateLeadService;
 use Illuminate\Support\Facades\DB;
@@ -55,7 +56,15 @@ class CreateLeadController extends Controller
     public function userLead(){
 
         $column = AllInOneController::tabledetails_col("all_fields_columns","fieldsName,Column_Name,Column_order");
-        $data_list = AllInOneController::getTableData('create_leads','*');
+        //$data_list = AllInOneController::getTableData('create_leads','*');
+        $data_list=TableHelper::getTableData('create_leads', ['*']);
+        //print_r($data_list);exit;
+
+        foreach ($data_list as $key => $value) {
+            $related_activities = $value->related_activities;
+            $relatedData = AllInOneController::singledata('meetings', ['title','from'], 'uuid', $related_activities);
+            $data_list[$key]->related_activities = $relatedData;
+        }
         return response(['column'=>$column,'data_list' => $data_list, 'status'=>'success'], 200);
 
     }
