@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\CreateTaskRequest;
+use App\Helpers\TableHelper;
 
 use Illuminate\Http\JsonResponse;
 
@@ -44,8 +45,10 @@ class TaskController extends Controller
         $data = $request->validated();
 
         $task = $taskService->createTask($data);
+
+        $p_id = $data['p_id'];
     
-        $taskService->createTaskHistory($task, 'Task Created', 'Add');
+        $taskService->createTaskHistory($task, 'Task Created', 'Add', $p_id);
 
         return response()->json([
             'message' => 'Task created successfully',
@@ -57,11 +60,21 @@ class TaskController extends Controller
     public function showTaskList()
     {
   
-       $data_list = AllInOneController::tabledetails_col("tasks","Subject,Status");
-            return response([
-            'task'=>$data_list,
-            'status'=>'success'
-        ], 200);
+    //    $data_list = AllInOneController::tabledetails_col("tasks","Subject,Status");
+    //         return response([
+    //         'task'=>$data_list,
+    //         'status'=>'success'
+    //     ], 200);
+
+    $data_list = TableHelper::getTableData('tasks', ['*']);
+
+    // foreach ($data_list as $key => $value) {
+    //     $p_id = $value->p_id;
+    //     $relatedData = AllInOneController::singledata('create_leads', ['lead_Name', 'phone','email'], 'uuid', $p_id);
+    //     $data_list[$key]->related = $relatedData;
+    // }
+
+    return response(['data_list' =>$data_list,'status'=>'success'], 200);
     }
 
    

@@ -57,7 +57,7 @@ class RoleController extends Controller
        $role_company = DB::table('roles')
         ->join('companies', 'roles.company_id', '=', 'companies.id')
          ->select('roles.*', 'companies.cname')
-         ->where('company_id','12')
+         //->where('company_id','12')
         ->get();
         return response()->json(['role_company' => $role_company], 201);
    
@@ -117,7 +117,7 @@ class RoleController extends Controller
             }
         }
 
-        return response()->json(['roles' => $roles,'Role_name'=>$roles_name]); 
+        return response()->json(['roles' => $roles]); 
        
         }
 

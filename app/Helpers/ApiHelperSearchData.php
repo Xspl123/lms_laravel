@@ -24,7 +24,8 @@ class ApiHelperSearchData
                         $query->orWhere($column, 'LIKE', '%' . $searchTerm . '%');
                     }
                 })
-                ->first();
+                ->latest()
+                ->paginate(10);
         }
         // Return null if the user is not logged in
         return null;

@@ -61,9 +61,15 @@ class CreateLeadController extends Controller
         //print_r($data_list);exit;
 
         foreach ($data_list as $key => $value) {
-            $related_activities = $value->related_activities;
-            $relatedData = AllInOneController::singledata('meetings', ['title','from'], 'uuid', $related_activities);
+            $uuid = $value->uuid;
+            $Owner = $value->Owner;
+
+            $relatedData = AllInOneController::singledata('meetings', ['title','from','to'], 'p_id', $uuid);
+ 
             $data_list[$key]->related_activities = $relatedData;
+            $data_list[$key]->number_of_meetting = $relatedData->count();
+            $owner_list = AllInOneController::singledata('users', ['uname','urole','email'], 'id', $Owner);
+            $data_list[$key]->Owner = $owner_list;
         }
         return response(['column'=>$column,'data_list' => $data_list, 'status'=>'success'], 200);
 
@@ -71,9 +77,10 @@ class CreateLeadController extends Controller
     
     //show leadWithUserRole
     public function leadWithUserRole(){
-        //$user = Auth::user();
-        //print_r($user); exit;
-        $leads = $this->createLeadService->getdata(18);
+        $user = Auth::user();
+        $role_id = $user->role_id;
+      // print_r($user); exit;
+        $leads = $this->createLeadService->getdata($role_id);
         if (isset($account->message)) {
             // Display the error message to the user
             echo $leads->message;
@@ -94,9 +101,9 @@ class CreateLeadController extends Controller
 
     //delete lead  behaf of id.
 
-    public function destroyLead($id)
+    public function destroyLead($uuid)
     {
-        return $this->createLeadService->deleteLead($id);
+        return $this->createLeadService->deleteLead($uuid);
     }
 
     //update lead  behaf of uuid.
@@ -125,15 +132,37 @@ class CreateLeadController extends Controller
     public function searchLead(Request $request)
     {
         $searchTerm = $request->input('search_term');
-        $searchResult = ApiHelperSearchData::search('create_leads', $searchTerm);
 
-        if ($searchResult) {
-            // Row found, do something with the data
-            return response()->json(['message' => 'Lead found', 'lead' => $searchResult], 200);
-        } else {
-            // Row not found
-            return response()->json(['message' => 'Lead not found'], 404);
+        // Check if the search term is valid
+        if (empty($searchTerm)) {
+            return response()->json(['message' => 'Invalid search term'], 400);
         }
+        
+        $data_list = ApiHelperSearchData::search('create_leads', $searchTerm);
+        
+        if ($data_list->total() > 0) 
+        {
+            foreach ($data_list as $key => $value) {
+                $uuid = $value->uuid;
+                $Owner = $value->Owner;
+        
+                $relatedData = AllInOneController::singledata('meetings', ['title', 'from', 'to'], 'p_id', $uuid);
+        
+                $data_list[$key]->related_activities = $relatedData;
+                $data_list[$key]->number_of_meetting = $relatedData->count();
+
+                $owner_list = AllInOneController::singledata('users', ['uname','urole','email'], 'id', $Owner);
+                $data_list[$key]->Owner = $owner_list;
+            }
+        
+            // Rows found, do something with the data
+            return response()->json(['message' => 'Lead found', 'lead' => $data_list], 200);
+        } 
+        else 
+        {
+            // No leads found
+            return response()->json(['message' => 'No leads found'], 404);
+        } 
     }
 
 

@@ -22,7 +22,7 @@ class UserController extends Controller
 {
     public function register_user(Request $request){
 
-         $campany_id = auth()->user()->company_id;
+        // $campany_id = auth()->user()->company_id;
        
         $request->validate([
             'uname' => 'required|string',
@@ -49,7 +49,7 @@ class UserController extends Controller
             'urole' => $request->urole,
             'domain_name' => $request->domain_name,
             'uexperience' => $request->uexperience,
-            'company_id' => $campany_id,
+            // 'company_id' => $campany_id,
             'role_id' =>  $request->role_id,
             'tc'=>json_decode($request->tc),
         ]);

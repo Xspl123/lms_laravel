@@ -39,6 +39,7 @@ class CreateLeadRequest extends FormRequest
     {
         return [
            'p_id'=> 'nullable',
+           'Owner'=> 'nullable',
            'lead_Name' => 'required',
             'email' => 'required|email|unique:create_leads,email',
             'fullName' => 'required',

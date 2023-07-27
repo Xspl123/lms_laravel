@@ -25,6 +25,7 @@
             $task->user_id = $userId;
             $task->p_id = isset($data['p_id']) ? $data['p_id'] : null;
             $task->uuid = $uuid; 
+            $task->owner_id = Auth::user()->id;
             $task->save();
 
             Log::channel('create_task')->info('Task has been created. task data: '.$task);

@@ -26,7 +26,8 @@
     use App\Http\Controllers\LicenceController;
 
 // Public Routes
-    
+Route::get('/showProductList', [ProductController::class, 'showProductList']);
+
     Route::post('/login', [UserController::class, 'login']);
     Route::post('/send-reset-password-email', [PasswordResetController::class, 'send_reset_password_email']);
     Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset']);
@@ -39,11 +40,11 @@
     Route::post('/roles', [RoleController::class,'store']);
     Route::put('/roles/{id}', [RoleController::class,'update']);
     Route::delete('/roles/{id}', [RoleController::class,'destroy']);
-    
+    Route::post('/register', [UserController::class, 'register_user']);
+
 // Protected Routes
 
 Route::middleware(['auth:sanctum'])->group(function(){
-    Route::post('/register', [UserController::class, 'register_user']);
     //user logged and logout route
     Route::post('/logout', [UserController::class, 'logout']);
     Route::get('/loggeduser', [UserController::class, 'logged_user']);
@@ -55,7 +56,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/leadList', [CreateLeadController::class, 'userLead']);
     Route::get('/showSingleLead/{uuid}', [CreateLeadController::class, 'showSingleLead']);
     Route::post('/CreateLead', [CreateLeadController::class, 'CreateUserLead']);
-    Route::delete('/destroyLead/{id}', [CreateLeadController::class, 'destroyLead']);
+    Route::delete('/destroyLead/{uuid}', [CreateLeadController::class, 'destroyLead']);
     Route::put('/updateLead/{uuid}', [CreateLeadController::class, 'updateLead']);
     Route::delete('/deleteAllLeads', [CreateLeadController::class, 'deleteAllLeads']);
     // Route::get('/searchlead', [CreateLeadController::class, 'searchlead']);
@@ -99,7 +100,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     //product route
     Route::post('/createProduct', [ProductController::class, 'createProduct']);
-    Route::get('/showProductList', [ProductController::class, 'showProductList']);
     Route::delete('/deleteProduct/{id}', [ProductController::class, 'deleteProduct']);
     Route::put('/updateProduct/{id}', [ProductController::class, 'updateProduct']);
 

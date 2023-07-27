@@ -15,6 +15,7 @@ class CreateLeadService
 {
     public function insertData(array $data): CreateLead
     {
+        
         $leads = new CreateLead;
         $leads->uuid = $uuid = mt_rand(10000000, 99999999);
         $leads->related_activities = $data['related_activities'] ?? null;
@@ -23,7 +24,7 @@ class CreateLeadService
         $leads->email = $data['email'] ?? null;
         $leads->fullName = $data['fullName'] ?? null;
         $leads->lead_Source = $data['lead_Source'] ?? null;
-        $leads->Owner = Auth::user()->uname;
+        $leads->Owner = $data['Owner'] ?? null;;
         $leads->created_by = auth()->user()->id;
         $leads->fax = $data['fax'] ?? null;
         $leads->phone = $data['phone'] ?? null;
@@ -80,7 +81,7 @@ class CreateLeadService
             $history = new History;
             $history->uuid = $leads->uuid;
             $history->process_name  = 'Lead';
-            $history->created_by = $leads->Owner;
+            $history->created_by = Auth::user()->id;
             $history->feedback = $feedback;
             $history->status = $status;
             $history->save();
@@ -145,7 +146,7 @@ class CreateLeadService
             $history = new History;
             $history->uuid = $uuid;
             $history->process_name = 'Lead';
-            $history->created_by = Auth::user()->uname;
+            $history->created_by = Auth::user()->id;
             $history->feedback = $feedback;
             $history->status = 'Updated';
             $history->save();
@@ -174,15 +175,15 @@ class CreateLeadService
             return $leadCounts;
         }
 
-        public function deleteLead($id)
+        public function deleteLead($uuid)
         {
             // Check if the user is authenticated
                 if (!Auth::check()) {
-                    return response()->json(['message' => 'Unauthorized'], 401);
+                    return response()->json(['message' => 'Unauthorized User '], 401);
                 }
 
                 // Retrieve the lead
-                $lead = CreateLead::find($id);
+                $lead = CreateLead::where('uuid', $uuid)->first();
 
                 if (!$lead) {
                     return response()->json(['message' => 'Lead not found'], 404);
@@ -190,14 +191,13 @@ class CreateLeadService
 
                 // Check if the authenticated user owns the lead
                 if ($lead->user_id !== Auth::user()->id) {
-                    return response()->json(['message' => 'Unauthorized'], 401);
+                    return response()->json(['message' => 'Unauthorized User for delete this Lead'], 401);
                 }
 
                 // Delete the lead
                 $lead->delete();
 
-            return response()->json(['message' => 'Lead deleted'], 200);
-            
+               return response()->json(['message' => 'Lead deleted'], 200);   
         }
 
     }

@@ -25,6 +25,7 @@ class CreateTaskRequest extends FormRequest
     public function rules()
     {
         return [
+            
             'Subject' => 'required|string|max:255',
             'DueDate' => 'nullable|date',
             'Status' => 'nullable|string|max:255',
@@ -32,7 +33,8 @@ class CreateTaskRequest extends FormRequest
             'Reminder' => 'nullable',
             'Repeat' => 'nullable|string|max:255',
             'Description' => 'nullable|string',
-            'p_id' => 'nullable|integer'
+            'p_id' => 'nullable|integer',
+            'owner_id' =>  'nullable|integer'
         ];
     }
 }

@@ -18,6 +18,15 @@ class HistoryController extends Controller
     {
        // $getHistory = TableHelper::getTableData('histories', ['*','uuid',$uuid]);
           $getHistory = AllInOneController::singledataOR('histories','*','uuid',$uuid,'p_id',$uuid);
+
+          foreach ($getHistory as $key => $value) {
+            $created_by = $value->created_by;
+    
+            $relatedData = AllInOneController::singledata('users', ['uname'], 'id', $created_by);
+    
+            $getHistory[$key]->created_by = $relatedData;
+            
+        }
             return response([
                 'data_list'=>$getHistory,
                 'status'=>'success'

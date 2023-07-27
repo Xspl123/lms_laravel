@@ -50,6 +50,12 @@ class MeetingController extends Controller
     {   
        
        $singelMeeting = AllInOneController::singledata('meetings','*','id',$id);
+       
+       foreach ($singelMeeting as $key => $value) {
+        $p_id = $value->p_id;
+        $relatedData = AllInOneController::singledata('create_leads', ['lead_Name', 'phone','email'], 'uuid', $p_id);
+        $singelMeeting[$key]->leads = $relatedData;
+    }
 
         return response([
             'singelMeeting'=>$singelMeeting,
