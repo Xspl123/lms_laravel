@@ -24,7 +24,7 @@ class CreateLeadService
         $leads->email = $data['email'] ?? null;
         $leads->fullName = $data['fullName'] ?? null;
         $leads->lead_Source = $data['lead_Source'] ?? null;
-        $leads->Owner = $data['Owner'] ?? null;;
+        $leads->Owner = $data['Owner'] ?? null;
         $leads->created_by = auth()->user()->id;
         $leads->fax = $data['fax'] ?? null;
         $leads->phone = $data['phone'] ?? null;

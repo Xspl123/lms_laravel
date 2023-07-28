@@ -25,7 +25,7 @@ class MeetingController extends Controller
     {
         $data = $request->validated();
         $meeting = $this->meetingService->insertData($data);
-         $p_id=$data['p_id'];
+        $p_id=$data['p_id'];
          
         $meetingService->createHistory($meeting, 'Meeting Created', 'Add',$p_id);
         return response(['message' => 'Meeting has been created Successfully','status'=>'success','meeting' => $meeting], 200);

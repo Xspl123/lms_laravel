@@ -14,7 +14,7 @@
             $userId = Auth::id();
             $task = new Task;
             $uuid = mt_rand(10000000, 99999999);
-            $task->Owner = $userId;
+            $task->Owner = $owner;
             $task->Subject = $data['Subject'] ?? null;
             $task->DueDate = isset($data['DueDate']) ? $data['DueDate'] : null;
             $task->Status = $data['Status'] ?? null;
@@ -22,6 +22,7 @@
             $task->Reminder = $data['Reminder'] ?? null;
             $task->Repeat = $data['Repeat'] ?? null;
             $task->Description = $data['Description'] ?? null;
+            $task->related = $data['related'] ?? null;
             $task->user_id = $userId;
             $task->p_id = isset($data['p_id']) ? $data['p_id'] : null;
             $task->uuid = $uuid; 

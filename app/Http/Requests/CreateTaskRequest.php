@@ -34,7 +34,8 @@ class CreateTaskRequest extends FormRequest
             'Repeat' => 'nullable|string|max:255',
             'Description' => 'nullable|string',
             'p_id' => 'nullable|integer',
-            'owner_id' =>  'nullable|integer'
+            'owner_id' =>  'nullable|integer',
+            'related' =>'required'
         ];
     }
 }

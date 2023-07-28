@@ -45,8 +45,21 @@ class CreateLeadController extends Controller
        
        $data_list = AllInOneController::singledata('create_leads','*','uuid',$uuid);
 
+       foreach ($data_list as $key => $value) {
+        $uuid = $value->uuid;
+        $Owner = $value->Owner;
+        $created_by = $value->created_by;
+
+        $owner_list = AllInOneController::singledata('users', ['uname','urole','email'], 'id', $Owner);
+        $data_list[$key]->Owner = $owner_list;
+
+        $created_by = AllInOneController::singledata('users', ['uname','urole','email'], 'id', $created_by);
+        $data_list[$key]->created_by = $created_by;
+    }
+
         return response([
             'data_list'=>$data_list,
+            
             'status'=>'success'
         ], 200);
 

@@ -68,11 +68,11 @@ class TaskController extends Controller
 
     $data_list = TableHelper::getTableData('tasks', ['*']);
 
-    // foreach ($data_list as $key => $value) {
-    //     $p_id = $value->p_id;
-    //     $relatedData = AllInOneController::singledata('create_leads', ['lead_Name', 'phone','email'], 'uuid', $p_id);
-    //     $data_list[$key]->related = $relatedData;
-    // }
+    foreach ($data_list as $key => $value) {
+        $p_id = $value->p_id;
+        $relatedData = AllInOneController::singledata('create_leads', ['lead_Name', 'phone','email'], 'uuid', $p_id);
+        $data_list[$key]->related = $relatedData;
+    }
 
     return response(['data_list' =>$data_list,'status'=>'success'], 200);
     }

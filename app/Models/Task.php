@@ -9,7 +9,7 @@ class Task extends Model
 {
 
     protected $fillable = [
-        'Subject', 'DueDate', 'Status', 'Priority', 'Reminder','Repeat','Description','p_id' 
-        ];
+        'Subject', 'DueDate', 'Status', 'Priority', 'Reminder','Repeat','Description','p_id', 
+        'related' ];
     use HasFactory;
 }
