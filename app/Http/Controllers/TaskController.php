@@ -78,9 +78,23 @@ class TaskController extends Controller
     }
 
    
-    public function edit(Task $task)
-    {
-        //
+    public function showSingTasks($uuid)
+    {   
+       
+       $singelTask = AllInOneController::singledata('tasks','*','uuid',
+       $uuid);
+       
+       foreach ($singelTask as $key => $value) {
+        $p_id = $value->p_id;
+        $relatedData = AllInOneController::singledata('create_leads', ['lead_Name', 'phone','email'], 'uuid', $p_id);
+        $singelTask[$key]->leads = $relatedData;
+    }
+
+        return response([
+            'singelTask'=>$singelTask,
+            'status'=>'success'
+        ], 200);
+
     }
 
     public function updateTask(Request $request ,$uuid)

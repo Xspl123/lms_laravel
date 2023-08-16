@@ -49,11 +49,13 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/logout', [UserController::class, 'logout']);
     Route::get('/loggeduser', [UserController::class, 'logged_user']);
     Route::get('/userList', [UserController::class, 'userList']);
+    Route::get('/singleUser/{id}', [UserController::class, 'singleUser']);
     Route::post('/change_password', 'App\Http\Controllers\UserController@change_password');
     //lead route
     Route::post('/import-leads',[ExcelController::class,'fileImport']);
     Route::get('/export-leads',[ExcelController::class,'fileExport']);
     Route::get('/leadList', [CreateLeadController::class, 'userLead']);
+    
     Route::get('/showSingleLead/{uuid}', [CreateLeadController::class, 'showSingleLead']);
     Route::post('/CreateLead', [CreateLeadController::class, 'CreateUserLead']);
     Route::delete('/destroyLead/{uuid}', [CreateLeadController::class, 'destroyLead']);
@@ -94,6 +96,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::put('/updateTask/{id}', [TaskController::class, 'updateTask']);
     Route::delete('/deleteTask/{id}', [TaskController::class, 'deleteTask']);
     Route::delete('/deleteAllTasks', [TaskController::class, 'deleteAllTasks']);
+    Route::get('/showSingTasks/{id}', [TaskController::class, 'showSingTasks']);
+
     //role and permission route
     Route::post('/roles/{role}/permissions', [RolePermissionController::class, 'givePermissionToRole'])
     ->name('roles.givePermissionToRole');

@@ -55,11 +55,16 @@ class CreateLeadController extends Controller
 
         $created_by = AllInOneController::singledata('users', ['uname','urole','email'], 'id', $created_by);
         $data_list[$key]->created_by = $created_by;
+
+        
     }
+        $Task_list = AllInOneController::singledata('tasks', ['Subject','Status','Priority','created_at'], 'p_id', $uuid);
+        $data_list['tasks'] = $Task_list;
+        $Task_list = AllInOneController::singledata('meetings', ['title','location'], 'p_id', $uuid);
+        $data_list['meetings'] = $Task_list;
 
         return response([
             'data_list'=>$data_list,
-            
             'status'=>'success'
         ], 200);
 
@@ -81,11 +86,10 @@ class CreateLeadController extends Controller
  
             $data_list[$key]->related_activities = $relatedData;
             $data_list[$key]->number_of_meetting = $relatedData->count();
-            $owner_list = AllInOneController::singledata('users', ['uname','urole','email'], 'id', $Owner);
+            $owner_list = AllInOneController::singledata('users', ['id','uname','urole','email'], 'id', $Owner);
             $data_list[$key]->Owner = $owner_list;
         }
         return response(['column'=>$column,'data_list' => $data_list, 'status'=>'success'], 200);
-
     }
     
     //show leadWithUserRole

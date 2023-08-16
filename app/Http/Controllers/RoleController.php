@@ -26,8 +26,8 @@ class RoleController extends Controller
         $compId = Company::latest()->value('id');
         //print_r($compId);exit;
         $rules = [
-            'role_name' => 'required',
-            'company_id' => 'required',
+            'role_name' => 'required|unique:roles,role_name',
+            'company_id' => 'nullable',
         ];
           
         $validator = Validator::make($request->all(), $rules);
@@ -36,7 +36,7 @@ class RoleController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
             $role = new Role;
-            $role->p_id = $request->p_id;
+            $role->p_id = $request->p_id; 
             $role->company_id = $compId;
             $role->role_name = $request->role_name;
             $role->save();
@@ -55,8 +55,8 @@ class RoleController extends Controller
     {
     
        $role_company = DB::table('roles')
-        ->join('companies', 'roles.company_id', '=', 'companies.id')
-         ->select('roles.*', 'companies.cname')
+        // ->join('companies', 'roles.company_id', '=', 'companies.id')
+         ->select('roles.*')
          //->where('company_id','12')
         ->get();
         return response()->json(['role_company' => $role_company], 201);

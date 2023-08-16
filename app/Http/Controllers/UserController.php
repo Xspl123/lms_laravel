@@ -30,9 +30,8 @@ class UserController extends Controller
             'password' => 'required|min:6|confirmed',
             'uphone' => 'required|string',
             'role_id' => 'required|numeric',
-            'domain_name' =>'required',
+            'domain_name' =>'nullable',
             'uexperience' => 'required|string',
-            'tc'=>'required',
         ]);
         if(User::where('email', $request->email)->first()){
             return response([
@@ -51,7 +50,7 @@ class UserController extends Controller
             'uexperience' => $request->uexperience,
             // 'company_id' => $campany_id,
             'role_id' =>  $request->role_id,
-            'tc'=>json_decode($request->tc),
+            // 'tc'=>json_decode($request->tc),
         ]);
         $token = $user->createToken($request->email)->plainTextToken;
         return response([
@@ -131,24 +130,44 @@ class UserController extends Controller
 
     public function userList()
     {   
-        if (auth()->check()) {
-            $company_id = auth()->user()->company_id;
+        // if (auth()->check()) {
+            // $company_id = auth()->user()->company_id;
             $users = DB::table('users')
                 ->select('id','uname', 'email', 'uphone', 'urole')
-                ->where('company_id', $company_id)
+                // ->where('company_id', $company_id)
                 ->get();
             return response([
                 'userlist'=>$users,
                 'status'=>'success'
             ], 200);
-        } else {
+        // } else {
             return response([
                 'message' => 'User not authenticated',
                 'status' => 'error'
             ], 401);
-        }
+        //}
 
     }
+
+    public function singleUser($id) {
+        $user = DB::table('users')
+            ->select('id', 'uname', 'email', 'uphone', 'urole')
+            ->where('id', $id) // Use the $id parameter directly
+            ->first();
+    
+        if ($user) {
+            return response([
+                'user' => $user,
+                'status' => 'success'
+            ], 200);
+        } else {
+            return response([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        }
+    }
+    
 
     public function importView(Request $request){
         return view('import');

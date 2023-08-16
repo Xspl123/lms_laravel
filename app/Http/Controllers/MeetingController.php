@@ -46,10 +46,10 @@ class MeetingController extends Controller
     }
 
 
-    public function showSingMeetings($id)
+    public function showSingMeetings($uuid)
     {   
        
-       $singelMeeting = AllInOneController::singledata('meetings','*','id',$id);
+       $singelMeeting = AllInOneController::singledata('meetings','*','uuid',$uuid);
        
        foreach ($singelMeeting as $key => $value) {
         $p_id = $value->p_id;
