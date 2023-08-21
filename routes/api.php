@@ -24,6 +24,7 @@
     use App\Http\Controllers\Auth\ResetPasswordController;
     use App\Http\Controllers\EmailConfirmationController;
     use App\Http\Controllers\LicenceController;
+    use App\Http\Controllers\ProfileController;
 
 // Public Routes
 Route::get('/showProductList', [ProductController::class, 'showProductList']);
@@ -51,6 +52,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/userList', [UserController::class, 'userList']);
     Route::get('/singleUser/{id}', [UserController::class, 'singleUser']);
     Route::post('/change_password', 'App\Http\Controllers\UserController@change_password');
+    Route::put('/update-users/{user}', [UserController::class,'updateUser']);
+
     //lead route
     Route::post('/import-leads',[ExcelController::class,'fileImport']);
     Route::get('/export-leads',[ExcelController::class,'fileExport']);
@@ -165,4 +168,9 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/getLiencesByStatus', [LicenceController::class, 'getLiencesByStatus']);
     Route::get('/getLiencesByDepartment', [LicenceController::class, 'getLiencesByDepartment']);
     Route::get('/getLiencesByDepartmentHierarchy', [LicenceController::class, 'getLiencesByDepartmentHierarchy']);
+
+
+    //Profile
+    Route::post('/createProfile', [ProfileController::class, 'createProfile']);
+    Route::get('/showProfile', [ProfileController::class, 'showProfile']);
 });

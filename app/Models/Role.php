@@ -11,6 +11,11 @@ class Role extends Model
 
     protected $fillable = ['role_name', 'p_id','company_id'];
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function parentRole()
     {
         return $this->belongsTo(Role::class, 'p_id');
@@ -21,9 +26,9 @@ class Role extends Model
         return $this->hasMany(Role::class, 'p_id', 'id');
     }
 
-    public function users()
+    public function profile()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(Profile::class);
     }
  
 }

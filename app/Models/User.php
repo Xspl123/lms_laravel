@@ -20,6 +20,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
 
+     public function profile()
+     {
+         return $this->belongsTo(Profile::class);
+     }
+
      public function roles()
     {
         return $this->belongsToMany(Role::class);

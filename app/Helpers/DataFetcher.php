@@ -5,6 +5,8 @@ namespace App\Helpers;
 use App\Models\Employee;
 use App\Models\Company;
 use App\Models\Product;
+use App\Models\Profile;
+use App\Models\Module;
 
 class DataFetcher
 {
@@ -30,6 +32,21 @@ class DataFetcher
         $count = $query->count();
         $products = $query->paginate($perPage);
         return response()->json(['data' => $products, 'count' => $count]);
+    }
+
+    public static function getProfilesWithModules($columns = ['*'], $perPage = 10)
+    {
+        $query = Profile::select($columns);
+        $count = $query->count();
+        $profiles = $query->paginate($perPage);
+
+        // Fetch associated modules for each profile
+        foreach ($profiles as $profile) {
+            $modules = Module::where('profile_id', $profile->id)->get();
+            $profile->modules = $modules;
+        }
+
+        return response()->json(['data' => $profiles, 'count' => $count]);
     }
 
     
