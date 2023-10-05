@@ -15,32 +15,19 @@ use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+   
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+   
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+  
     public function createProfile(CreateProfileRequest $request)
     {
         $user = Auth::user();
@@ -67,39 +54,58 @@ class ProfileController extends Controller
 
     public function showProfile()
     {
-        $data_list=DataFetcher::getProfiles();
+        $data_list = Profile::all();
         return response()->json(['status' => 200,'message' => 'Profile List','data' => $data_list]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Profile  $profile
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Profile $profile)
+ 
+    public function singleProfile($id)
     {
-        //
-    }
+        $profile = Profile::with('modules')->find($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Profile  $profile
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Profile $profile)
+        if ($profile) {
+            return response()->json(['status' => 200, 'message' => 'Profile List', 'data' => $profile]);
+        } else {
+            return response()->json(['status' => 404, 'message' => 'Profile not found', 'data' => null]);
+        }
+    }
+    
+
+   
+    public function updateProfile(Request $request, $id)
     {
-        //
+        $profile = Profile::with('modules')->find($id);
+    
+        if (!$profile) {
+            return response()->json(['status' => 404, 'message' => 'Profile not found']);
+        }
+    
+        $moduleName = $request->input('module_name');
+    
+        // Update fields in the profiles table
+        $profile->update($request->except('module_name'));
+    
+        // Update fields in the associated modules
+        if ($profile->modules) {
+            foreach ($profile->modules as $module) {
+                if ($module->module_name === $moduleName) {
+                    $fieldsToUpdate = [];
+                    if ($module->module_name === 'Lead' || $module->module_name === 'Task' || $module->module_name === 'Meeting') {
+                        // Assuming 'view', 'create', 'edit', 'delete' fields are present in the module model
+                        $fieldsToUpdate = ['view', 'create', 'edit', 'delete'];
+                    }
+    
+                    // Update module fields
+                    $module->update($request->only($fieldsToUpdate));
+                }
+            }
+        }
+    
+        return response()->json(['status' => 200, 'message' => 'Profile and associated modules updated successfully']);
     }
+    
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Profile  $profile
-     * @return \Illuminate\Http\Response
-     */
+   
     public function destroy(Profile $profile)
     {
         //

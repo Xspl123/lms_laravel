@@ -17,6 +17,14 @@ class Profile extends Model
 
     ];
 
+    
+
+    public function modules()
+    {
+        return $this->hasMany(Module::class, 'profile_id');
+    }
+
+
     public function users()
     {
         return $this->hasMany(User::class);

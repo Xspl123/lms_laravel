@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Meeting;
 use App\Helpers\TableHelper;
+use App\Helpers\ApiHelperSearchData;
 use Illuminate\Http\Request;
 use App\Services\MeetingService;
 use Illuminate\Support\Str;
@@ -81,5 +82,32 @@ class MeetingController extends Controller
         } else {
             return response()->json(['message' => 'Unauthorized or meeting not found'], 403);
         }
+    }
+
+    public function deleteAllMeetings()
+    {
+        // Check if the user is logged in
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $owner_id = Auth::user();
+
+        // Delete only the leads belonging to the authenticated user
+        Meeting::where('owner_id', $owner_id->id)->delete();
+
+        return response()->json(['message' => 'Your meetings deleted successfully'], 200);
+    }
+
+    public function search(Request $request)
+    {
+        $table = 'meetings'; // Replace with your actual table name
+        $searchTerm = $request->input('search_term');
+
+        // Call the search function from the helper class
+        $results = ApiHelperSearchData::searchOwner($table, $searchTerm);
+
+        // Return the results as JSON response
+        return response()->json(['results' => $results]);
     }
 }

@@ -30,4 +30,26 @@ class ApiHelperSearchData
         // Return null if the user is not logged in
         return null;
     }
+
+    public static function searchOwner($table, $searchTerm)
+    {
+        $loggedInUserId = Auth::id();
+
+        if ($loggedInUserId) 
+        {
+            $columns = Schema::getColumnListing($table);
+
+            return DB::table($table)
+                ->where('owner_id', $loggedInUserId)
+                ->where(function ($query) use ($columns, $searchTerm) {
+                    foreach ($columns as $column) {
+                        $query->orWhere($column, 'LIKE', '%' . $searchTerm . '%');
+                    }
+                })
+                ->latest()
+                ->paginate(10);
+        }
+        // Return null if the user is not logged in
+        return null;
+    }
 }

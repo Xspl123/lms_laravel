@@ -7,6 +7,7 @@ use App\Models\History;
 use App\Models\User;
 use Predis\Client;
 use App\Models\Role;
+use App\Http\Controllers\AllInOneController;
 use App\Helpers\TableHelper;
 use Illuminate\Http\Request;
 use App\Services\CreateLeadService;
@@ -96,8 +97,14 @@ class CreateLeadController extends Controller
     public function leadWithUserRole(){
         $user = Auth::user();
         $role_id = $user->role_id;
-      // print_r($user); exit;
-        $leads = $this->createLeadService->getdata($role_id);
+        // $role = Role::find($role_id);
+        // print_r($role); exit;
+        // $role_name = $role->name;
+        // print_r($role_name); exit;
+        // $role_id = $role->id;
+        // $user_id = $user->id;
+       // print_r($user); exit;
+        $leads = $this->createLeadService->getdata(19);
         if (isset($account->message)) {
             // Display the error message to the user
             echo $leads->message;

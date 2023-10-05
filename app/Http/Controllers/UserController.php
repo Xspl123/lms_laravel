@@ -168,7 +168,7 @@ class UserController extends Controller
 
     public function userList()
     {
-        $users = User::with('role:id,role_name', 'profile:*')->get();
+        $users = User::with('role:id,role_name', 'profile:id,profile_name')->get();
 
         return response([
             'userlist' => $users,
@@ -217,11 +217,8 @@ class UserController extends Controller
     
 
     public function singleUser($id) {
-        $user = DB::table('users')
-            ->select('id', 'uname', 'email', 'uphone', 'urole')
-            ->where('id', $id) // Use the $id parameter directly
-            ->first();
-    
+        $user = User::with('role:id,role_name', 'profile:id,profile_name')->find($id);
+        
         if ($user) {
             return response([
                 'user' => $user,
@@ -247,5 +244,19 @@ class UserController extends Controller
 
     public function exportUsers(Request $request){
         return Excel::download(new ExportUser, 'users.xlsx');
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+
+            $user->delete();
+
+            return response()->json(['message' => 'User deleted successfully'], 200);
+        } catch (\Exception $e) {
+            
+            return response()->json(['error' => 'User not found'], 404);
+        }
     }
 }

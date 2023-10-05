@@ -25,6 +25,9 @@
     use App\Http\Controllers\EmailConfirmationController;
     use App\Http\Controllers\LicenceController;
     use App\Http\Controllers\ProfileController;
+    use App\Http\Controllers\LeadExportController;
+    use App\Http\Controllers\LeadImportController;
+
 
 // Public Routes
 Route::get('/showProductList', [ProductController::class, 'showProductList']);
@@ -40,7 +43,6 @@ Route::get('/showProductList', [ProductController::class, 'showProductList']);
     Route::get('/roles', [RoleController::class,'index']);
     Route::post('/roles', [RoleController::class,'store']);
     Route::put('/roles/{id}', [RoleController::class,'update']);
-    Route::delete('/roles/{id}', [RoleController::class,'destroy']);
     Route::post('/register', [UserController::class, 'register_user']);
 
 // Protected Routes
@@ -53,10 +55,11 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/singleUser/{id}', [UserController::class, 'singleUser']);
     Route::post('/change_password', 'App\Http\Controllers\UserController@change_password');
     Route::put('/update-users/{user}', [UserController::class,'updateUser']);
-
+    Route::delete('/user/{id}', [UserController::class,'destroy']);
     //lead route
-    Route::post('/import-leads',[ExcelController::class,'fileImport']);
-    Route::get('/export-leads',[ExcelController::class,'fileExport']);
+    Route::post('/import-leads',[LeadImportController::class,'Import']);
+    // Route::get('/export-leads',[ExcelController::class,'fileExport']);
+    Route::get('/export-leads',[LeadExportController::class,'exportLeads']);
     Route::get('/leadList', [CreateLeadController::class, 'userLead']);
     
     Route::get('/showSingleLead/{uuid}', [CreateLeadController::class, 'showSingleLead']);
@@ -100,6 +103,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::delete('/deleteTask/{id}', [TaskController::class, 'deleteTask']);
     Route::delete('/deleteAllTasks', [TaskController::class, 'deleteAllTasks']);
     Route::get('/showSingTasks/{id}', [TaskController::class, 'showSingTasks']);
+    Route::get('/searchTask/search', [TaskController::class, 'search']);
 
     //role and permission route
     Route::post('/roles/{role}/permissions', [RolePermissionController::class, 'givePermissionToRole'])
@@ -120,7 +124,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/createRole',[RoleController::class,'createRole']);
     Route::get('/showRole',[RoleController::class,'showRole']);
     Route::get('/getRolesHierarchy',[RoleController::class,'getRolesHierarchy']);
-
+    Route::delete('/roles/{id}', [RoleController::class,'destroy']);
+    
     //Employee Route
     Route::post('/storeEmployee', [EmployeeController::class, 'storeEmployee']);
     Route::get('/empsearchdata', [EmployeeController::class, 'index']);
@@ -140,8 +145,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/getMeetingsByDepartment', [MeetingController::class, 'getMeetingsByDepartment']);
     Route::get('/getMeetingsByDepartmentHierarchy', [MeetingController::class, 'getMeetingsByDepartmentHierarchy']);
     Route::get('/getMeetingsByStatus', [MeetingController::class, 'getMeetingsByStatus']);
-     
-    //Mailling route
+    Route::delete('/deleteAllMeetings', [MeetingController::class, 'deleteAllMeetings']);
+    Route::get('/searchMeeting/search', [MeetingController::class, 'search']);
+
+    //Mailling routeṭ
       Route::post('/send-email', [EmailController::class, 'sendEmail']);
      //Route::post('/send-email/{recipient}', [EmailController::class,'sendEmail']);
 
@@ -173,4 +180,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //Profile
     Route::post('/createProfile', [ProfileController::class, 'createProfile']);
     Route::get('/showProfile', [ProfileController::class, 'showProfile']);
+    Route::get('/singleProfile/{id}', [ProfileController::class, 'singleProfile']); 
+    Route::put('/updateProfile/{id}', [ProfileController::class, 'updateProfile']);
 });

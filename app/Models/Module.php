@@ -11,6 +11,17 @@ class Module extends Model
 
     protected  $table ='modules';
 
+    protected $fillable = [
+        'module_name',
+        'view',
+        'create',
+        'edit',
+        'delete',
+        'created_at',
+        'updated_at',
+        'profile_id'
+    ];
+
     public function profile()
     {
         return $this->belongsTo(Profile::class);

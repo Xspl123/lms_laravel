@@ -6,6 +6,7 @@ use App\Models\Task;
 use App\Models\History;
 use App\Services\TaskService;
 use App\Http\Controllers\AllInOneController;
+use App\Helpers\ApiHelperSearchData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -165,4 +166,21 @@ class TaskController extends Controller
         return response()->json(['message' => 'All tasks deleted successfull'], 200);
 
     }
+
+    public function search(Request $request)
+    {
+        $table = 'tasks'; // Replace with your actual table name
+        $searchTerm = $request->input('search_term');
+    
+        // Call the search function from the helper class
+        $results = ApiHelperSearchData::searchOwner($table, $searchTerm);
+    
+        // Check if any results were found
+        if ($results->count() > 0) {
+            return response()->json(['message' => 'Search results found', 'results' => $results]);
+        } else {
+            return response()->json(['message' => 'No results found', 'results' => []]);
+        }
+    }
+    
 }

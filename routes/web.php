@@ -6,7 +6,8 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Contact;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ExcelController;
-
+use App\Http\Controllers\LeadExportController;
+use App\Http\Controllers\LeadImportController;
 
 
 
@@ -25,8 +26,9 @@ use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('/file-import',[ExcelController::class,'fileImportExport'])->name('import-view');
-Route::post('/import',[ExcelController::class,'fileImport'])->name('import');
-Route::get('/export-users',[ExcelController::class,'fileExport'])->name('export-users');
+Route::post('/import',[LeadImportController::class,'import'])->name('import');
+Route::post('/import-leads',[LeadImportController::class,'Import']);
+Route::get('/export-users',[LeadExportController::class,'exportLeads'])->name('export-users');
 
 
 

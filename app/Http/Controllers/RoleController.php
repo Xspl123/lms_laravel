@@ -14,17 +14,12 @@ class RoleController extends Controller
 {   
     private $roles_name;
 
-    public function index()
-    {
-       
-    }
-
-   
+ 
     public function createRole(Request $request )
     {
         $userId = Auth::id();
         $compId = Company::latest()->value('id');
-        //print_r($compId);exit;
+      
         $rules = [
             'role_name' => 'required|unique:roles,role_name',
             'company_id' => 'nullable',
@@ -44,13 +39,6 @@ class RoleController extends Controller
 
     }
 
-   
-    public function store(Request $request)
-    {
-        //
-    }
-
-   
     public function showRole(Role $role)
     {
     
@@ -64,23 +52,20 @@ class RoleController extends Controller
     }
 
    
-    public function edit(Role $role)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+           
+            $role = Role::findOrFail($id);
 
-   
-    public function update(Request $request, Role $role)
-    {
-        //
-    }
+            $role->delete();
 
-  
-    public function destroy(Role $role)
-    {
-        //
+            return response()->json(['message' => 'Role deleted successfully'], 200);
+        } catch (\Exception $e) {
+            
+            return response()->json(['error' => 'Role not found'], 404);
+        }
     }
-
 
     public function getRolesHierarchy() { 
          
