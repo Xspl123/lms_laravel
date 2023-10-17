@@ -40,6 +40,7 @@ class User extends Authenticatable
         'domain_name',
         'uexperience',
         'company_id',
+        'profile_id'
 
     ];
 

@@ -92,6 +92,8 @@ class CreateLeadController extends Controller
         }
         return response(['column'=>$column,'data_list' => $data_list, 'status'=>'success'], 200);
     }
+
+
     
     //show leadWithUserRole
     public function leadWithUserRole(){

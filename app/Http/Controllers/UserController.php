@@ -31,9 +31,9 @@ class UserController extends Controller
             'uphone' => 'required|string',
             'role_id' => 'required|numeric',
             'domain_name' =>'nullable',
-            'uexperience' => 'required|string',
+            'uexperience' => 'nullable|string',
             'status' => 'nullable|in:activate,deactivate',
-            'profile_id' => 'nullable',
+            'profile_id' => 'required',
         ]);
         if(User::where('email', $request->email)->first()){
             return response([
@@ -60,7 +60,8 @@ class UserController extends Controller
         return response([
             'token'=>$token,
             'message' => 'Registration Success',
-            'status'=>'success'
+            'status'=>'success',
+            'user' => $user
         ], 201);
     }
 
@@ -89,15 +90,25 @@ class UserController extends Controller
         }
         
         $token = $user->createToken($request->email)->plainTextToken;
-        $profile = DB::table('profiles')->select('*')->get();
-        $module = DB::table('modules')->select('*')->get();
+        $profile = DB::table('profiles')->select('*')->where('id', $user->id )->get();
+        $profileId = DB::table('profiles')->select('id')->first();
+
+        if ($profileId) {
+            $moduleId = $profileId->id;
+
+            $modules = DB::table('modules')->select('*')->where('profile_id', $moduleId)->get();
+           
+        } else {
+            // Handle the case where no profile with the given criteria was found
+        }
+
         return response([
             'token' => $token,
             'message' => 'Login Success',
             'status' => 'success',
             'user' => $user,
             'profile' => $profile,
-            'module' => $module,
+            'modules' => $modules,
         ], 200);        
         
     }
@@ -122,6 +133,27 @@ class UserController extends Controller
         ], 200);
 
     }
+
+        public function getUserDetails() {
+            $user = auth()->user();
+            $userId = auth()->user()->id;
+            $profile = DB::table('profiles')->select('*')->where('id', $userId)->get();
+            $profileId = DB::table('profiles')->select('id')->first();
+    
+            if ($profileId) {
+                $moduleId = $profileId->id;
+    
+                $modules = DB::table('modules')->select('*')->where('profile_id', $moduleId)->get();
+               
+            } else {
+                // Handle the case where no profile with the given criteria was found
+            }
+            return response()->json([
+                'user' => $user,
+                'profile' => $profile,
+                'modules' => $modules,
+            ]);
+        }
     
     public function change_password(Request $request)
     {

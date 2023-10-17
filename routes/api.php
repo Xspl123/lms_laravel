@@ -56,6 +56,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/change_password', 'App\Http\Controllers\UserController@change_password');
     Route::put('/update-users/{user}', [UserController::class,'updateUser']);
     Route::delete('/user/{id}', [UserController::class,'destroy']);
+    Route::get('/token-basis-user-details', [UserController::class,'getUserDetails']);
     //lead route
     Route::post('/import-leads',[LeadImportController::class,'Import']);
     // Route::get('/export-leads',[ExcelController::class,'fileExport']);
@@ -182,4 +183,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/showProfile', [ProfileController::class, 'showProfile']);
     Route::get('/singleProfile/{id}', [ProfileController::class, 'singleProfile']); 
     Route::put('/updateProfile/{id}', [ProfileController::class, 'updateProfile']);
+    Route::delete('/delete-profile/{id}', [ProfileController::class, 'destroy']);
+
 });
