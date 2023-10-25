@@ -69,6 +69,7 @@ class CreateAccountRequest extends FormRequest
         'ShippingCode' => 'nullable',
         'ShippingCountry' => 'nullable',
         'Description'  => 'nullable',
+        'p_id'=>'required'
         ];
     }
 

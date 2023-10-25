@@ -9,7 +9,7 @@ use App\Models\History;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Http\Request;
 
 class DealService{
 
@@ -25,6 +25,7 @@ class DealService{
     {
         $deals = new Deal();
         $deals->uuid = mt_rand(10000000, 99999999);
+        $deals->p_id =  $data['p_id'] ?? null;
         $deals->Owner =  Auth::User()->uname;
         $deals->dealName = $data['dealName'];
         $deals->accountName = $data['accountName'];
@@ -37,6 +38,7 @@ class DealService{
         $deals->campaignSource = $data['campaignSource'];
         $deals->description = $data['description'] ?? null;
         $deals->user_id = Auth::User()->id;
+        $deals->owner_id = Auth::User()->id;
         $deals->save();
         Log::channel('create_deal')->info('A new Deal has been created. Deal data: '.$deals);
         return $deals;
@@ -60,6 +62,7 @@ class DealService{
         $deals->update($data);
         return $deals;
     }
+
     public function updateUser(array $data, $id)
     {
         $user = Deal::where('id', $id)->firstOrFail();
@@ -81,7 +84,37 @@ class DealService{
         return $deals;
     }
     
+    public function updateDeals(Request $request, $uuid)
+    {
+        $deals = Deal::where('uuid', $uuid)->first();
+        
+        if (!$deals) {
+            return response()->json(['message' => 'Deals not found'], 404);
+        }
 
+        $originalData = clone $deals;
+
+        $deals->update($request->all());
+
+        $changes = $deals->getChanges();
+
+        if (empty($changes)) {
+            return response()->json(['message' => 'No changes detected'], 400);
+        }
+        $column = key($changes);
+        $before = $originalData->$column;
+        $after = $changes[$column];
+        $feedback = "$column was updated from $before to $after";
+
+        $history = new History;
+        $history->uuid = $uuid;
+        $history->process_name = 'Deal';
+        $history->created_by = Auth::user()->uname;
+        $history->feedback = $feedback;
+        $history->status = 'Updated';
+        $history->save();
+        return response()->json(['message' => 'Deal has been updated','data'=>$deals], 200);
+    }
 
 
     public function deleteDeal(int $id){

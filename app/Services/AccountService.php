@@ -15,11 +15,14 @@ class AccountService {
 
     public function insertData($data)
     {
-        $userId = Auth::User()->id; 
+        $userId = Auth::User()->id;
+        $userName = Auth::User()->uname; 
         $account = new Account();
         $account->uuid = $uuid = mt_rand(10000000, 99999999);
-        $account->Owner = $userId;
-        $account->AccountName = $data['AccountName'];
+        $account->p_id =  $data['p_id'] ?? null;
+        $account->Owner = $userName;
+        $account->owner_id = $userId;
+        // $account->AccountName = $data['AccountName'];
         $account->AccountSite = $data['AccountSite'] ?? null;
         $account->ParentAccount = $data['ParentAccount']?? null;
         $account->AccountNumber = $data['AccountNumber']?? null;
@@ -54,7 +57,7 @@ class AccountService {
     {
         $history = new History;
         $history->uuid = $account->uuid;
-        $history->process_name  = 'accounts';
+        $history->process_name  = 'Accounts';
         $history->created_by = $account->Owner;
         $history->feedback = $feedback;
         $history->status = $status;

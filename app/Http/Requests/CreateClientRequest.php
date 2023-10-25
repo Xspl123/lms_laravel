@@ -41,7 +41,8 @@ class CreateClientRequest extends FormRequest
             'cllocation' => 'nullable',
             'clzip' => 'nullable',
             'clcity' => 'nullable',
-            'clcountry' => 'nullable'
+            'clcountry' => 'nullable',
+            'p_id' => 'required'
         ];
     }
 }

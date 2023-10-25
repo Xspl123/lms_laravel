@@ -92,6 +92,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/showDealList', [DealController::class, 'showDealList']);
     Route::delete('/deleteDeal/{id}', [DealController::class, 'deleteDeal']);
     Route::put('/updateDeal/{id}', [DealController::class, 'updateDeal']);
+    Route::get('/showSingleDeal/{uuid}', [DealController::class, 'showSingleDeal']);
+    Route::put('/updateDeals/{uuid}', [DealController::class, 'updateDeals']);
+
+
     // client route
     Route::get('/showClientList', [ClientController::class, 'showClientList']);
     Route::post('/addClient', [ClientController::class, 'addClient']);

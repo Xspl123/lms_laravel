@@ -35,8 +35,10 @@ class ClientController extends Controller
     public function addClient(CreateClientRequest $request, ClientService $clientService)
     {
         $data = $request->validated();
-        
-        $client = $this->clientService->insertData($data);
+        $clients = $this->clientService->addDeal($data);
+        $p_id=$data['p_id'];
+        $clientService->createHistory($clients, 'Client Created', 'Add',$p_id);
+
         
         return response()->json(['message' => 'Client Added successfully','client' => $client], 201);
     }

@@ -48,10 +48,9 @@ class MeetingController extends Controller
 
 
     public function showSingMeetings($uuid)
-    {   
-       
+    {
        $singelMeeting = AllInOneController::singledata('meetings','*','uuid',$uuid);
-       
+
        foreach ($singelMeeting as $key => $value) {
         $p_id = $value->p_id;
         $relatedData = AllInOneController::singledata('create_leads', ['lead_Name', 'phone','email'], 'uuid', $p_id);

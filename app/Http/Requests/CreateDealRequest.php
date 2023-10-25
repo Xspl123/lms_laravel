@@ -39,15 +39,16 @@ class CreateDealRequest extends FormRequest
     {
         return [
             'dealName' => 'required',
-            'accountName' => 'required',
+            'accountName' => 'nullable',
             'type' => 'nullable',
-            'amount' => 'required',
-            'closingDate' => 'required',
-            'stage' => 'required',
-            'probability' => 'required',
-            'expectedRevenue' => 'required',
-            'campaignSource' => 'required',
+            'amount' => 'integer|nullable',
+            'closingDate' => 'nullable',
+            'stage' => 'nullable',
+            'probability' => 'nullable',
+            'expectedRevenue' => 'nullable',
+            'campaignSource' => 'nullable',
             'description' => 'nullable',
+            'p_id'=> 'required',
         ];
     }
 }

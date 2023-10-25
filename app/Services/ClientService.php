@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Client;
+use App\Models\History;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -25,6 +26,18 @@ class ClientService
         $client->save();
 
         return $client;
+    }
+
+    public function createHistory($deals, $feedback, $status)
+    {
+        $history = new History;
+        $history->uuid = $deals->uuid;
+        $history->process_name  = 'Client';
+        $history->created_by = $deals->Owner;
+        $history->feedback = $feedback;
+        $history->status = $status;
+        $history->save();
+        
     }
 
 
