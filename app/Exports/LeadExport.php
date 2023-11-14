@@ -19,17 +19,26 @@ class LeadExport implements FromCollection, WithHeadings, WithStyles
     */
     public function collection()
     {
-        return CreateLead::select('*')->get();
+        $data =  CreateLead::select('related_activities','lead_Name','email','lead_Source','Owner','fullName','phone','website','lead_status','annualRevenue','secondaryEmail','city','street','pinCode','state','country','discription','created_at','updated_at')->get();
+            // Check if there is data to export
+        if ($data->isEmpty()) {
+            // If no data, return an empty array
+            return [];
+        }
+
+        // If there is data, return the selected columns
+        return $data;
+    
     }
 
     public function headings(): array
     {
         return [
-            'ID', 'UUID', 'Related Activities', 'Lead Name', 'Company', 'Email', 'Lead Source', 'Owner',
-            'Created By', 'Modified By', 'Full Name', 'Fax', 'Phone', 'Mobile', 'Website', 'Lead Status',
-            'Industry', 'Rating', 'Number of Employees', 'Annual Revenue', 'Skype ID', 'Secondary Email',
-            'Twitter', 'City', 'Street', 'Pin Code', 'State', 'Country', 'Description', 'Companies ID',
-            'User ID', 'Created At', 'Updated At', 'Title', 'Role ID', 'Owner ID'
+            'Related Activities', 'Lead Name', 'Email', 'Lead Source', 'Owner',
+            'Full Name', 'Phone', 'Website', 'Lead Status',
+            'Annual Revenue','Secondary Email',
+            'City', 'Street', 'Pin Code', 'State', 'Country', 'Description',
+            'Create Date', 'Updated Date',
         ];
     }
 

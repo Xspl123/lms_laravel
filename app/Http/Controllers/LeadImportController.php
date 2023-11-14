@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Imports\LeadImport;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,9 +14,9 @@ class LeadImportController extends Controller
     {
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            
+            $user = Auth::user();
             try {
-                Excel::import(new LeadImport, $file);
+                Excel::import(new LeadImport($user->id), $file);
                 return response()->json(['message' => 'Data imported successfully'], Response::HTTP_OK);
             } catch (\Exception $e) {
                 return response()->json(['message' => 'Error importing data', 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -24,4 +25,5 @@ class LeadImportController extends Controller
 
         return response()->json(['message' => 'No file provided'], Response::HTTP_BAD_REQUEST);
     }
+
 }

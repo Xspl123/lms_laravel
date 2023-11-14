@@ -22,10 +22,10 @@ if [ -n "$latest_file" ]; then
     file_name="$(date "+%Y")-$target_month-$target_day-$(basename "$latest_file")"
 
     # Set the destination path on the remote server
-    remote_server="root@192.168.1.90:/root/$file_name"
+    remote_server="xspl@192.168.1.110:/home/xspl/Desktop/xspldatbasebackup/LMS/$file_name"
 
     # Set the password for the remote server
-    password="xspl@2018"
+    password="xspl@123"
 
     # Perform the file transfer using rsync with password authentication
     sshpass -p "$password" rsync -avz -e "ssh -o StrictHostKeyChecking=no" "$latest_file" "$remote_server"

@@ -49,6 +49,9 @@ class CreateDealRequest extends FormRequest
             'campaignSource' => 'nullable',
             'description' => 'nullable',
             'p_id'=> 'required',
+            'reason_for_loss' => 'nullable',
+            'Owner' => 'nullable',
+            'created_by' => 'nullable',
         ];
     }
 }

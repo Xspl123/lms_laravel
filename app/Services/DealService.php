@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use App\Http\Requests\CreateDealRequest;
+use App\Models\DealHistory;
+
 
 class DealService{
 
@@ -26,8 +29,9 @@ class DealService{
         $deals = new Deal();
         $deals->uuid = mt_rand(10000000, 99999999);
         $deals->p_id =  $data['p_id'] ?? null;
-        $deals->Owner =  Auth::User()->uname;
+        $deals->Owner =  $data['Owner'];
         $deals->dealName = $data['dealName'];
+        $deals->reason_for_loss = $data['reason_for_loss'];
         $deals->accountName = $data['accountName'];
         $deals->type = $data['type'] ?? null;
         $deals->amount = $data['amount'];
@@ -39,6 +43,7 @@ class DealService{
         $deals->description = $data['description'] ?? null;
         $deals->user_id = Auth::User()->id;
         $deals->owner_id = Auth::User()->id;
+        $deals->created_by = Auth::User()->uname;
         $deals->save();
         Log::channel('create_deal')->info('A new Deal has been created. Deal data: '.$deals);
         return $deals;
@@ -58,14 +63,14 @@ class DealService{
 
     
     public function updateDeal($id, $data){
-        $data = Deal::where('id',$id)->first()->update($request->all());
-        $deals->update($data);
+        $deals = Deal::where('id',$id)->first()->update($request->all());
+        $deals->update($deals);
         return $deals;
     }
 
     public function updateUser(array $data, $id)
     {
-        $user = Deal::where('id', $id)->firstOrFail();
+        $deals = Deal::where('id', $id)->firstOrFail();
         $deals->dealOwner = Auth::User()->uname;
         $deals->dealName = $data['dealName'];
         $deals->accountName = $data['accountName'];
@@ -79,15 +84,18 @@ class DealService{
         $deals->campaignSource = $data['campaignSource'];
         $deals->description = $data['description'] ?? null;
         $deals->user_id = Auth::User()->id;
+        $deals->created_by = Auth::User()->uname;
         $deals->save();
         
         return $deals;
     }
-    
-    public function updateDeals(Request $request, $uuid)
+
+    public function updateDeals(CreateDealRequest $request, $uuid)
     {
-        $deals = Deal::where('uuid', $uuid)->first();
         
+        $deals = Deal::where('uuid', $uuid)->first();
+        //dd($deals);
+
         if (!$deals) {
             return response()->json(['message' => 'Deals not found'], 404);
         }
@@ -101,6 +109,35 @@ class DealService{
         if (empty($changes)) {
             return response()->json(['message' => 'No changes detected'], 400);
         }
+
+        // Store changes in DealHistory
+        $dealHistory = new DealHistory;
+        $dealHistory->deal_id = $deals->id; 
+        $dealHistory->reason_for_loss = $deals->reason_for_loss;
+        $dealHistory->p_id = $deals->uuid;
+        $dealHistory->Owner = $deals->Owner;
+        $dealHistory->dealName = $deals->dealName;
+        $dealHistory->accountName = $deals->accountName;
+        $dealHistory->leadOwner = $deals->Owner;
+        $dealHistory->contact_id = $deals->contact_id;
+        $dealHistory->amount = $deals->amount;
+        $dealHistory->closingDate = $deals->closingDate;
+        $dealHistory->stage = $deals->stage;
+        $dealHistory->type = $deals->type;
+        $dealHistory->closingDate = $deals->closingDate;
+        $dealHistory->stage = $deals->stage;
+        $dealHistory->probability = $deals->probability;
+        $dealHistory->expectedRevenue = $deals->expectedRevenue;
+        $dealHistory->campaignSource = $deals->campaignSource;
+        $dealHistory->description = $deals->description;
+        $dealHistory->user_id = $deals->user_id; 
+        $dealHistory->owner_id = $deals->owner_id; 
+        $dealHistory->created_by = $deals->created_by;
+        $dealHistory->remark = "$deals was updated from " . json_encode($originalData, JSON_PRETTY_PRINT) . " to " . json_encode($changes, JSON_PRETTY_PRINT);
+
+        $dealHistory->save();
+
+        // Store changes in History
         $column = key($changes);
         $before = $originalData->$column;
         $after = $changes[$column];
@@ -113,20 +150,36 @@ class DealService{
         $history->feedback = $feedback;
         $history->status = 'Updated';
         $history->save();
-        return response()->json(['message' => 'Deal has been updated','data'=>$deals], 200);
+
+        return response()->json(['message' => 'Deal has been updated', 'data' => $deals], 200);
     }
 
+    public function deleteDeal($uuid)
+    {
+            if (!Auth::check()) {
+                return response()->json(['message' => 'Unauthorized User '], 401);
+            }
 
-    public function deleteDeal(int $id){
-        $deal = Deal::find($id);
-        return $deal->delete();
+            
+            $deals = Deal::where('uuid', $uuid)->first();
+
+            if (!$deals) {
+                return response()->json(['message' => 'deals not found'], 404);
+            }
+
+            if ($deals->user_id !== Auth::user()->id) {
+                return response()->json(['message' => 'Unauthorized User for delete this deals'], 401);
+            }
+
+            $deals->delete();
+
+           return response()->json(['message' => 'Deal deleted'], 200);   
     }
     public function addUser(int $userId){
         $user = new User();
         $user->user_id = $userId;
         return $user->save();
     }
-    
     public function deleteUser(int $id){
         $user = User::find($id);
         return $user->delete();
@@ -145,6 +198,5 @@ class DealService{
         $deal = Deal::find($dealId);
         $user->deal_id = $deal->id;
         return $user->save();
-    }    
-         
+    }
 }

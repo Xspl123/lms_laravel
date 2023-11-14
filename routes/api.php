@@ -27,8 +27,9 @@
     use App\Http\Controllers\ProfileController;
     use App\Http\Controllers\LeadExportController;
     use App\Http\Controllers\LeadImportController;
-
-
+    use App\Http\Controllers\LocationController;
+    use App\Http\Controllers\DashboardController;
+    
 // Public Routes
 Route::get('/showProductList', [ProductController::class, 'showProductList']);
 
@@ -61,6 +62,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/import-leads',[LeadImportController::class,'Import']);
     // Route::get('/export-leads',[ExcelController::class,'fileExport']);
     Route::get('/export-leads',[LeadExportController::class,'exportLeads']);
+    Route::post('/import',[LeadImportController::class,'import'])->name('import');
     Route::get('/leadList', [CreateLeadController::class, 'userLead']);
     
     Route::get('/showSingleLead/{uuid}', [CreateLeadController::class, 'showSingleLead']);
@@ -90,12 +92,13 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //deal route
     Route::post('/storeDeal', [DealController::class, 'storeDeal']);
     Route::get('/showDealList', [DealController::class, 'showDealList']);
-    Route::delete('/deleteDeal/{id}', [DealController::class, 'deleteDeal']);
+    Route::delete('/deleteDeal/{uuid}', [DealController::class, 'destroyDeal']);
     Route::put('/updateDeal/{id}', [DealController::class, 'updateDeal']);
     Route::get('/showSingleDeal/{uuid}', [DealController::class, 'showSingleDeal']);
     Route::put('/updateDeals/{uuid}', [DealController::class, 'updateDeals']);
-
-
+    Route::delete('/deleteAllDeals', [DealController::class, 'deleteAllDeals']);
+    Route::get('/search_deals/search', [DealController::class, 'searchDeal']);
+    
     // client route
     Route::get('/showClientList', [ClientController::class, 'showClientList']);
     Route::post('/addClient', [ClientController::class, 'addClient']);
@@ -188,5 +191,12 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/singleProfile/{id}', [ProfileController::class, 'singleProfile']); 
     Route::put('/updateProfile/{id}', [ProfileController::class, 'updateProfile']);
     Route::delete('/delete-profile/{id}', [ProfileController::class, 'destroy']);
+
+    //Location
+    Route::post('/storeLocation', [LocationController::class, 'store']);
+    Route::get('/get-location', [LocationController::class, 'getLocation']);
+    Route::get('/getLocation', [LocationController::class, 'getLocationFromRedis']);
+
+    Route::get('lead_status_wise',[DashboardController::class,'getLeadCount']);
 
 });

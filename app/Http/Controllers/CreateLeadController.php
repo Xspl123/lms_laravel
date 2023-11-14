@@ -61,7 +61,7 @@ class CreateLeadController extends Controller
     }
         $Task_list = AllInOneController::singledata('tasks', ['Subject','Status','Priority','created_at'], 'p_id', $uuid);
         $data_list['tasks'] = $Task_list;
-        $Task_list = AllInOneController::singledata('meetings', ['title','from','location'], 'p_id', $uuid);
+        $Task_list = AllInOneController::singledata('meetings', ['title','from','to','location'], 'p_id', $uuid);
         $data_list['meetings'] = $Task_list;
 
         return response([
@@ -107,7 +107,7 @@ class CreateLeadController extends Controller
         // $user_id = $user->id;
        // print_r($user); exit;
         $leads = $this->createLeadService->getdata(19);
-        if (isset($account->message)) {
+        if (isset($leads->message)) {
             // Display the error message to the user
             echo $leads->message;
         } else {
