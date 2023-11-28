@@ -52,9 +52,9 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://192.168.1.157/lms_laravel'),
+    'url' => env('APP_URL', 'https://vertlinker.com/lms_laravel'),
 
-    'asset_url' => env('ASSET_URL', 'http://192.168.1.157/lms_laravel/'),
+    'asset_url' => env('ASSET_URL', 'https://vertlinker.com/lms_laravel'),
 
     /*
     |--------------------------------------------------------------------------

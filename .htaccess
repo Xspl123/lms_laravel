@@ -2,7 +2,7 @@
     <IfModule mod_negotiation.c>
        Options -MultiViews
    </IfModule>
-   Options +FollowSymlinks
+   Options +SymLinksIfOwnerMatch
 
    RewriteRule ^ - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
    RewriteEngine On

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CreateDealRequest;
+use App\Helpers\ApiHelperSearchData;
 
 class DealController extends Controller
 {
@@ -94,23 +95,71 @@ class DealController extends Controller
     //       return response()->json(['message' => 'Deal update successfully']);
     // }
 
-    public function updateDeals(Request $request, $uuid)
+    public function updateDeals(CreateDealRequest $request, DealService $dealService ,$uuid)
     {
-        
         return $this->dealService->updateDeals($request, $uuid);
+        return response()->json([
+            'message' => 'Deal update successfully'
+        ]);
+
     }
 
-
-    public function deleteDeal($id)
+    public function destroyDeal($uuid)
     {
-        $deals = Deal::find($id);
+        return $this->dealService->deleteDeal($uuid);
+    }
 
-        if (!$deals) {
-            return response()->json(['message' => 'Deal not found'], 404);
+    public function deleteAllDeals()
+    {
+        // Check if the user is logged in
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $deals->delete();
+        $user = Auth::user();
 
-        return response()->json(['message' => 'Deal deleted'], 200);
+        // Delete only the leads belonging to the authenticated user
+        Deal::where('user_id', $user->id)->delete();
+
+        return response()->json(['message' => 'Your deals deleted successfully'], 200);
     }
+
+
+    public function searchDeal(Request $request)
+    {
+        $searchTerm = $request->input('search_term');
+
+        // Check if the search term is valid
+        if (empty($searchTerm)) {
+            return response()->json(['message' => 'Invalid search term'], 400);
+        }
+        
+        $data_list = ApiHelperSearchData::search('deals', $searchTerm);
+        
+        if ($data_list->total() > 0) 
+        {
+            foreach ($data_list as $key => $value) {
+                $uuid = $value->uuid;
+                $Owner = $value->Owner;
+        
+                $relatedData = AllInOneController::singledata('meetings', ['title', 'from', 'to'], 'p_id', $uuid);
+        
+                $data_list[$key]->related_activities = $relatedData;
+                $data_list[$key]->number_of_meetting = $relatedData->count();
+
+                $owner_list = AllInOneController::singledata('users', ['uname','urole','email'], 'id', $Owner);
+                $data_list[$key]->Owner = $owner_list;
+            }
+        
+            // Rows found, do something with the data
+            return response()->json(['message' => 'Deal found', 'Deal' => $data_list], 200);
+        } 
+        else 
+        {
+            // No leads found
+            return response()->json(['message' => 'No Deal found'], 404);
+        } 
+    }
+
+
 }

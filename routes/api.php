@@ -27,9 +27,18 @@
     use App\Http\Controllers\ProfileController;
     use App\Http\Controllers\LeadExportController;
     use App\Http\Controllers\LeadImportController;
+    use App\Http\Controllers\LocationController;
+    use App\Models\DealHistory;
+    use App\Http\Controllers\FollowUpController;
+    use App\Http\Controllers\LeadPlatefromController;
+    use App\Http\Controllers\IndiaMartApiController;
+    use App\Http\Controllers\DashboardController;
+    
+
 
 
 // Public Routes
+
 Route::get('/showProductList', [ProductController::class, 'showProductList']);
 
     Route::post('/login', [UserController::class, 'login']);
@@ -44,6 +53,13 @@ Route::get('/showProductList', [ProductController::class, 'showProductList']);
     Route::post('/roles', [RoleController::class,'store']);
     Route::put('/roles/{id}', [RoleController::class,'update']);
     Route::post('/register', [UserController::class, 'register_user']);
+
+        // for lead from website
+    Route::post('/leadSource', [LeadPlatefromController::class, 'createLeadSource']);
+
+
+    Route::get('/indiaMart', [IndiaMartApiController::class, 'getIndiaMartApiRsponse']);
+
 
 // Protected Routes
 
@@ -90,11 +106,13 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //deal route
     Route::post('/storeDeal', [DealController::class, 'storeDeal']);
     Route::get('/showDealList', [DealController::class, 'showDealList']);
-    Route::delete('/deleteDeal/{id}', [DealController::class, 'deleteDeal']);
+    Route::delete('/deleteDeal/{uuid}', [DealController::class, 'destroyDeal']);
     Route::put('/updateDeal/{id}', [DealController::class, 'updateDeal']);
     Route::get('/showSingleDeal/{uuid}', [DealController::class, 'showSingleDeal']);
     Route::put('/updateDeals/{uuid}', [DealController::class, 'updateDeals']);
-
+    Route::delete('/deleteAllDeals', [DealController::class, 'deleteAllDeals']);
+    Route::get('/search_deals/search', [DealController::class, 'searchDeal']);
+    Route::get('deal_histories',[DealHistory::class,'show_deal_histories']);
 
     // client route
     Route::get('/showClientList', [ClientController::class, 'showClientList']);
@@ -189,4 +207,17 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::put('/updateProfile/{id}', [ProfileController::class, 'updateProfile']);
     Route::delete('/delete-profile/{id}', [ProfileController::class, 'destroy']);
 
+    //Location
+    Route::post('/storeLocation', [LocationController::class, 'store']);
+    Route::get('/get-location', [LocationController::class, 'getLocation']);
+    Route::get('/getLocation', [LocationController::class, 'getLocationFromRedis']);
+    
+     //Followup
+     Route::post('/followups', [FollowUpController::class, 'store']);
+     Route::put('/updateFollowUp/{uuid}', [FollowUpController::class, 'updateFollowUp']);
+     Route::get('/showSingFollowUp/{uuid}', [FollowUpController::class, 'showSingFollowUp']); 
+     
+    //Dashboard
+    Route::get('/leadCountStatusWise',[DashboardController::class,'getLeadCount']);
+ 
 });

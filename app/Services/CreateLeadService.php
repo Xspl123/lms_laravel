@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Helpers\TableHelper;
 
 
 class CreateLeadService
@@ -45,6 +46,7 @@ class CreateLeadService
         $leads->country = $data['country'] ?? null;
         $leads->discription = $data['discription'] ?? null;
         $leads->title = $data['title'] ?? null;
+        $leads->note = $data['note'] ?? null;
         $leads->role_id = auth()->user()->role_id;
         $leads->user_id = auth()->user()->id;
         $leads->owner_id = auth()->user()->id;
@@ -175,6 +177,25 @@ class CreateLeadService
             return $leadCounts;
         }
 
+        public function getLeadCountStatusWise($leadStatuses)
+        {
+            // Check if the user is logged in
+            if (!Auth::check()) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+
+            $data_list = TableHelper::getTableDataCount('create_leads', ['*']);
+
+            $leadCounts = $data_list
+                ->whereIn('lead_status', $leadStatuses)
+                ->groupBy('lead_status')
+                ->map(function ($group) {
+                    return count($group);
+                });
+            
+            return $leadCounts;
+        }
+
         public function deleteLead($uuid)
         {
             // Check if the user is authenticated
@@ -199,6 +220,47 @@ class CreateLeadService
 
                return response()->json(['message' => 'Lead deleted'], 200);   
         }
+
+        // for lead source
+
+        public function leadSource(array $data): CreateLead
+    {
+        
+        $leads = new CreateLead;
+        $leads->uuid = $uuid = mt_rand(10000000, 99999999);
+        $leads->related_activities = $data['related_activities'] ?? null;
+        $leads->lead_Name = $data['lead_Name'] ?? null;
+        $leads->company = isset($data['company']) ? $data['company'] : null;
+        $leads->email = $data['email'] ?? null;
+        $leads->fullName = $data['fullName'] ?? null;
+        $leads->lead_Source = $data['lead_Source'] ?? null;
+        $leads->Owner = 1 ?? null;
+        //$leads->created_by = auth()->user()->id;
+        $leads->fax = $data['fax'] ?? null;
+        $leads->phone = $data['phone'] ?? null;
+        $leads->mobile = $data['mobile'] ?? null;
+        $leads->website = $data['website'] ?? null;
+        $leads->lead_status = $data['lead_status'] ?? null;
+        $leads->industry = $data['industry'] ?? null;
+        $leads->rating = $data['rating'] ?? null;
+        $leads->noOfEmployees = $data['noOfEmployees'] ?? null;
+        $leads->annualRevenue = $data['annualRevenue'] ?? null;
+        $leads->skypeID = $data['skypeID'] ?? null;
+        $leads->secondaryEmail = $data['secondaryEmail'] ?? null;
+        $leads->twitter = $data['twitter'] ?? null;
+        $leads->city = $data['city'] ?? null;
+        $leads->street = $data['street'] ?? null;
+        $leads->pinCode = $data['pinCode'] ?? null;
+        $leads->state = $data['state'] ?? null;
+        $leads->country = $data['country'] ?? null;
+        $leads->discription = $data['discription'] ?? null;
+        $leads->title = $data['title'] ?? null;
+        $leads->note = $data['note'] ?? null;
+        $leads->role_id = 18;
+        $leads->owner_id =  1;
+        $leads->save();
+        return $leads;
+    }
 
     }
 

@@ -80,6 +80,11 @@ return [
             'path' => storage_path('logs/create_leads.log'),
             'level' => 'info',
         ],
+        'india_mart_lead' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/indiamart.log'),
+            'level' => 'info',
+        ],
 
         'update_leads' => [
             'driver' =>'single',

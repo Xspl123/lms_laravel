@@ -41,17 +41,19 @@ class CreateLeadRequest extends FormRequest
            'p_id'=> 'nullable',
            'Owner'=> 'nullable',
            'lead_Name' => 'required',
-            'email' => 'required|email|unique:create_leads,email',
+            'email' => 'required',
             'fullName' => 'required',
-            'phone'=>[
+            'phone' => [
                 'required',
-                'string',
                 function ($attribute, $value, $fail) {
-                    if (!preg_match('/^\d{10}$/', $value)) {
-                        $fail('The phone must be exactly 10 digits.');
+                    // Check if the phone number starts with a plus sign followed by exactly three digits and at most 10 additional digits,
+                    // or if it is at most 10 digits without a plus sign and country code
+                    if (!preg_match('/^(\+\d{3}\d{0,10}|\d{0,10})$/', $value)) {
+                        $fail('The phone must start with a valid country code (e.g., +123) followed by at most 10 additional digits, or it can be at most 10 digits without a country code.');
                     }
                 },
             ],
+            
             'lead_status' => 'required',
             'company' => 'nullable',
             'lead_Source' => 'nullable',

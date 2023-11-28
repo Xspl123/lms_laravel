@@ -41,14 +41,26 @@ class CreateDealRequest extends FormRequest
             'dealName' => 'required',
             'accountName' => 'nullable',
             'type' => 'nullable',
-            'amount' => 'integer|nullable',
-            'closingDate' => 'nullable',
+            'amount' => 'integer|required',
+            'closingDate' => 'required',
             'stage' => 'nullable',
             'probability' => 'nullable',
             'expectedRevenue' => 'nullable',
             'campaignSource' => 'nullable',
             'description' => 'nullable',
             'p_id'=> 'required',
+            'reason_for_loss' => 'nullable',
+            'Owner' => 'nullable',
+            'created_by' => 'nullable',
+            'remark' => 'nullable',
         ];
+    }
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'dealName' => strtoupper($this->input('dealName')),
+            'accountName' => strtoupper($this->input('accountName')),
+            'Owner' => strtoupper($this->input('Owner'))
+        ]);
     }
 }

@@ -87,6 +87,67 @@ class TableHelper
             return $userIdsForRoles;
         }
 
+        public static function getTableDataCount($tableName, $columns = ['*'])
+        {
+            $user = Auth::user();
+
+            if (!$user) {
+                throw new \Exception('User not logged in.');
+            }
+
+            $userRole = $user->role_id;
+
+            // Retrieve the role hierarchy based on the user's role ID
+            $roleHierarchy = self::getRolesHierarchy($userRole);
+
+            if ($roleHierarchy === null) {
+                throw new \Exception('Role hierarchy not defined for the user.');
+            }
+
+            // Initialize an array to store user_ids for specified roles
+            $userIdsForRoles = self::collectUserIdsForRoles($roleHierarchy);
+
+            $data = DB::table($tableName)
+                ->select($columns)
+                ->whereIn('owner_id', $userIdsForRoles)
+                ->latest()
+                ->get();
+
+            return $data;
+        }
+
+        private static function getRolesHierarchyCount($userRole)
+        {
+            // Assuming you have a 'roles' table with columns: 'id', 'role_name', 'p_id'
+            $userRoles = DB::table('roles')
+                ->select('id', 'role_name', 'p_id')
+                ->where('id', $userRole)
+                ->get();
+
+            return $userRoles;
+        }
+
+        private static function collectUserIdsForRolesCount($roles)
+        {
+            $userIdsForRoles = [];
+            foreach ($roles as $role) {
+                $userIds = DB::table('users')
+                    ->where('role_id', $role->id)
+                    ->pluck('id')
+                    ->toArray();
+                $userIdsForRoles = array_merge($userIdsForRoles, $userIds);
+                // Fetch child roles recursively
+                $childRoles = DB::table('roles')
+                    ->where('p_id', $role->id)
+                    ->get();
+
+                if ($childRoles->count() > 0) {
+                    $userIdsForRoles = array_merge($userIdsForRoles, self::collectUserIdsForRoles($childRoles));
+                }
+            }
+            return $userIdsForRoles;
+        }
+
         public static function deleteIfOwner($model, $id)
         {
             $user = Auth::user();
